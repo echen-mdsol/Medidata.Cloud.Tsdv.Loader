@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Medidata.Cloud.Tsdv.Loader</id>
+    <version>0.1.0</version>
+    <title>Medidata TSDV loader for unloading and downloading</title>
+    <authors>jshao@mdsol.com,echen@mdsol.com,chuang@mdsol.com</authors>
+    <owners>jshao@mdsol.com,echen@mdsol.com,chuang@mdsol.com</owners>
+    <projectUrl>https://github.com/junshao/Medidata.Cloud.Tsdv.Loader</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Medidata TSDV loader for unloading and downloading</description>
+    <releaseNotes>First version.</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Rave TSDV download upload loader</tags>
+    <dependencies>
+      <dependency id="Medidata.Interfaces" version="0.1.0" />
+    </dependencies>
+  </metadata>
+</package>
