@@ -21,7 +21,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
             var validationRule3 = fixture.Create<IValidationRule>();
 
             // Creates a validator with the rules.
-            var validator = MockRepository.GenerateMock<IValidator>(validationRule1, validationRule2, validationRule3);
+            var validator = new DefaultSequentialRuleValidator(validationRule1, validationRule2, validationRule3);
 
             // Uses the validator to virify the block plan.
             var result = validator.Validate(blockPlan);
