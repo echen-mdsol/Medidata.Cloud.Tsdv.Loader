@@ -103,9 +103,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AutoFixtureTestClassBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ValidatorSampleCode.cs" />
+    <Compile Include="DefaultSequentialRuleValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
