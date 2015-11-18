@@ -88,16 +88,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IOpenXmlWorkbookParser.cs" />
-    <Compile Include="IOpenXmlWorksheetParser.cs" />
+    <Compile Include="IWorkbookParser.cs" />
+    <Compile Include="IWorksheetParser.cs" />
     <Compile Include="ModelConverters\BlockPlanConverter.cs" />
     <Compile Include="ModelConverters\MatchedPropertyInfo.cs" />
     <Compile Include="ModelConverters\PropNameMatchBaseConverter.cs" />
     <Compile Include="ModelConverters\TierFormConverter.cs" />
     <Compile Include="Models\TierFormModel.cs" />
     <Compile Include="Models\BlockPlanModel.cs" />
-    <Compile Include="IOpenXmlWorkbookBuilder.cs" />
-    <Compile Include="IOpenXmlWorksheetBuilder.cs" />
+    <Compile Include="IWorkbookBuilder.cs" />
+    <Compile Include="IWorksheetBuilder.cs" />
     <Compile Include="ModelConverterFactory.cs" />
     <Compile Include="IModelConverterFactory.cs" />
     <Compile Include="IModelConverter.cs" />
@@ -117,10 +117,10 @@
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
-    <Compile Include="OpenXmlWorkbookBuilder.cs" />
-    <Compile Include="OpenXmlWorkbookParser.cs" />
-    <Compile Include="OpenXmlWorksheetBuilder.cs" />
-    <Compile Include="OpenXmlWorksheetParser.cs" />
+    <Compile Include="WorkbookBuilder.cs" />
+    <Compile Include="WorkbookParser.cs" />
+    <Compile Include="WorksheetBuilder.cs" />
+    <Compile Include="WorksheetParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Medidata.Cloud.Tsdv.Loader.nuspec" />

@@ -3,9 +3,9 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader
 {
-    public interface IOpenXmlWorkbookParser
+    public interface IWorkbookParser
     {
-        IOpenXmlWorksheetParser<T> GetWorksheet<T>(string sheetName) where T : class;
+        IWorksheetParser<T> GetWorksheet<T>(string sheetName) where T : class;
         void Load(Workbook workbook);
     }
 }
