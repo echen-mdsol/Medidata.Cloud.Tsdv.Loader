@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Medidata.Cloud.Tsdv.Loader
 {
     public interface IWorkbookModelBuilder
@@ -7,5 +9,6 @@ namespace Medidata.Cloud.Tsdv.Loader
         void RemoveWorksheet(string sheetName);
         bool ContainsWorksheet(string sheetName);
         object ToModel();
+        void Save(Stream outStream);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Medidata.Cloud.Tsdv.Loader
 {
@@ -37,6 +38,11 @@ namespace Medidata.Cloud.Tsdv.Loader
         }
 
         public object ToModel()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save(Stream outStream)
         {
             throw new NotImplementedException();
         }
