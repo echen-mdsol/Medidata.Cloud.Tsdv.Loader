@@ -39,8 +39,16 @@
       <HintPath>..\packages\DapperWrapper.0.3.0.0\lib\net40\DapperWrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Medidata.Interfaces, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Medidata.Interfaces.0.1.0\lib\net40\Medidata.Interfaces.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImpromptuInterface, Version=6.2.2.0, Culture=neutral, PublicKeyToken=0b1781c923b2975b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImpromptuInterface.6.2.2\lib\net40\ImpromptuInterface.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Medidata.Interfaces, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Medidata.Interfaces.0.1.1\lib\net40\Medidata.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -80,6 +88,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IWorkbookParser.cs" />
+    <Compile Include="IWorksheetParser.cs" />
+    <Compile Include="ModelConverters\BlockPlanConverter.cs" />
+    <Compile Include="ModelConverters\BlockPlanSettingConverter.cs" />
+    <Compile Include="Models\BlockPlanSettingModel.cs" />
+    <Compile Include="ModelConverters\CustomTierConverter.cs" />
+    <Compile Include="Models\CustomTierModel.cs" />
+    <Compile Include="ModelConverters\ExcludedStatusConverter.cs" />
+    <Compile Include="Models\ExcludeStatusModel.cs" />
+    <Compile Include="ModelConverters\MatchedPropertyInfo.cs" />
+    <Compile Include="ModelConverters\PropNameMatchBaseConverter.cs" />
+    <Compile Include="ModelConverters\RuleConverter.cs" />
+    <Compile Include="Models\RuleModel.cs" />
+    <Compile Include="ModelConverters\TierFormConverter.cs" />
+    <Compile Include="Models\TierFormModel.cs" />
+    <Compile Include="Models\BlockPlanModel.cs" />
+    <Compile Include="IWorkbookBuilder.cs" />
+    <Compile Include="IWorksheetBuilder.cs" />
+    <Compile Include="ModelConverterFactory.cs" />
+    <Compile Include="IModelConverterFactory.cs" />
+    <Compile Include="IModelConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\IValidationRuleResult.cs" />
     <Compile Include="Validation\Rules\LocalizableValidationRuleBase.cs" />
@@ -96,6 +125,10 @@
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
+    <Compile Include="WorkbookBuilder.cs" />
+    <Compile Include="WorkbookParser.cs" />
+    <Compile Include="WorksheetBuilder.cs" />
+    <Compile Include="WorksheetParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Medidata.Cloud.Tsdv.Loader.nuspec" />
@@ -111,9 +144,8 @@
   <ItemGroup>
     <None Include="_CreateNewNuGetPackage\DoNotModify\NuGet.exe" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ExcelXmlLoader\" />
-  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>REM Create a NuGet package for this project and place the .nupkg file in the project's output directory.

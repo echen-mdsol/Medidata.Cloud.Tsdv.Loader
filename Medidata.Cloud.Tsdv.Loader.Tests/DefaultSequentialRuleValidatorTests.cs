@@ -75,7 +75,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
 
             var rule = _fixture.Create<IValidationRule>();
             rule.Stub(x => x.Check(null)).IgnoreArguments().Return(ruleResult);
-            
+
             return rule;
         }
     }
