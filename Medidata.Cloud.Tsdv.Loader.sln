@@ -5,7 +5,9 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medidata.Cloud.Tsdv.Loader", "Medidata.Cloud.Tsdv.Loader\Medidata.Cloud.Tsdv.Loader.csproj", "{9B06A417-162E-45D4-AD93-7E274857599C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medidata.Cloud.Tsdv.Loader.Tests", "Medidata.Cloud.Tsdv.Loader.Tests\Medidata.Cloud.Tsdv.Loader.Tests.csproj", "{9DE76FF1-CE24-4E62-A922-7835C3301ABE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1F95AEE4-6BF1-4D5C-9C30-96ECB6CD81E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medidata.Cloud.Tsdv.Loader.Tests", "Medidata.Cloud.Tsdv.Loader.Tests\Medidata.Cloud.Tsdv.Loader.Tests.csproj", "{47E9C7C0-6B7A-47FA-A91F-B340D00B671D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,10 @@ Global
 		{9B06A417-162E-45D4-AD93-7E274857599C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B06A417-162E-45D4-AD93-7E274857599C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B06A417-162E-45D4-AD93-7E274857599C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DE76FF1-CE24-4E62-A922-7835C3301ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DE76FF1-CE24-4E62-A922-7835C3301ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DE76FF1-CE24-4E62-A922-7835C3301ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DE76FF1-CE24-4E62-A922-7835C3301ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47E9C7C0-6B7A-47FA-A91F-B340D00B671D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47E9C7C0-6B7A-47FA-A91F-B340D00B671D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47E9C7C0-6B7A-47FA-A91F-B340D00B671D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47E9C7C0-6B7A-47FA-A91F-B340D00B671D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
