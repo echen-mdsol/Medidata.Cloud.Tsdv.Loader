@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Medidata.Cloud.Tsdv.Loader.ModelConverters;
 
 namespace Medidata.Cloud.Tsdv.Loader
 {
@@ -10,10 +11,13 @@ namespace Medidata.Cloud.Tsdv.Loader
 
         public ModelConverterFactory(IModelConverter[] customConverters)
         {
+            var converters = new IModelConverter[]
+            {
+                new BlockPlanConverter(),
+                new TierFormConverter()
+            };
             if (customConverters == null) return;
-            _converters = _converters
-                .Union(customConverters.Select(x => new KeyValuePair<Type, IModelConverter>(x.InterfaceType, x)))
-                .ToDictionary(x => x.Key, x => x.Value);
+            _converters = converters.Union(customConverters).ToDictionary(x => x.InterfaceType, x => x);
         }
 
         public IModelConverter ProduceConverter(Type type)
