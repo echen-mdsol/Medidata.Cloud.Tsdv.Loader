@@ -14,7 +14,11 @@ namespace Medidata.Cloud.Tsdv.Loader
             var converters = new IModelConverter[]
             {
                 new BlockPlanConverter(),
-                new TierFormConverter()
+                new BlockPlanSettingConverter(), 
+                new CustomTierConverter(), 
+                new TierFormConverter(),
+                new ExcludedStatusConverter(), 
+                new RuleConverter()
             };
             if (customConverters == null) return;
             _converters = converters.Union(customConverters).ToDictionary(x => x.InterfaceType, x => x);
