@@ -43,8 +43,8 @@
       <HintPath>..\packages\DapperWrapper.0.3.0.0\lib\net40\DapperWrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Medidata.Interfaces, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Medidata.Interfaces.0.1.0\lib\net40\Medidata.Interfaces.dll</HintPath>
+    <Reference Include="Medidata.Interfaces, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Medidata.Interfaces.0.1.1\lib\net40\Medidata.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
