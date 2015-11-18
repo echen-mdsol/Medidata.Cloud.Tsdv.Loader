@@ -11,7 +11,7 @@ namespace Medidata.Cloud.Tsdv.Loader
 
         public ModelConverterFactory(IModelConverter[] customConverters)
         {
-            var converters = new IModelConverter[]
+            IEnumerable<IModelConverter> converters = new IModelConverter[]
             {
                 new BlockPlanConverter(),
                 new BlockPlanSettingConverter(), 
@@ -20,8 +20,11 @@ namespace Medidata.Cloud.Tsdv.Loader
                 new ExcludedStatusConverter(), 
                 new RuleConverter()
             };
-            if (customConverters == null) return;
-            _converters = converters.Union(customConverters).ToDictionary(x => x.InterfaceType, x => x);
+            if(customConverters!= null)
+            {
+                converters = converters.Union(customConverters);
+            }
+            _converters = converters.ToDictionary(x => x.InterfaceType, x => x);
         }
 
         public IModelConverter ProduceConverter(Type type)

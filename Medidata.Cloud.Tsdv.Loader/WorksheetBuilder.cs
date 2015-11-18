@@ -5,11 +5,10 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader
 {
-    public class WorksheetBuilder<T> : IWorksheetBuilder<T> where T : class
+    public class WorksheetBuilder<T> : List<T>, IWorksheetBuilder
     {
         private readonly IModelConverterFactory _modelConverterFactory;
-        private readonly IList<T> _objects = new List<T>();
-        private Type _objectType;
+        private readonly Type _objectType;
 
         public WorksheetBuilder(IModelConverterFactory modelConverterFactory)
         {
@@ -18,19 +17,14 @@ namespace Medidata.Cloud.Tsdv.Loader
             _modelConverterFactory = modelConverterFactory;
         }
 
-
-        public void AddObject(T target)
-        {
-            _objects.Add(target);
-        }
-
-        public Worksheet ToWorksheet()
+        public Sheet ToWorksheet(string name)
         {
             var converter = _modelConverterFactory.ProduceConverter(_objectType);
-            var models = _objects.Select(x => converter.ConvertToModel(x));
-
+            var models = this.Select(x => converter.ConvertToModel(x));
+            
             // ExcelHelper
-            throw new NotImplementedException();
+            var sheet = new Sheet {Name = name};
+            return sheet;
         }
     }
 }
