@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Medidata.Cloud.Tsdv.Loader.Extensions;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    public class WorkbookBuilder : IWorkbookBuilder
+    public class SpreadsheetBuilder : ISpreadsheetBuilder
     {
-        private readonly IModelConverterFactory _modelConverterFactory;
 
         private readonly IDictionary<string, IWorksheetBuilder> _sheets =
             new Dictionary<string, IWorksheetBuilder>(StringComparer.OrdinalIgnoreCase);
-
-        public WorkbookBuilder(IModelConverterFactory modelConverterFactory)
-        {
-            if (modelConverterFactory == null) throw new ArgumentNullException("modelConverterFactory");
-            _modelConverterFactory = modelConverterFactory;
-        }
 
         public IList<T> EnsureWorksheet<T>(string sheetName, string[] columnNames = null) where T : class
         {
@@ -25,7 +21,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             if (!_sheets.TryGetValue(sheetName, out worksheetBuilder))
             {
                 var colNames = columnNames ?? GetPropertyNames<T>();
-                worksheetBuilder = new WorksheetBuilder<T>(_modelConverterFactory) { ColumnNames = colNames };
+                worksheetBuilder = new WorksheetBuilder<T>() { ColumnNames = colNames };
                 _sheets.Add(sheetName, worksheetBuilder);
             }
             return (IList<T>)worksheetBuilder;
@@ -36,12 +32,25 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             return typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
 
-        public Workbook ToWorkbook(string workbookName)
+        public SpreadsheetDocument Save(Stream outStream)
         {
-            var workbook = new Workbook();
-            var sheets = workbook.AppendChild(new Sheets());
-            sheets.Append(_sheets.Select(kvp => kvp.Value.ToWorksheet(kvp.Key)));
-            return workbook;
+            var doc = SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
+            var workbookpart = doc.AddWorkbookPart();
+            workbookpart.Workbook = new Workbook();
+
+            // TODO: Copy cover sheet from the resource
+//            new CoverWorksheetBuilder().AppendWorksheet(doc, "Cover");
+
+            foreach (var kvp in _sheets)
+            {
+                var worksheetBuilder = kvp.Value;
+                worksheetBuilder.AppendWorksheet(doc, kvp.Key);
+            }
+
+            workbookpart.Workbook.Save();
+
+            doc.Close();
+            return doc;
         }
     }
 }

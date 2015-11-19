@@ -9,9 +9,16 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
     {
         public string[] ColumnNames { get; set; }
 
-        private static Sheet _coverSheet;
+        public void AppendWorksheet(SpreadsheetDocument doc, string sheetName)
+        {
+            var worksheet = CreateWorksheet();
+            WorksheetBuilderHelper.AppendWorksheet(doc, worksheet, sheetName);
+        }
+
+        private static Worksheet _coverSheet;
         private static readonly object CoverSheetLock = new object();
-        public Sheet ToWorksheet(string sheetName)
+
+        public Worksheet CreateWorksheet()
         {
             if (_coverSheet == null)
             {
@@ -26,8 +33,9 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                             ms.Write(sheetBytes, 0, sheetBytes.Length);
                             using (var ss = SpreadsheetDocument.Open(ms, false))
                             {
-                                _coverSheet = ss.WorkbookPart.Workbook.Sheets.Elements<Sheet>().First();
-                                _coverSheet.Name = sheetName;
+                                var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
+                                var worksheetPart = (WorksheetPart) ss.WorkbookPart.GetPartById(coverSheetId);
+                                _coverSheet = worksheetPart.Worksheet;
                             }
                         }
                     }
