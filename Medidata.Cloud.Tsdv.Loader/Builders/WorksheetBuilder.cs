@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Medidata.Cloud.Tsdv.Loader
+namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class WorksheetBuilder<T> : List<T>, IWorksheetBuilder
     {
@@ -17,13 +17,16 @@ namespace Medidata.Cloud.Tsdv.Loader
             _modelConverterFactory = modelConverterFactory;
         }
 
-        public Sheet ToWorksheet(string name)
+        public string[] ColumnNames { get; set; }
+
+        public Sheet ToWorksheet(string sheetName)
         {
+            if (string.IsNullOrWhiteSpace(sheetName)) throw new ArgumentException("sheetName cannot be empty");
             var converter = _modelConverterFactory.ProduceConverter(_objectType);
             var models = this.Select(x => converter.ConvertToModel(x));
-            
+
             // ExcelHelper
-            var sheet = new Sheet {Name = name};
+            var sheet = new Sheet { Name = sheetName };
             return sheet;
         }
     }

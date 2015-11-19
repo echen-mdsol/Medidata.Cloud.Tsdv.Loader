@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using ImpromptuInterface;
+using Medidata.Cloud.Tsdv.Loader.Extensions;
 
 namespace Medidata.Cloud.Tsdv.Loader.ModelConverters
 {
@@ -20,8 +21,8 @@ namespace Medidata.Cloud.Tsdv.Loader.ModelConverters
             if (!InterfaceType.IsInterface) throw new ArgumentException("Must be an interface type", "TInterface");
             if (!ModelType.IsClass) throw new ArgumentException("Must be a class type", "TModel");
 
-            var interfaceProperties = TypeDescriptor.GetProperties(InterfaceType).OfType<PropertyDescriptor>().ToList();
-            var modelProperties = TypeDescriptor.GetProperties(ModelType).OfType<PropertyDescriptor>().ToList();
+            var interfaceProperties = InterfaceType.GetPropertyDescriptors().ToList();
+            var modelProperties = ModelType.GetPropertyDescriptors().ToList();
             _matchedProperties = (from interfaceProp in interfaceProperties
                 from modelProp in modelProperties
                 where interfaceProp.Name == modelProp.Name

@@ -86,10 +86,13 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IWorkbookParser.cs" />
-    <Compile Include="IWorksheetParser.cs" />
+    <Compile Include="Builders\CoverWorksheetBuilder.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Parsers\IWorkbookParser.cs" />
+    <Compile Include="Parsers\IWorksheetParser.cs" />
     <Compile Include="ModelConverters\BlockPlanConverter.cs" />
     <Compile Include="ModelConverters\BlockPlanSettingConverter.cs" />
     <Compile Include="Models\BlockPlanSettingModel.cs" />
@@ -104,12 +107,17 @@
     <Compile Include="ModelConverters\TierFormConverter.cs" />
     <Compile Include="Models\TierFormModel.cs" />
     <Compile Include="Models\BlockPlanModel.cs" />
-    <Compile Include="IWorkbookBuilder.cs" />
-    <Compile Include="IWorksheetBuilder.cs" />
+    <Compile Include="Builders\IWorkbookBuilder.cs" />
+    <Compile Include="Builders\IWorksheetBuilder.cs" />
     <Compile Include="ModelConverterFactory.cs" />
     <Compile Include="IModelConverterFactory.cs" />
     <Compile Include="IModelConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Validation\IValidationRuleResult.cs" />
     <Compile Include="Validation\Rules\LocalizableValidationRuleBase.cs" />
     <Compile Include="Validation\Rules\ValidationRuleBase.cs" />
@@ -125,16 +133,17 @@
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
-    <Compile Include="WorkbookBuilder.cs" />
-    <Compile Include="WorkbookParser.cs" />
-    <Compile Include="WorksheetBuilder.cs" />
-    <Compile Include="WorksheetParser.cs" />
+    <Compile Include="Builders\WorkbookBuilder.cs" />
+    <Compile Include="Parsers\WorkbookParser.cs" />
+    <Compile Include="Builders\WorksheetBuilder.cs" />
+    <Compile Include="Parsers\WorksheetParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Medidata.Cloud.Tsdv.Loader.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Resources\CoverSheet.xlsx" />
     <None Include="_CreateNewNuGetPackage\Config.ps1" />
     <None Include="_CreateNewNuGetPackage\DoNotModify\CreateNuGetPackage.ps1" />
     <None Include="_CreateNewNuGetPackage\DoNotModify\New-NuGetPackage.ps1" />
@@ -144,7 +153,12 @@
   <ItemGroup>
     <None Include="_CreateNewNuGetPackage\DoNotModify\NuGet.exe" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

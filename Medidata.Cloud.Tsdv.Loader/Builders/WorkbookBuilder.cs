@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Medidata.Cloud.Tsdv.Loader.Extensions;
 
-namespace Medidata.Cloud.Tsdv.Loader
+namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class WorkbookBuilder : IWorkbookBuilder
     {
@@ -19,15 +19,21 @@ namespace Medidata.Cloud.Tsdv.Loader
             _modelConverterFactory = modelConverterFactory;
         }
 
-        public IList<T> EnsureWorksheet<T>(string sheetName) where T : class
+        public IList<T> EnsureWorksheet<T>(string sheetName, string[] columnNames = null) where T : class
         {
             IWorksheetBuilder worksheetBuilder;
             if (!_sheets.TryGetValue(sheetName, out worksheetBuilder))
             {
-                worksheetBuilder = new WorksheetBuilder<T>(_modelConverterFactory);
+                var colNames = columnNames ?? GetPropertyNames<T>();
+                worksheetBuilder = new WorksheetBuilder<T>(_modelConverterFactory) { ColumnNames = colNames };
                 _sheets.Add(sheetName, worksheetBuilder);
             }
             return (IList<T>)worksheetBuilder;
+        }
+
+        private string[] GetPropertyNames<T>()
+        {
+            return typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
 
         public Workbook ToWorkbook(string workbookName)

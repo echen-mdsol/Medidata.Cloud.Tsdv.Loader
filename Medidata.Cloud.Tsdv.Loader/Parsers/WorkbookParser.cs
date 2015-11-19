@@ -1,8 +1,7 @@
 using System;
-using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Medidata.Cloud.Tsdv.Loader
+namespace Medidata.Cloud.Tsdv.Loader.Parsers
 {
     public class WorkbookParser : IWorkbookParser
     {
