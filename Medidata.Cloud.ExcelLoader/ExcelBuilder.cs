@@ -18,7 +18,7 @@ namespace Medidata.Cloud.ExcelLoader
             return AddSheet<T>(sheetName, columnNames != null, columnNames);
         }
 
-        public IList<object> AddSheet<T>(string sheetName, bool hasHeaderRow) where T : class
+        public IList<object> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
         {
             return AddSheet<T>(sheetName, hasHeaderRow, null);
         }
