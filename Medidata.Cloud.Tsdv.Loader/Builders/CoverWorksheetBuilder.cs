@@ -42,7 +42,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             doc.WorkbookPart.Workbook.Save();
         }
 
-        public WorksheetPart GetCoverWorksheetPart()
+        private WorksheetPart GetCoverWorksheetPart()
         {
             if (_coverWorksheetPart != null) return _coverWorksheetPart;
             lock (CoverSheetLock)
