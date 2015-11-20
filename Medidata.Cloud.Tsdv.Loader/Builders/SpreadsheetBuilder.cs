@@ -24,7 +24,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             if (!_sheets.TryGetValue(sheetName, out worksheetBuilder))
             {
                 var colNames = columnNames ?? GetPropertyNames<T>();
-                worksheetBuilder = new WorksheetBuilder<T> {ColumnNames = colNames};
+                worksheetBuilder = new WorksheetBuilder<T> { ColumnNames = colNames };
                 _sheets.Add(sheetName, worksheetBuilder);
             }
             return worksheetBuilder;
@@ -37,8 +37,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 var workbookpart = doc.AddWorkbookPart();
                 workbookpart.Workbook = new Workbook();
 
-                // TODO: Copy cover sheet from the resource
-//            new CoverWorksheetBuilder().AppendWorksheet(doc, "Cover");
+                new CoverWorksheetBuilder().AppendWorksheet(doc, false, "Cover");
 
                 foreach (var kvp in _sheets)
                 {
@@ -52,7 +51,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 
         private string[] GetPropertyNames<T>()
         {
-            return typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+            return typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
     }
 }

@@ -8,36 +8,48 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class CoverWorksheetBuilder : List<object>, IWorksheetBuilder
     {
-        private static Worksheet _coverSheet;
         private static readonly object CoverSheetLock = new object();
+        private WorksheetPart _coverWorksheetPart;
         public string[] ColumnNames { get; set; }
 
         public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
         {
-            var worksheet = CreateWorksheet();
-            WorksheetBuilderHelper.AppendWorksheet(doc, worksheet, sheetName);
+            return;
+            var coverWorkbookPart = GetCoverWorksheetPart();
+
+            var tempSheet = SpreadsheetDocument.Create(new MemoryStream(), doc.DocumentType);
+            var tempWorkbookPart = tempSheet.AddWorkbookPart();
+            var tempWorksheetPart = tempWorkbookPart.AddPart(coverWorkbookPart);
+            var clonedSheetPart = doc.WorkbookPart.AddPart(tempWorksheetPart);
+
+            var sheets = doc.WorkbookPart.Workbook.GetFirstChild<Sheets>();
+            var copiedSheet = new Sheet
+            {
+                Name = sheetName,
+                Id = doc.WorkbookPart.GetIdOfPart(clonedSheetPart),
+                SheetId = (uint)sheets.ChildElements.Count + 1
+            };
+            sheets.Append(copiedSheet);
+            doc.WorkbookPart.Workbook.Save();
         }
 
-        public Worksheet CreateWorksheet()
+        public WorksheetPart GetCoverWorksheetPart()
         {
-            if (_coverSheet != null) return _coverSheet;
+            if (_coverWorksheetPart != null) return _coverWorksheetPart;
             lock (CoverSheetLock)
             {
-                if (_coverSheet != null) return _coverSheet;
+                if (_coverWorksheetPart != null) return _coverWorksheetPart;
                 var sheetBytes = Resource.CoverSheet;
                 using (var ms = new MemoryStream())
                 {
                     ms.Write(sheetBytes, 0, sheetBytes.Length);
-                    using (var ss = SpreadsheetDocument.Open(ms, false))
-                    {
-                        var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
-                        var worksheetPart = (WorksheetPart) ss.WorkbookPart.GetPartById(coverSheetId);
-                        _coverSheet = worksheetPart.Worksheet;
-                    }
+                    var ss = SpreadsheetDocument.Open(ms, false);
+                    var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
+                    _coverWorksheetPart = (WorksheetPart)ss.WorkbookPart.GetPartById(coverSheetId);
                 }
             }
 
-            return _coverSheet;
+            return _coverWorksheetPart;
         }
     }
 }

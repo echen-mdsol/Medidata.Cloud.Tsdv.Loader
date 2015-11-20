@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
 using Medidata.Cloud.Tsdv.Loader.CellValueConverters;
 using Medidata.Cloud.Tsdv.Loader.Extensions;
+using Medidata.Cloud.Tsdv.Loader.Helpers;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
@@ -23,8 +26,25 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
         public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
         {
             _hasHeaderRow = hasHeaderRow;
-            var worksheet = CreateWorksheet();
-            WorksheetBuilderHelper.AppendWorksheet(doc, worksheet, sheetName);
+
+            var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
+
+            var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
+            worksheetPart.Worksheet = CreateWorksheet();
+
+            var sheetId = (uint)(1 + sheets.Count());
+            var sheet = new Sheet
+            {
+                Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = sheetId,
+                Name = sheetName
+            };
+
+            // Use this attribute to retrieve the worksheet.
+            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
+            sheet.SetAttribute(attribute);
+
+            sheets.Append(sheet);
         }
 
         private Worksheet CreateWorksheet()
@@ -45,7 +65,6 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 _converterManager.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
                 cell.CellValue = new CellValue(cellValue);
-//                cell.SetAttribute(new OpenXmlAttribute("PropertyName", "http://www.msdol.com", property.Name));
             }
             return cell;
         }
