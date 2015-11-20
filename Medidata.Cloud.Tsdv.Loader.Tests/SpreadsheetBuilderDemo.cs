@@ -49,9 +49,9 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
             {
                 ssParser.Load(fs);
 
-                objectsFromSheet1 = ssParser.RetrieveSheet<IFakeInterface>("MySheet1").ToList();
+                objectsFromSheet1 = ssParser.RetrieveObjectsFromSheet<IFakeInterface>("MySheet1").ToList();
 
-                objectsFromSheet2 = ssParser.RetrieveSheet<IFakeInterface>("MySheet2").ToList();
+                objectsFromSheet2 = ssParser.RetrieveObjectsFromSheet<IFakeInterface>("MySheet2").ToList();
             }
 
             Assert.IsNotNull(objectsFromSheet1);

@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using ImpromptuInterface;
 using Medidata.Cloud.Tsdv.Loader.CellValueConverters;
 using Medidata.Cloud.Tsdv.Loader.Extensions;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    public class WorksheetBuilder<T> : List<T>, IWorksheetBuilder
+    public class WorksheetBuilder<T> : List<object>, IWorksheetBuilder where T : class
     {
         private readonly CellTypeConverterManager _converterManager;
         private bool _hasHeaderRow;
@@ -34,7 +34,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             return worksheet;
         }
 
-        private Cell CreateCell(object model, PropertyDescriptor property)
+        private Cell CreateCell(T model, PropertyDescriptor property)
         {
             var cell = new Cell();
             if (model != null)
@@ -45,12 +45,12 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 _converterManager.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
                 cell.CellValue = new CellValue(cellValue);
-                cell.SetAttribute(new OpenXmlAttribute("PropertyName", "http://www.msdol.com", property.Name));
+//                cell.SetAttribute(new OpenXmlAttribute("PropertyName", "http://www.msdol.com", property.Name));
             }
             return cell;
         }
 
-        private Row CreateRow(object model)
+        private Row CreateRow(T model)
         {
             var row = new Row();
             var properties = model.GetType().GetPropertyDescriptors();
@@ -86,8 +86,9 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 sheetData.Append(headerRow);
             }
 
-            foreach (var model in this)
+            foreach (var element in this)
             {
+                T model = element.ActLike<T>();
                 var row = CreateRow(model);
                 sheetData.Append(row);
             }

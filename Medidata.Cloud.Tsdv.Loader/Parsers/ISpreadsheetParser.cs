@@ -6,7 +6,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Parsers
 {
     public interface ISpreadsheetParser : IDisposable
     {
-        IEnumerable<T> RetrieveSheet<T>(string sheetName) where T : class;
+        IEnumerable<T> RetrieveObjectsFromSheet<T>(string sheetName) where T : class;
         void Load(Stream stream, bool hasHeaderRow = true);
     }
 }

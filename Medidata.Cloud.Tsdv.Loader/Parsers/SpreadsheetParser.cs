@@ -11,7 +11,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Parsers
         private SpreadsheetDocument _doc;
         private bool _hasHeaderRow;
 
-        public IEnumerable<T> RetrieveSheet<T>(string sheetName) where T : class
+        public IEnumerable<T> RetrieveObjectsFromSheet<T>(string sheetName) where T : class
         {
             var sheet = _doc.WorkbookPart.Workbook.Descendants<Sheet>().First(x => x.Name == sheetName);
             var id = sheet.Id;

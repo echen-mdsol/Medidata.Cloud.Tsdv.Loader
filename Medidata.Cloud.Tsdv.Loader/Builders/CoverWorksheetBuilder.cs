@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
@@ -5,7 +6,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    public class CoverWorksheetBuilder : IWorksheetBuilder
+    public class CoverWorksheetBuilder : List<object>, IWorksheetBuilder
     {
         private static Worksheet _coverSheet;
         private static readonly object CoverSheetLock = new object();
@@ -19,23 +20,19 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 
         public Worksheet CreateWorksheet()
         {
-            if (_coverSheet == null)
+            if (_coverSheet != null) return _coverSheet;
+            lock (CoverSheetLock)
             {
-                lock (CoverSheetLock)
+                if (_coverSheet != null) return _coverSheet;
+                var sheetBytes = Resource.CoverSheet;
+                using (var ms = new MemoryStream())
                 {
-                    if (_coverSheet == null)
+                    ms.Write(sheetBytes, 0, sheetBytes.Length);
+                    using (var ss = SpreadsheetDocument.Open(ms, false))
                     {
-                        var sheetBytes = Resource.CoverSheet;
-                        using (var ms = new MemoryStream())
-                        {
-                            ms.Write(sheetBytes, 0, sheetBytes.Length);
-                            using (var ss = SpreadsheetDocument.Open(ms, false))
-                            {
-                                var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
-                                var worksheetPart = (WorksheetPart) ss.WorkbookPart.GetPartById(coverSheetId);
-                                _coverSheet = worksheetPart.Worksheet;
-                            }
-                        }
+                        var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
+                        var worksheetPart = (WorksheetPart) ss.WorkbookPart.GetPartById(coverSheetId);
+                        _coverSheet = worksheetPart.Worksheet;
                     }
                 }
             }

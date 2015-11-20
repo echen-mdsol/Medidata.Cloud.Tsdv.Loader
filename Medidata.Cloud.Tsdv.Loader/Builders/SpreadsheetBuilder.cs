@@ -16,7 +16,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 
         private bool _hasHeaderRow;
 
-        public IList<T> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow = true, string[] columnNames = null)
+        public IList<object> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow = true, string[] columnNames = null)
             where T : class
         {
             _hasHeaderRow = hasHeaderRow;
@@ -27,7 +27,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 worksheetBuilder = new WorksheetBuilder<T> {ColumnNames = colNames};
                 _sheets.Add(sheetName, worksheetBuilder);
             }
-            return (IList<T>) worksheetBuilder;
+            return worksheetBuilder;
         }
 
         public SpreadsheetDocument Save(Stream outStream)
