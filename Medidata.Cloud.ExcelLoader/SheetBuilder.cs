@@ -11,11 +11,11 @@ namespace Medidata.Cloud.ExcelLoader
 {
     internal class SheetBuilder<T> : List<object>, ISheetBuilder where T : class
     {
-        private readonly CellTypeValueConverterManager _converter;
+        private readonly ICellTypeValueConverterFactory _converterFactory;
 
-        public SheetBuilder()
+        public SheetBuilder(ICellTypeValueConverterFactory _converterFactory)
         {
-            _converter = new CellTypeValueConverterManager();
+            this._converterFactory = _converterFactory;
         }
 
         public bool HasHeaderRow { get; set; }
@@ -57,10 +57,10 @@ namespace Medidata.Cloud.ExcelLoader
             var cell = new Cell();
             if (model != null)
             {
-                CellValues cellType;
-                string cellValue;
                 var propValue = GetPropertyValue(property, model);
-                _converter.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
+                var converter = _converterFactory.Produce(property.PropertyType);
+                var cellType = converter.CellType;
+                var cellValue = converter.GetCellValue(propValue);
                 cell.DataType = cellType;
                 if (cellType == CellValues.InlineString)
                 {
