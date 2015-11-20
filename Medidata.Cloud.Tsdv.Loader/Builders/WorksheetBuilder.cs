@@ -61,12 +61,24 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             {
                 CellValues cellType;
                 string cellValue;
-                var propValue = property.GetValue(model);
+                var propValue = GetPropertyValue(property, model);
                 _converterManager.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
                 cell.CellValue = new CellValue(cellValue);
             }
             return cell;
+        }
+
+        private object GetPropertyValue(PropertyDescriptor property, object target)
+        {
+            try
+            {
+                return property.GetValue(target);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private Row CreateRow(T model)

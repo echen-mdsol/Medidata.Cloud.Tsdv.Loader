@@ -17,7 +17,9 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
 
         protected override DateTime GetCSharpValueImpl(string cellValue)
         {
-            return DateTime.Parse(cellValue);
+            DateTime value;
+            DateTime.TryParse(cellValue, out value);
+            return value;
         }
     }
 }

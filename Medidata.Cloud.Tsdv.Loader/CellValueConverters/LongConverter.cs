@@ -4,7 +4,9 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
     {
         protected override long GetCSharpValueImpl(string cellValue)
         {
-            return long.Parse(cellValue);
+            long value;
+            long.TryParse(cellValue, out value);
+            return value;
         }
     }
 }

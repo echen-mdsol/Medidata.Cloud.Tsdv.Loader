@@ -16,7 +16,11 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
 
         protected override bool GetCSharpValueImpl(string cellValue)
         {
-            return cellValue == "0" || cellValue != "1" && bool.Parse(cellValue);
+            if (cellValue == "1") return true;
+            if (cellValue == "0") return false;
+            bool value;
+            bool.TryParse(cellValue, out value);
+            return value;
         }
     }
 }
