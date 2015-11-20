@@ -7,16 +7,15 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class CoverWorksheetBuilder : IWorksheetBuilder
     {
+        private static Worksheet _coverSheet;
+        private static readonly object CoverSheetLock = new object();
         public string[] ColumnNames { get; set; }
 
-        public void AppendWorksheet(SpreadsheetDocument doc, string sheetName)
+        public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
         {
             var worksheet = CreateWorksheet();
             WorksheetBuilderHelper.AppendWorksheet(doc, worksheet, sheetName);
         }
-
-        private static Worksheet _coverSheet;
-        private static readonly object CoverSheetLock = new object();
 
         public Worksheet CreateWorksheet()
         {
@@ -26,7 +25,6 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 {
                     if (_coverSheet == null)
                     {
-
                         var sheetBytes = Resource.CoverSheet;
                         using (var ms = new MemoryStream())
                         {

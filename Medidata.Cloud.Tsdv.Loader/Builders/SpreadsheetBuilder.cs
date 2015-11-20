@@ -11,25 +11,23 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class SpreadsheetBuilder : ISpreadsheetBuilder
     {
-
         private readonly IDictionary<string, IWorksheetBuilder> _sheets =
             new Dictionary<string, IWorksheetBuilder>(StringComparer.OrdinalIgnoreCase);
 
-        public IList<T> EnsureWorksheet<T>(string sheetName, string[] columnNames = null) where T : class
+        private bool _hasHeaderRow;
+
+        public IList<T> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow = true, string[] columnNames = null)
+            where T : class
         {
+            _hasHeaderRow = hasHeaderRow;
             IWorksheetBuilder worksheetBuilder;
             if (!_sheets.TryGetValue(sheetName, out worksheetBuilder))
             {
                 var colNames = columnNames ?? GetPropertyNames<T>();
-                worksheetBuilder = new WorksheetBuilder<T>() { ColumnNames = colNames };
+                worksheetBuilder = new WorksheetBuilder<T> {ColumnNames = colNames};
                 _sheets.Add(sheetName, worksheetBuilder);
             }
-            return (IList<T>)worksheetBuilder;
-        }
-
-        private string[] GetPropertyNames<T>()
-        {
-            return typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+            return (IList<T>) worksheetBuilder;
         }
 
         public SpreadsheetDocument Save(Stream outStream)
@@ -44,13 +42,18 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             foreach (var kvp in _sheets)
             {
                 var worksheetBuilder = kvp.Value;
-                worksheetBuilder.AppendWorksheet(doc, kvp.Key);
+                worksheetBuilder.AppendWorksheet(doc, _hasHeaderRow, kvp.Key);
             }
 
             workbookpart.Workbook.Save();
 
             doc.Close();
             return doc;
+        }
+
+        private string[] GetPropertyNames<T>()
+        {
+            return typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
     }
 }

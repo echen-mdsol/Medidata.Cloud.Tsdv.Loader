@@ -10,6 +10,6 @@ namespace Medidata.Cloud.Tsdv.Loader.Extensions
         public static IEnumerable<PropertyDescriptor> GetPropertyDescriptors(this Type type)
         {
             return TypeDescriptor.GetProperties(type).OfType<PropertyDescriptor>();
-        } 
+        }
     }
 }

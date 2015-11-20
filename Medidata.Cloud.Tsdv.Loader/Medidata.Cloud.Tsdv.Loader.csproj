@@ -107,7 +107,7 @@
     <Compile Include="CellValueConverters\NumberConverter.cs" />
     <Compile Include="CellValueConverters\StringConverter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Parsers\IWorkbookParser.cs" />
+    <Compile Include="Parsers\ISpreadsheetParser.cs" />
     <Compile Include="Parsers\IWorksheetParser.cs" />
     <Compile Include="Models\BlockPlanSettingModel.cs" />
     <Compile Include="Models\CustomTierModel.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
     <Compile Include="Builders\SpreadsheetBuilder.cs" />
-    <Compile Include="Parsers\WorkbookParser.cs" />
+    <Compile Include="Parsers\SpreadsheetParser.cs" />
     <Compile Include="Builders\WorksheetBuilder.cs" />
     <Compile Include="Parsers\WorksheetParser.cs" />
   </ItemGroup>

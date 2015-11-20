@@ -10,7 +10,8 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
 
         protected override string GetCellValueImpl(string csharpValue)
         {
-            return csharpValue;;
+            return csharpValue;
+            ;
         }
 
         protected override string GetCSharpValueImpl(string cellValue)

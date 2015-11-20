@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -13,19 +10,19 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class WorksheetBuilder<T> : List<T>, IWorksheetBuilder
     {
-        private readonly Type _objectType;
         private readonly CellTypeConverterManager _converterManager;
+        private bool _hasHeaderRow;
 
         public WorksheetBuilder()
         {
-            _objectType = typeof(T);
             _converterManager = new CellTypeConverterManager();
         }
 
         public string[] ColumnNames { get; set; }
 
-        public void AppendWorksheet(SpreadsheetDocument doc, string sheetName)
+        public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
         {
+            _hasHeaderRow = hasHeaderRow;
             var worksheet = CreateWorksheet();
             WorksheetBuilderHelper.AppendWorksheet(doc, worksheet, sheetName);
         }
@@ -45,7 +42,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 CellValues cellType;
                 string cellValue;
                 var propValue = property.GetValue(model);
-                _converterManager.GetCellType(property.PropertyType, propValue, out cellType, out cellValue);
+                _converterManager.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
                 cell.CellValue = new CellValue(cellValue);
                 cell.SetAttribute(new OpenXmlAttribute("PropertyName", "http://www.msdol.com", property.Name));
@@ -83,8 +80,12 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
         private SheetData GetSheetData()
         {
             var sheetData = new SheetData();
-            var headerRow = CreateHeaderRow();
-            sheetData.Append(headerRow);
+            if (_hasHeaderRow)
+            {
+                var headerRow = CreateHeaderRow();
+                sheetData.Append(headerRow);
+            }
+
             foreach (var model in this)
             {
                 var row = CreateRow(model);

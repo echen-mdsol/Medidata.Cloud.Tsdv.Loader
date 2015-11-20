@@ -4,7 +4,7 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
     {
         protected override decimal GetCSharpValueImpl(string cellValue)
         {
-            return int.Parse(cellValue);
+            return decimal.Parse(cellValue);
         }
     }
 }

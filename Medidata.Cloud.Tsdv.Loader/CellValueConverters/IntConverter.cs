@@ -1,5 +1,3 @@
-using System;
-
 namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
 {
     internal class IntConverter : NumberConverter<int>

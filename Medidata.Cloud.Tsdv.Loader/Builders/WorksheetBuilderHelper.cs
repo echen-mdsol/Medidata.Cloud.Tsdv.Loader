@@ -1,5 +1,4 @@
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -14,8 +13,13 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = worksheet;
 
-            var sheetId = (uint)(1 + sheets.Count());
-            var sheet = new Sheet { Id = doc.WorkbookPart.GetIdOfPart(worksheetPart), SheetId = sheetId, Name = sheetName };
+            var sheetId = (uint) (1 + sheets.Count());
+            var sheet = new Sheet
+            {
+                Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = sheetId,
+                Name = sheetName
+            };
             sheets.Append(sheet);
         }
     }

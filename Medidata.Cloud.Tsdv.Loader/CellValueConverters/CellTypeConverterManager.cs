@@ -8,7 +8,11 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
     {
         private readonly ICellValueConverter[] _converters;
 
-        public CellTypeConverterManager(ICellValueConverter[] converters = null)
+        public CellTypeConverterManager() : this(null)
+        {
+        }
+
+        public CellTypeConverterManager(ICellValueConverter[] customConverters)
         {
             _converters = new ICellValueConverter[]
             {
@@ -25,20 +29,20 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
                 new InlineStringConverter()
             };
 
-            if (converters != null)
+            if (customConverters != null)
             {
-                _converters = _converters.Concat(converters).ToArray();
+                _converters = _converters.Concat(customConverters).ToArray();
             }
         }
 
-        public void GetCellType(Type type, object value, out CellValues cellType, out string cellValue)
+        public void GetCellTypeAndValue(Type type, object value, out CellValues cellType, out string cellValue)
         {
             var converter = _converters.First(c => c.CSharpType == type);
             cellType = converter.CellType;
             cellValue = converter.GetCellValue(value);
         }
 
-        public void GetCSharpType(CellValues cellType, string cellValue, Type type, out object value)
+        public void GetCSharpValue(CellValues cellType, string cellValue, Type type, out object value)
         {
             var converter = _converters.First(c => c.CSharpType == type && c.CellType == cellType);
             value = converter.GetCSharpValue(cellValue);
