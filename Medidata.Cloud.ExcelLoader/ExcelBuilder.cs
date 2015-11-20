@@ -35,8 +35,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var workbookpart = doc.AddWorkbookPart();
                 workbookpart.Workbook = new Workbook();
 
-                var coverBuilder = new CoverSheetBuilder();
-                coverBuilder.AttachTo(doc);
+                AddCoverSheet(doc);
 
                 foreach (var sheet in _sheetBuilders)
                 {
@@ -67,7 +66,12 @@ namespace Medidata.Cloud.ExcelLoader
 
         protected virtual string[] GetPropertyNames<T>(string[] columnNames)
         {
-            return columnNames ?? typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+            return columnNames ?? typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+        }
+
+        protected virtual void AddCoverSheet(SpreadsheetDocument doc)
+        {
+            
         }
     }
 }

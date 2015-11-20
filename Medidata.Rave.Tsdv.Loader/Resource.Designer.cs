@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Medidata.Cloud.ExcelLoader {
+namespace Medidata.Rave.Tsdv.Loader {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Medidata.Cloud.ExcelLoader {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Medidata.Cloud.ExcelLoader.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Medidata.Rave.Tsdv.Loader.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

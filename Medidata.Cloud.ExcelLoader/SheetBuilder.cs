@@ -30,7 +30,7 @@ namespace Medidata.Cloud.ExcelLoader
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = CreateWorksheet();
 
-            var sheetId = (uint)(1 + sheets.Count());
+            var sheetId = (uint) (1 + sheets.Count());
             var sheet = new Sheet
             {
                 Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
@@ -64,7 +64,7 @@ namespace Medidata.Cloud.ExcelLoader
                 cell.DataType = cellType;
                 if (cellType == CellValues.InlineString)
                 {
-                    cell.InlineString = new InlineString { Text = new Text(cellValue) };
+                    cell.InlineString = new InlineString {Text = new Text(cellValue)};
                 }
                 else
                 {

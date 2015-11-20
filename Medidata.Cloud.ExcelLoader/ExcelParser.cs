@@ -20,19 +20,6 @@ namespace Medidata.Cloud.ExcelLoader
             return worksheetParser.GetObjects();
         }
 
-        private Worksheet FindWorksheet(SpreadsheetDocument doc, string sheetName)
-        {
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
-
-            var sheet = doc.WorkbookPart.Workbook
-                .Descendants<Sheet>()
-                .Where(x => x.HasAttributes)
-                .First(x => x.GetAttributes().Contains(attribute));
-            var id = sheet.Id;
-            var worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(id);
-            return worksheetPart.Worksheet;
-        }
-
         public void Load(Stream stream)
         {
             _doc = SpreadsheetDocument.Open(stream, false);
@@ -43,6 +30,19 @@ namespace Medidata.Cloud.ExcelLoader
             if (_doc == null) return;
             _doc.Dispose();
             _doc = null;
+        }
+
+        private Worksheet FindWorksheet(SpreadsheetDocument doc, string sheetName)
+        {
+            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
+
+            var sheet = doc.WorkbookPart.Workbook
+                .Descendants<Sheet>()
+                .Where(x => x.HasAttributes)
+                .First(x => x.GetAttributes().Contains(attribute));
+            var id = sheet.Id;
+            var worksheetPart = (WorksheetPart) doc.WorkbookPart.GetPartById(id);
+            return worksheetPart.Worksheet;
         }
     }
 }

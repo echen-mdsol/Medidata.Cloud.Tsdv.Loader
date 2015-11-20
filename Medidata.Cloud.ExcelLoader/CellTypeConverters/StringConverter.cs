@@ -11,7 +11,6 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
         protected override string GetCellValueImpl(string csharpValue)
         {
             return csharpValue;
-            ;
         }
 
         protected override string GetCSharpValueImpl(string cellValue)

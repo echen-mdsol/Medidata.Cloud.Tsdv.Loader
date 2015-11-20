@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal interface ISheetBuilder : IList<object>
+    public interface ISheetBuilder : IList<object>
     {
         string SheetName { get; }
         bool HasHeaderRow { get; }
