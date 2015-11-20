@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -10,12 +11,13 @@ namespace Medidata.Cloud.ExcelLoader
 {
     internal class SheetParser<T> : ISheetParser<T> where T : class
     {
-        private readonly CellTypeValueConverterManager _converter;
+        private readonly ICellTypeValueConverterFactory _converterFactory;
         private Worksheet _worksheet;
 
-        public SheetParser()
+        public SheetParser(ICellTypeValueConverterFactory converterFactory)
         {
-            _converter = new CellTypeValueConverterManager();
+            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
+            _converterFactory = converterFactory;
         }
 
         public bool HasHeaderRow { get; set; }
@@ -39,8 +41,8 @@ namespace Medidata.Cloud.ExcelLoader
             var index = 0;
             foreach (var prop in properties)
             {
-                var cell = cells[index];
-                var propValue = _converter.GetCSharpValue(prop.PropertyType, cell.DataType, cell.InnerText);
+                var converter = _converterFactory.Produce(prop.PropertyType);
+                var propValue = converter.GetCSharpValue(cells[index].InnerText);
                 expando.Add(prop.Name, propValue);
                 index ++;
             }

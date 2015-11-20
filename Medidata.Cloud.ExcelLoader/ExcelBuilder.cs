@@ -5,13 +5,21 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public class ExcelBuilder : IExcelBuilder
     {
+        private readonly ICellTypeValueConverterFactory _converterFactory;
         private readonly IList<ISheetBuilder> _sheetBuilders = new List<ISheetBuilder>();
+
+        public ExcelBuilder(ICellTypeValueConverterFactory converterFactory)
+        {
+            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
+            _converterFactory = converterFactory;
+        }
 
         public IList<object> AddSheet<T>(string sheetName, string[] columnNames) where T : class
         {
@@ -53,7 +61,7 @@ namespace Medidata.Cloud.ExcelLoader
                 throw new ArgumentException("Duplicate sheet name '" + sheetName + "'", "sheetName");
 
             var colNames = GetPropertyNames<T>(columnNames);
-            var worksheetBuilder = new SheetBuilder<T>
+            var worksheetBuilder = new SheetBuilder<T>(_converterFactory)
             {
                 SheetName = sheetName,
                 HasHeaderRow = hasHeaderRow,
