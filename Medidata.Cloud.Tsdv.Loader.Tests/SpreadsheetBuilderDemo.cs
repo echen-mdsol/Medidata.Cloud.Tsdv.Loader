@@ -31,7 +31,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
             File.Delete(filePath);
             using (var fs = new FileStream(filePath, FileMode.Create))
             {
-                var doc = ssBuilder.Save(fs);
+                ssBuilder.Save(fs);
             }
 
             Assert.IsTrue(File.Exists(filePath));

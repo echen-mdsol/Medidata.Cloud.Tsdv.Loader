@@ -30,25 +30,24 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             return worksheetBuilder;
         }
 
-        public SpreadsheetDocument Save(Stream outStream)
+        public void Save(Stream outStream)
         {
-            var doc = SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
-            var workbookpart = doc.AddWorkbookPart();
-            workbookpart.Workbook = new Workbook();
+            using (var doc = SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook))
+            {
+                var workbookpart = doc.AddWorkbookPart();
+                workbookpart.Workbook = new Workbook();
 
-            // TODO: Copy cover sheet from the resource
+                // TODO: Copy cover sheet from the resource
 //            new CoverWorksheetBuilder().AppendWorksheet(doc, "Cover");
 
-            foreach (var kvp in _sheets)
-            {
-                var worksheetBuilder = kvp.Value;
-                worksheetBuilder.AppendWorksheet(doc, _hasHeaderRow, kvp.Key);
+                foreach (var kvp in _sheets)
+                {
+                    var worksheetBuilder = kvp.Value;
+                    worksheetBuilder.AppendWorksheet(doc, _hasHeaderRow, kvp.Key);
+                }
+
+                workbookpart.Workbook.Save();
             }
-
-            workbookpart.Workbook.Save();
-
-            doc.Close();
-            return doc;
         }
 
         private string[] GetPropertyNames<T>()
