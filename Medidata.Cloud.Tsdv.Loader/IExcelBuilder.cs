@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Medidata.Cloud.Tsdv.Loader.Builders
+namespace Medidata.Cloud.Tsdv.Loader
 {
     public interface IExcelBuilder
     {

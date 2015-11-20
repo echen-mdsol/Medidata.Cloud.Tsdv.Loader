@@ -91,7 +91,7 @@
   <ItemGroup>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueConverterManager.cs" />
-    <Compile Include="Builders\CoverSheetBuilder.cs" />
+    <Compile Include="CoverSheetBuilder.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />
     <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\DecimalConverter.cs" />
@@ -105,17 +105,11 @@
     <Compile Include="CellTypeConverters\NullableDateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\NumberConverter.cs" />
     <Compile Include="CellTypeConverters\StringConverter.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Parsers\IExcelParser.cs" />
-    <Compile Include="Parsers\ISheetParser.cs" />
-    <Compile Include="Models\BlockPlanSettingModel.cs" />
-    <Compile Include="Models\CustomTierModel.cs" />
-    <Compile Include="Models\ExcludeStatusModel.cs" />
-    <Compile Include="Models\RuleModel.cs" />
-    <Compile Include="Models\TierFormModel.cs" />
-    <Compile Include="Models\BlockPlanModel.cs" />
-    <Compile Include="Builders\IExcelBuilder.cs" />
-    <Compile Include="Builders\ISheetBuilder.cs" />
+    <Compile Include="Helpers\TypeExtensions.cs" />
+    <Compile Include="IExcelParser.cs" />
+    <Compile Include="ISheetParser.cs" />
+    <Compile Include="IExcelBuilder.cs" />
+    <Compile Include="ISheetBuilder.cs" />
     <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.Designer.cs">
@@ -134,14 +128,14 @@
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="Validation\IValidationWarning.cs" />
     <Compile Include="Validation\IValidator.cs" />
-    <Compile Include="Extensions\StringValidationMessageExtensions.cs" />
+    <Compile Include="Helpers\StringValidationMessageExtensions.cs" />
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
-    <Compile Include="Builders\ExcelBuilder.cs" />
-    <Compile Include="Parsers\ExcelParser.cs" />
-    <Compile Include="Builders\SheetBuilder.cs" />
-    <Compile Include="Parsers\SheetParser.cs" />
+    <Compile Include="ExcelBuilder.cs" />
+    <Compile Include="ExcelParser.cs" />
+    <Compile Include="SheetBuilder.cs" />
+    <Compile Include="SheetParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Medidata.Cloud.Tsdv.Loader.nuspec" />

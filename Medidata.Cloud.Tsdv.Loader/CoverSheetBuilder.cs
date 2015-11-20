@@ -4,7 +4,7 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Medidata.Cloud.Tsdv.Loader.Builders
+namespace Medidata.Cloud.Tsdv.Loader
 {
     public class CoverSheetBuilder : List<object>, ISheetBuilder
     {

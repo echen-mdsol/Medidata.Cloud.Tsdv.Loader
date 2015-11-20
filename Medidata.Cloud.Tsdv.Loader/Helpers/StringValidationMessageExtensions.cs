@@ -1,6 +1,6 @@
 using Medidata.Cloud.Tsdv.Loader.Validation;
 
-namespace Medidata.Cloud.Tsdv.Loader.Extensions
+namespace Medidata.Cloud.Tsdv.Loader.Helpers
 {
     public static class StringValidationMessageExtensions
     {

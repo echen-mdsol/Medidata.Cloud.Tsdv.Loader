@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Medidata.Cloud.Tsdv.Loader.Builders;
-using Medidata.Cloud.Tsdv.Loader.Parsers;
 using Medidata.Cloud.Tsdv.Loader.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

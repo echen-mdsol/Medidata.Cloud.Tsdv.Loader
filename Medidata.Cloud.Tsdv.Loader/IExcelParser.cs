@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Medidata.Cloud.Tsdv.Loader.Parsers
+namespace Medidata.Cloud.Tsdv.Loader
 {
     public interface IExcelParser : IDisposable
     {

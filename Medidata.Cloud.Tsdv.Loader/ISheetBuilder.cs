@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DocumentFormat.OpenXml.Packaging;
 
-namespace Medidata.Cloud.Tsdv.Loader.Builders
+namespace Medidata.Cloud.Tsdv.Loader
 {
     internal interface ISheetBuilder : IList<object>
     {

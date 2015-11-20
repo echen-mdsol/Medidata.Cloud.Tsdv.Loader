@@ -4,9 +4,9 @@ using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
 using Medidata.Cloud.Tsdv.Loader.CellTypeConverters;
-using Medidata.Cloud.Tsdv.Loader.Extensions;
+using Medidata.Cloud.Tsdv.Loader.Helpers;
 
-namespace Medidata.Cloud.Tsdv.Loader.Parsers
+namespace Medidata.Cloud.Tsdv.Loader
 {
     internal class SheetParser<T> : ISheetParser<T> where T : class
     {

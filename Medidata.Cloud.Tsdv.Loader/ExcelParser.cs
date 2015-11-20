@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Medidata.Cloud.Tsdv.Loader.Helpers;
 
-namespace Medidata.Cloud.Tsdv.Loader.Parsers
+namespace Medidata.Cloud.Tsdv.Loader
 {
     public class ExcelParser : IExcelParser
     {

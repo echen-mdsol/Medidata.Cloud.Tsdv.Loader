@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Medidata.Cloud.Tsdv.Loader.Extensions
+namespace Medidata.Cloud.Tsdv.Loader.Helpers
 {
     internal static class TypeExtensions
     {

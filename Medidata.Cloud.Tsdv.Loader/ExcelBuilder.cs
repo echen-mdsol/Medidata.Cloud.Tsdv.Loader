@@ -5,9 +5,9 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Medidata.Cloud.Tsdv.Loader.Extensions;
+using Medidata.Cloud.Tsdv.Loader.Helpers;
 
-namespace Medidata.Cloud.Tsdv.Loader.Builders
+namespace Medidata.Cloud.Tsdv.Loader
 {
     public class ExcelBuilder : IExcelBuilder
     {
