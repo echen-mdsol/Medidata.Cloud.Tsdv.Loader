@@ -1,0 +1,25 @@
+using System;
+using DocumentFormat.OpenXml.Spreadsheet;
+
+namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
+{
+    internal class DateTimeConverter : CellTypeValueBaseConverter<DateTime>
+    {
+        public DateTimeConverter()
+            : base(CellValues.Date)
+        {
+        }
+
+        protected override string GetCellValueImpl(DateTime csharpValue)
+        {
+            return csharpValue.ToString();
+        }
+
+        protected override DateTime GetCSharpValueImpl(string cellValue)
+        {
+            DateTime value;
+            DateTime.TryParse(cellValue, out value);
+            return value;
+        }
+    }
+}
