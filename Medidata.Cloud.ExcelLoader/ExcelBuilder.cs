@@ -53,7 +53,7 @@ namespace Medidata.Cloud.ExcelLoader
             if (_sheetBuilders.Any(x => x.SheetName == sheetName))
                 throw new ArgumentException("Duplicate sheet name '" + sheetName + "'", "sheetName");
 
-            var colNames = columnNames ?? GetPropertyNames<T>();
+            var colNames = GetPropertyNames<T>(columnNames);
             var worksheetBuilder = new SheetBuilder<T>
             {
                 SheetName = sheetName,
@@ -65,9 +65,9 @@ namespace Medidata.Cloud.ExcelLoader
             return worksheetBuilder;
         }
 
-        private string[] GetPropertyNames<T>()
+        protected virtual string[] GetPropertyNames<T>(string[] columnNames)
         {
-            return typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+            return columnNames ?? typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
     }
 }
