@@ -3,7 +3,7 @@ using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
-using Medidata.Cloud.Tsdv.Loader.CellValueConverters;
+using Medidata.Cloud.Tsdv.Loader.CellTypeConverters;
 using Medidata.Cloud.Tsdv.Loader.Extensions;
 
 namespace Medidata.Cloud.Tsdv.Loader.Parsers

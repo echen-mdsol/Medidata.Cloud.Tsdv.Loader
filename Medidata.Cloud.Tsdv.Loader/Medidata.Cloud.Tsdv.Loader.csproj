@@ -89,22 +89,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CellValueConverters\BooleanConverter.cs" />
-    <Compile Include="CellValueConverters\CellTypeConverterManager.cs" />
+    <Compile Include="CellTypeConverters\BooleanConverter.cs" />
+    <Compile Include="CellTypeConverters\CellTypeConverterManager.cs" />
     <Compile Include="Builders\CoverWorksheetBuilder.cs" />
-    <Compile Include="CellValueConverters\CellValueBaseConverter.cs" />
-    <Compile Include="CellValueConverters\DateTimeConverter.cs" />
-    <Compile Include="CellValueConverters\DecimalConverter.cs" />
-    <Compile Include="CellValueConverters\DoubleConverter.cs" />
-    <Compile Include="CellValueConverters\FloatConverter.cs" />
-    <Compile Include="CellValueConverters\ICellValueConverter.cs" />
-    <Compile Include="CellValueConverters\InlineStringConverter.cs" />
-    <Compile Include="CellValueConverters\IntConverter.cs" />
-    <Compile Include="CellValueConverters\LongConverter.cs" />
-    <Compile Include="CellValueConverters\NullableBooleanConverter.cs" />
-    <Compile Include="CellValueConverters\NullableDateTimeConverter.cs" />
-    <Compile Include="CellValueConverters\NumberConverter.cs" />
-    <Compile Include="CellValueConverters\StringConverter.cs" />
+    <Compile Include="CellTypeConverters\CellValueBaseConverter.cs" />
+    <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
+    <Compile Include="CellTypeConverters\DecimalConverter.cs" />
+    <Compile Include="CellTypeConverters\DoubleConverter.cs" />
+    <Compile Include="CellTypeConverters\FloatConverter.cs" />
+    <Compile Include="CellTypeConverters\ICellValueConverter.cs" />
+    <Compile Include="CellTypeConverters\InlineStringConverter.cs" />
+    <Compile Include="CellTypeConverters\IntConverter.cs" />
+    <Compile Include="CellTypeConverters\LongConverter.cs" />
+    <Compile Include="CellTypeConverters\NullableBooleanConverter.cs" />
+    <Compile Include="CellTypeConverters\NullableDateTimeConverter.cs" />
+    <Compile Include="CellTypeConverters\NumberConverter.cs" />
+    <Compile Include="CellTypeConverters\StringConverter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Parsers\ISpreadsheetParser.cs" />
     <Compile Include="Parsers\IWorksheetParser.cs" />

@@ -1,4 +1,4 @@
-namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
+namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
     internal class LongConverter : NumberConverter<long>
     {

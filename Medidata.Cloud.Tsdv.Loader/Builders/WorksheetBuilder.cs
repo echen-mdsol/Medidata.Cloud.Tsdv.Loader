@@ -4,7 +4,7 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
-using Medidata.Cloud.Tsdv.Loader.CellValueConverters;
+using Medidata.Cloud.Tsdv.Loader.CellTypeConverters;
 using Medidata.Cloud.Tsdv.Loader.Extensions;
 using Medidata.Cloud.Tsdv.Loader.Helpers;
 
