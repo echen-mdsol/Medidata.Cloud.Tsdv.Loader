@@ -40,7 +40,7 @@ namespace Medidata.Cloud.Tsdv.Loader
             foreach (var prop in properties)
             {
                 var cell = cells[index];
-                var propValue = _converter.GetCSharpValue(prop.PropertyType, cell.DataType, cell.CellValue.InnerText);
+                var propValue = _converter.GetCSharpValue(prop.PropertyType, cell.DataType, cell.InnerText);
                 expando.Add(prop.Name, propValue);
                 index ++;
             }

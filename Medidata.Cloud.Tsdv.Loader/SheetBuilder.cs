@@ -30,7 +30,7 @@ namespace Medidata.Cloud.Tsdv.Loader
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = CreateWorksheet();
 
-            var sheetId = (uint) (1 + sheets.Count());
+            var sheetId = (uint)(1 + sheets.Count());
             var sheet = new Sheet
             {
                 Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
@@ -62,7 +62,14 @@ namespace Medidata.Cloud.Tsdv.Loader
                 var propValue = GetPropertyValue(property, model);
                 _converter.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
-                cell.CellValue = new CellValue(cellValue);
+                if (cellType == CellValues.InlineString)
+                {
+                    cell.InlineString = new InlineString { Text = new Text(cellValue) };
+                }
+                else
+                {
+                    cell.CellValue = new CellValue(cellValue);
+                }
             }
             return cell;
         }
