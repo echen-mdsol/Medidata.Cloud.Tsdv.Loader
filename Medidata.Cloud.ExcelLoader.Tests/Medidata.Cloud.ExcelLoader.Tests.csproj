@@ -53,10 +53,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Helpers\FakeInterfaceClass.cs" />
-    <Compile Include="Helpers\FakeModel.cs" />
-    <Compile Include="Helpers\FakeNotImplClass.cs" />
-    <Compile Include="Helpers\IFakeInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
