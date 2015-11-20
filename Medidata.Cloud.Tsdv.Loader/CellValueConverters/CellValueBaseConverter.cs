@@ -16,7 +16,7 @@ namespace Medidata.Cloud.Tsdv.Loader.CellValueConverters
 
         public string GetCellValue(object csharpValue)
         {
-            return csharpValue == null ? null : GetCellValueImpl((T)csharpValue);
+            return csharpValue == null ? null : GetCellValueImpl((T) csharpValue);
         }
 
         public object GetCSharpValue(string cellValue)

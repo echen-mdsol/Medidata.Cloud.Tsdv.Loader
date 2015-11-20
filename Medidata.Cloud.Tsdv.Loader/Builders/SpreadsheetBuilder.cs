@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml;
@@ -11,23 +10,16 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
     public class SpreadsheetBuilder : ISpreadsheetBuilder
     {
-        private readonly IDictionary<string, IWorksheetBuilder> _sheets =
-            new Dictionary<string, IWorksheetBuilder>(StringComparer.OrdinalIgnoreCase);
+        private readonly IList<IWorksheetBuilder> _sheetBuilders = new List<IWorksheetBuilder>();
 
-        private bool _hasHeaderRow;
-
-        public IList<object> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow = true, string[] columnNames = null)
-            where T : class
+        public IList<object> EnsureWorksheet<T>(string sheetName, string[] columnNames) where T : class
         {
-            _hasHeaderRow = hasHeaderRow;
-            IWorksheetBuilder worksheetBuilder;
-            if (!_sheets.TryGetValue(sheetName, out worksheetBuilder))
-            {
-                var colNames = columnNames ?? GetPropertyNames<T>();
-                worksheetBuilder = new WorksheetBuilder<T> { ColumnNames = colNames };
-                _sheets.Add(sheetName, worksheetBuilder);
-            }
-            return worksheetBuilder;
+            return EnsureWorksheet<T>(sheetName, columnNames != null, columnNames);
+        }
+
+        public IList<object> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow) where T : class
+        {
+            return EnsureWorksheet<T>(sheetName, hasHeaderRow, null);
         }
 
         public void Save(Stream outStream)
@@ -37,21 +29,39 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 var workbookpart = doc.AddWorkbookPart();
                 workbookpart.Workbook = new Workbook();
 
-                new CoverWorksheetBuilder().AppendWorksheet(doc, false, "Cover");
+                var coverBuilder = new CoverWorksheetBuilder();
+                coverBuilder.AttachTo(doc);
 
-                foreach (var kvp in _sheets)
+                foreach (var sheet in _sheetBuilders)
                 {
-                    var worksheetBuilder = kvp.Value;
-                    worksheetBuilder.AppendWorksheet(doc, _hasHeaderRow, kvp.Key);
+                    sheet.AttachTo(doc);
                 }
 
                 workbookpart.Workbook.Save();
             }
         }
 
+        private IList<object> EnsureWorksheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
+            where T : class
+        {
+            var worksheetBuilder = _sheetBuilders.FirstOrDefault(x => x.SheetName != sheetName);
+            if (worksheetBuilder == null)
+            {
+                var colNames = columnNames ?? GetPropertyNames<T>();
+                worksheetBuilder = new WorksheetBuilder<T>
+                {
+                    SheetName = sheetName,
+                    HasHeaderRow = hasHeaderRow,
+                    ColumnNames = colNames
+                };
+                _sheetBuilders.Add(worksheetBuilder);
+            }
+            return worksheetBuilder;
+        }
+
         private string[] GetPropertyNames<T>()
         {
-            return typeof(T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
+            return typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
     }
 }

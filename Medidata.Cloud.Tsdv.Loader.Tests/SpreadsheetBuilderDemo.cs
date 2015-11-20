@@ -17,12 +17,12 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
         {
             var ssBuilder = new SpreadsheetBuilder();
 
-            var sheet = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet1");
+            var sheet = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet1", true);
             sheet.Add(new {Name = "xxx", IsAdult = false});
             sheet.Add(new {Name = "yyy"});
             sheet.Add(new {Name = "zzz"});
 
-            var sheet2 = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet2", true, new[] {"tsdv_Col1", "tsdv_Col2"});
+            var sheet2 = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet2", new[] {"tsdv_Col1", "tsdv_Col2"});
             sheet2.Add(new {Name = "qqq", Birthday = DateTime.MaxValue, Age = 34, Height = 1.5});
             sheet2.Add(new FakeInterfaceClass {Name = "111", Salary = (decimal) 1234.324});
             sheet2.Add(new FakeInterfaceClass {Name = "ccc", DateOfMarriage = DateTime.Now});

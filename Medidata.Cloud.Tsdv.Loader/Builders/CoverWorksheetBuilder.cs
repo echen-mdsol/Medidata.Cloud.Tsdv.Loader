@@ -10,9 +10,18 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
     {
         private static readonly object CoverSheetLock = new object();
         private WorksheetPart _coverWorksheetPart;
-        public string[] ColumnNames { get; set; }
 
-        public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
+        public CoverWorksheetBuilder()
+        {
+            HasHeaderRow = false;
+            ColumnNames = null;
+        }
+
+        public string SheetName { get; set; }
+        public bool HasHeaderRow { get; private set; }
+        public string[] ColumnNames { get; private set; }
+
+        public void AttachTo(SpreadsheetDocument doc)
         {
             return;
             var coverWorkbookPart = GetCoverWorksheetPart();
@@ -25,9 +34,9 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
             var sheets = doc.WorkbookPart.Workbook.GetFirstChild<Sheets>();
             var copiedSheet = new Sheet
             {
-                Name = sheetName,
+                Name = SheetName,
                 Id = doc.WorkbookPart.GetIdOfPart(clonedSheetPart),
-                SheetId = (uint)sheets.ChildElements.Count + 1
+                SheetId = (uint) sheets.ChildElements.Count + 1
             };
             sheets.Append(copiedSheet);
             doc.WorkbookPart.Workbook.Save();
@@ -45,7 +54,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                     ms.Write(sheetBytes, 0, sheetBytes.Length);
                     var ss = SpreadsheetDocument.Open(ms, false);
                     var coverSheetId = ss.WorkbookPart.Workbook.Descendants<Sheet>().First().Id;
-                    _coverWorksheetPart = (WorksheetPart)ss.WorkbookPart.GetPartById(coverSheetId);
+                    _coverWorksheetPart = (WorksheetPart) ss.WorkbookPart.GetPartById(coverSheetId);
                 }
             }
 

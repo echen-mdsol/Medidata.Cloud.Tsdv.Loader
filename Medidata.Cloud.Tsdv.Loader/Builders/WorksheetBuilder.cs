@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
@@ -11,37 +10,37 @@ using Medidata.Cloud.Tsdv.Loader.Helpers;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    public class WorksheetBuilder<T> : List<object>, IWorksheetBuilder where T : class
+    internal class WorksheetBuilder<T> : List<object>, IWorksheetBuilder where T : class
     {
         private readonly CellTypeConverterManager _converterManager;
-        private bool _hasHeaderRow;
 
         public WorksheetBuilder()
         {
             _converterManager = new CellTypeConverterManager();
         }
 
+        public bool HasHeaderRow { get; set; }
+        public string SheetName { get; set; }
+
         public string[] ColumnNames { get; set; }
 
-        public void AppendWorksheet(SpreadsheetDocument doc, bool hasHeaderRow, string sheetName)
+        public void AttachTo(SpreadsheetDocument doc)
         {
-            _hasHeaderRow = hasHeaderRow;
-
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
 
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = CreateWorksheet();
 
-            var sheetId = (uint)(1 + sheets.Count());
+            var sheetId = (uint) (1 + sheets.Count());
             var sheet = new Sheet
             {
                 Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
                 SheetId = sheetId,
-                Name = sheetName
+                Name = SheetName
             };
 
             // Use this attribute to retrieve the worksheet.
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
+            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(SheetName);
             sheet.SetAttribute(attribute);
 
             sheets.Append(sheet);
@@ -111,7 +110,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
         private SheetData GetSheetData()
         {
             var sheetData = new SheetData();
-            if (_hasHeaderRow)
+            if (HasHeaderRow)
             {
                 var headerRow = CreateHeaderRow();
                 sheetData.Append(headerRow);

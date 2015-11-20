@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Medidata.Cloud.Tsdv.Loader.Helpers;
@@ -22,7 +21,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Parsers
                 .Where(x => x.HasAttributes)
                 .First(x => x.GetAttributes().Contains(attribute));
             var id = sheet.Id;
-            var worksheetPart = (WorksheetPart)_doc.WorkbookPart.GetPartById(id);
+            var worksheetPart = (WorksheetPart) _doc.WorkbookPart.GetPartById(id);
             var worksheet = worksheetPart.Worksheet;
 
             var worksheetParser = new WorksheetParser<T>();
