@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    internal interface IWorksheetBuilder : IList<object>
+    internal interface ISheetBuilder : IList<object>
     {
         string SheetName { get; }
         bool HasHeaderRow { get; }

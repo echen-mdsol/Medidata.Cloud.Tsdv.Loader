@@ -90,14 +90,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
-    <Compile Include="CellTypeConverters\CellTypeConverterManager.cs" />
-    <Compile Include="Builders\CoverWorksheetBuilder.cs" />
-    <Compile Include="CellTypeConverters\CellValueBaseConverter.cs" />
+    <Compile Include="CellTypeConverters\CellTypeValueConverterManager.cs" />
+    <Compile Include="Builders\CoverSheetBuilder.cs" />
+    <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />
     <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\DecimalConverter.cs" />
     <Compile Include="CellTypeConverters\DoubleConverter.cs" />
     <Compile Include="CellTypeConverters\FloatConverter.cs" />
-    <Compile Include="CellTypeConverters\ICellValueConverter.cs" />
+    <Compile Include="CellTypeConverters\ICellTypeValueConverter.cs" />
     <Compile Include="CellTypeConverters\InlineStringConverter.cs" />
     <Compile Include="CellTypeConverters\IntConverter.cs" />
     <Compile Include="CellTypeConverters\LongConverter.cs" />
@@ -106,16 +106,16 @@
     <Compile Include="CellTypeConverters\NumberConverter.cs" />
     <Compile Include="CellTypeConverters\StringConverter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Parsers\ISpreadsheetParser.cs" />
-    <Compile Include="Parsers\IWorksheetParser.cs" />
+    <Compile Include="Parsers\IExcelParser.cs" />
+    <Compile Include="Parsers\ISheetParser.cs" />
     <Compile Include="Models\BlockPlanSettingModel.cs" />
     <Compile Include="Models\CustomTierModel.cs" />
     <Compile Include="Models\ExcludeStatusModel.cs" />
     <Compile Include="Models\RuleModel.cs" />
     <Compile Include="Models\TierFormModel.cs" />
     <Compile Include="Models\BlockPlanModel.cs" />
-    <Compile Include="Builders\ISpreadsheetBuilder.cs" />
-    <Compile Include="Builders\IWorksheetBuilder.cs" />
+    <Compile Include="Builders\IExcelBuilder.cs" />
+    <Compile Include="Builders\ISheetBuilder.cs" />
     <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.Designer.cs">
@@ -138,10 +138,10 @@
     <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="Validation\ValidationWarning.cs" />
-    <Compile Include="Builders\SpreadsheetBuilder.cs" />
-    <Compile Include="Parsers\SpreadsheetParser.cs" />
-    <Compile Include="Builders\WorksheetBuilder.cs" />
-    <Compile Include="Parsers\WorksheetParser.cs" />
+    <Compile Include="Builders\ExcelBuilder.cs" />
+    <Compile Include="Parsers\ExcelParser.cs" />
+    <Compile Include="Builders\SheetBuilder.cs" />
+    <Compile Include="Parsers\SheetParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Medidata.Cloud.Tsdv.Loader.nuspec" />

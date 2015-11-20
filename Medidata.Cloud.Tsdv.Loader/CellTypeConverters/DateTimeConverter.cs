@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    internal class DateTimeConverter : CellValueBaseConverter<DateTime>
+    internal class DateTimeConverter : CellTypeValueBaseConverter<DateTime>
     {
         public DateTimeConverter()
             : base(CellValues.Date)

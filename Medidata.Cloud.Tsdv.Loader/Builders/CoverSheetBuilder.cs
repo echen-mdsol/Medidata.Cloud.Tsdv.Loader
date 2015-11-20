@@ -6,12 +6,12 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    public class CoverWorksheetBuilder : List<object>, IWorksheetBuilder
+    public class CoverSheetBuilder : List<object>, ISheetBuilder
     {
         private static readonly object CoverSheetLock = new object();
         private WorksheetPart _coverWorksheetPart;
 
-        public CoverWorksheetBuilder()
+        public CoverSheetBuilder()
         {
             HasHeaderRow = false;
             ColumnNames = null;

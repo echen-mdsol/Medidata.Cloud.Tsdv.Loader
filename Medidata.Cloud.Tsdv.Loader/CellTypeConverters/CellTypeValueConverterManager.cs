@@ -4,17 +4,17 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    internal class CellTypeConverterManager
+    internal class CellTypeValueConverterManager
     {
-        private readonly ICellValueConverter[] _converters;
+        private readonly ICellTypeValueConverter[] _converters;
 
-        public CellTypeConverterManager() : this(null)
+        public CellTypeValueConverterManager() : this(null)
         {
         }
 
-        public CellTypeConverterManager(ICellValueConverter[] customConverters)
+        public CellTypeValueConverterManager(ICellTypeValueConverter[] customConverters)
         {
-            _converters = new ICellValueConverter[]
+            _converters = new ICellTypeValueConverter[]
             {
                 new BooleanConverter(),
                 new NullableBooleanConverter(),
@@ -42,10 +42,10 @@ namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
             cellValue = converter.GetCellValue(value);
         }
 
-        public void GetCSharpValue(CellValues cellType, string cellValue, Type type, out object value)
+        public object GetCSharpValue(Type type, CellValues cellType, string cellValue)
         {
             var converter = _converters.First(c => c.CSharpType == type && c.CellType == cellType);
-            value = converter.GetCSharpValue(cellValue);
+            return converter.GetCSharpValue(cellValue);
         }
     }
 }

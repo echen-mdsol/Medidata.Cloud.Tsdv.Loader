@@ -10,13 +10,13 @@ using Medidata.Cloud.Tsdv.Loader.Helpers;
 
 namespace Medidata.Cloud.Tsdv.Loader.Builders
 {
-    internal class WorksheetBuilder<T> : List<object>, IWorksheetBuilder where T : class
+    internal class SheetBuilder<T> : List<object>, ISheetBuilder where T : class
     {
-        private readonly CellTypeConverterManager _converterManager;
+        private readonly CellTypeValueConverterManager _converter;
 
-        public WorksheetBuilder()
+        public SheetBuilder()
         {
-            _converterManager = new CellTypeConverterManager();
+            _converter = new CellTypeValueConverterManager();
         }
 
         public bool HasHeaderRow { get; set; }
@@ -61,7 +61,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 CellValues cellType;
                 string cellValue;
                 var propValue = GetPropertyValue(property, model);
-                _converterManager.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
+                _converter.GetCellTypeAndValue(property.PropertyType, propValue, out cellType, out cellValue);
                 cell.DataType = cellType;
                 cell.CellValue = new CellValue(cellValue);
             }

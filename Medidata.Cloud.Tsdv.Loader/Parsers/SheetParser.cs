@@ -8,27 +8,27 @@ using Medidata.Cloud.Tsdv.Loader.Extensions;
 
 namespace Medidata.Cloud.Tsdv.Loader.Parsers
 {
-    public class WorksheetParser<T> : IWorksheetParser<T> where T : class
+    internal class SheetParser<T> : ISheetParser<T> where T : class
     {
-        private readonly CellTypeConverterManager _converterManager;
-        private bool _hasHeaderRow;
+        private readonly CellTypeValueConverterManager _converter;
         private Worksheet _worksheet;
 
-        public WorksheetParser()
+        public SheetParser()
         {
-            _converterManager = new CellTypeConverterManager();
+            _converter = new CellTypeValueConverterManager();
         }
+
+        public bool HasHeaderRow { get; set; }
 
         public IEnumerable<T> GetObjects()
         {
-            var rows = _worksheet.Descendants<Row>().Skip(_hasHeaderRow ? 1 : 0);
+            var rows = _worksheet.Descendants<Row>().Skip(HasHeaderRow ? 1 : 0);
             return rows.Select(ParseFromRow);
         }
 
-        public void Load(Worksheet worksheet, bool hasHeaderRow = true)
+        public void Load(Worksheet worksheet)
         {
             _worksheet = worksheet;
-            _hasHeaderRow = hasHeaderRow;
         }
 
         private T ParseFromRow(Row row)
@@ -40,9 +40,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Parsers
             foreach (var prop in properties)
             {
                 var cell = cells[index];
-                object propValue;
-                _converterManager.GetCSharpValue(cell.DataType, cell.CellValue.InnerText, prop.PropertyType,
-                    out propValue);
+                var propValue = _converter.GetCSharpValue(prop.PropertyType, cell.DataType, cell.CellValue.InnerText);
                 expando.Add(prop.Name, propValue);
                 index ++;
             }

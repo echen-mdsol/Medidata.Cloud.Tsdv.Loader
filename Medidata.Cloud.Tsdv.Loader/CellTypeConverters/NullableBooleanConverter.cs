@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    internal class NullableBooleanConverter : CellValueBaseConverter<bool?>
+    internal class NullableBooleanConverter : CellTypeValueBaseConverter<bool?>
     {
         public NullableBooleanConverter()
             : base(CellValues.Boolean)

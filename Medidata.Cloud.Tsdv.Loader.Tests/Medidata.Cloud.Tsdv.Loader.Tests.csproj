@@ -119,7 +119,7 @@
     <Compile Include="Helpers\IFakeInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DefaultSequentialRuleValidatorTests.cs" />
-    <Compile Include="SpreadsheetBuilderDemo.cs" />
+    <Compile Include="ExcelBuilderParserDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

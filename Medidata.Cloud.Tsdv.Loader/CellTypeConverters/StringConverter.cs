@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    internal class StringConverter : CellValueBaseConverter<string>
+    internal class StringConverter : CellTypeValueBaseConverter<string>
     {
         public StringConverter() : base(CellValues.String)
         {

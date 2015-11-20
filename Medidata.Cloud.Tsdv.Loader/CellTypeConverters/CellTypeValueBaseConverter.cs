@@ -3,9 +3,9 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    internal abstract class CellValueBaseConverter<T> : ICellValueConverter
+    internal abstract class CellTypeValueBaseConverter<T> : ICellTypeValueConverter
     {
-        protected CellValueBaseConverter(CellValues cellType)
+        protected CellTypeValueBaseConverter(CellValues cellType)
         {
             CellType = cellType;
             CSharpType = typeof (T);

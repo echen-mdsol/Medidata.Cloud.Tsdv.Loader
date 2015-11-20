@@ -7,33 +7,35 @@ using Medidata.Cloud.Tsdv.Loader.Helpers;
 
 namespace Medidata.Cloud.Tsdv.Loader.Parsers
 {
-    public class SpreadsheetParser : ISpreadsheetParser
+    public class ExcelParser : IExcelParser
     {
         private SpreadsheetDocument _doc;
-        private bool _hasHeaderRow;
 
-        public IEnumerable<T> RetrieveObjectsFromSheet<T>(string sheetName) where T : class
+        public IEnumerable<T> GetObjects<T>(string sheetName, bool hasHeaderRow = true) where T : class
         {
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
-
-            var sheet = _doc.WorkbookPart.Workbook
-                .Descendants<Sheet>()
-                .Where(x => x.HasAttributes)
-                .First(x => x.GetAttributes().Contains(attribute));
-            var id = sheet.Id;
-            var worksheetPart = (WorksheetPart) _doc.WorkbookPart.GetPartById(id);
-            var worksheet = worksheetPart.Worksheet;
-
-            var worksheetParser = new WorksheetParser<T>();
-            worksheetParser.Load(worksheet, _hasHeaderRow);
+            var worksheet = FindWorksheet(_doc, sheetName);
+            var worksheetParser = new SheetParser<T> {HasHeaderRow = hasHeaderRow};
+            worksheetParser.Load(worksheet);
 
             return worksheetParser.GetObjects();
         }
 
-        public void Load(Stream stream, bool hasHeaderRow = true)
+        private Worksheet FindWorksheet(SpreadsheetDocument doc, string sheetName)
+        {
+            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
+
+            var sheet = doc.WorkbookPart.Workbook
+                .Descendants<Sheet>()
+                .Where(x => x.HasAttributes)
+                .First(x => x.GetAttributes().Contains(attribute));
+            var id = sheet.Id;
+            var worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(id);
+            return worksheetPart.Worksheet;
+        }
+
+        public void Load(Stream stream)
         {
             _doc = SpreadsheetDocument.Open(stream, false);
-            _hasHeaderRow = hasHeaderRow;
         }
 
         public void Dispose()

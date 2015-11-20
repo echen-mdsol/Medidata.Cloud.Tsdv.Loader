@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.Tsdv.Loader.CellTypeConverters
 {
-    public interface ICellValueConverter
+    public interface ICellTypeValueConverter
     {
         CellValues CellType { get; }
         Type CSharpType { get; }

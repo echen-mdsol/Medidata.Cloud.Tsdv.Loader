@@ -10,19 +10,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Medidata.Cloud.Tsdv.Loader.Tests
 {
     [TestClass]
-    public class SpreadsheetBuilderDemo
+    public class ExcelBuilderParserDemo
     {
         [TestMethod]
         public void CreateSpreadsheet()
         {
-            var ssBuilder = new SpreadsheetBuilder();
+            var builder = new ExcelBuilder();
 
-            var sheet = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet1", true);
+            var sheet = builder.AddSheet<IFakeInterface>("MySheet1", true);
             sheet.Add(new {Name = "xxx", IsAdult = false});
             sheet.Add(new {Name = "yyy"});
             sheet.Add(new {Name = "zzz"});
 
-            var sheet2 = ssBuilder.EnsureWorksheet<IFakeInterface>("MySheet2", new[] {"tsdv_Col1", "tsdv_Col2"});
+            var sheet2 = builder.AddSheet<IFakeInterface>("MySheet2", new[] {"tsdv_Col1", "tsdv_Col2"});
             sheet2.Add(new {Name = "qqq", Birthday = DateTime.MaxValue, Age = 34, Height = 1.5});
             sheet2.Add(new FakeInterfaceClass {Name = "111", Salary = (decimal) 1234.324});
             sheet2.Add(new FakeInterfaceClass {Name = "ccc", DateOfMarriage = DateTime.Now});
@@ -31,7 +31,7 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
             File.Delete(filePath);
             using (var fs = new FileStream(filePath, FileMode.Create))
             {
-                ssBuilder.Save(fs);
+                builder.Save(fs);
             }
 
             Assert.IsTrue(File.Exists(filePath));
@@ -45,13 +45,13 @@ namespace Medidata.Cloud.Tsdv.Loader.Tests
             IList<IFakeInterface> objectsFromSheet1;
             IList<IFakeInterface> objectsFromSheet2;
             using (var fs = new FileStream(filePath, FileMode.Open))
-            using (var ssParser = new SpreadsheetParser())
+            using (var parser = new ExcelParser())
             {
-                ssParser.Load(fs);
+                parser.Load(fs);
 
-                objectsFromSheet1 = ssParser.RetrieveObjectsFromSheet<IFakeInterface>("MySheet1").ToList();
+                objectsFromSheet1 = parser.GetObjects<IFakeInterface>("MySheet1").ToList();
 
-                objectsFromSheet2 = ssParser.RetrieveObjectsFromSheet<IFakeInterface>("MySheet2").ToList();
+                objectsFromSheet2 = parser.GetObjects<IFakeInterface>("MySheet2").ToList();
             }
 
             Assert.IsNotNull(objectsFromSheet1);
