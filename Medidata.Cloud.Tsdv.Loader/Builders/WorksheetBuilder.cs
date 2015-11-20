@@ -117,12 +117,8 @@ namespace Medidata.Cloud.Tsdv.Loader.Builders
                 sheetData.Append(headerRow);
             }
 
-            foreach (var element in this)
-            {
-                T model = element.ActLike<T>();
-                var row = CreateRow(model);
-                sheetData.Append(row);
-            }
+            var rows = this.Select(x => (x as T) ?? x.ActLike<T>()).Select(CreateRow);
+            sheetData.Append(rows);
 
             return sheetData;
         }
