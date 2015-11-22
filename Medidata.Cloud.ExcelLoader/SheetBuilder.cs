@@ -4,12 +4,11 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
-using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal class SheetBuilder<T> : List<object>, ISheetBuilder where T : class
+    internal class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 
