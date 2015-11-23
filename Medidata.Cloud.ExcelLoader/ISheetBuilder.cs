@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace Medidata.Cloud.ExcelLoader

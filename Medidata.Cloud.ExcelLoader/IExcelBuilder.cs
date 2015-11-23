@@ -7,7 +7,7 @@ namespace Medidata.Cloud.ExcelLoader
     {
         IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class;
         IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class;
-        IList<T> GetSheet<T>(string sheetName) where T: class;
+        IList<T> GetSheet<T>(string sheetName) where T : class;
         void Save(Stream outStream);
     }
 }

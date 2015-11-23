@@ -20,19 +20,19 @@ namespace Medidata.Cloud.ExcelLoader
             _converterFactory = converterFactory;
         }
 
-        public IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
         {
             return AddSheet<T>(sheetName, columnNames != null, columnNames);
         }
 
-        public IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
         {
             return AddSheet<T>(sheetName, hasHeaderRow, null);
         }
 
-        public IList<T> GetSheet<T>(string sheetName) where T: class
+        public virtual IList<T> GetSheet<T>(string sheetName) where T : class
         {
-            return (IList<T>)_sheetBuilders.First(x => x.SheetName != sheetName);
+            return (IList<T>) _sheetBuilders.First(x => x.SheetName != sheetName);
         }
 
         public void Save(Stream outStream)

@@ -121,7 +121,7 @@ namespace Medidata.Cloud.ExcelLoader
                 sheetData.Append(headerRow);
             }
 
-            var rows = this.Select(x => (x as T) ?? x.ActLike<T>()).Select(CreateRow);
+            var rows = this.Select(x => x ?? x.ActLike<T>()).Select(CreateRow);
             sheetData.Append(rows);
 
             return sheetData;
