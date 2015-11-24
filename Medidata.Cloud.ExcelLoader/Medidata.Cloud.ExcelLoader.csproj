@@ -46,14 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
-    <Compile Include="CellTypeConverters\CellTypeValueConverterFactory.cs" />
+    <Compile Include="CellTypeValueConverterFactory.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />
     <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\DecimalConverter.cs" />
     <Compile Include="CellTypeConverters\DoubleConverter.cs" />
     <Compile Include="CellTypeConverters\FloatConverter.cs" />
     <Compile Include="CellTypeConverters\ICellTypeValueConverter.cs" />
-    <Compile Include="CellTypeConverters\ICellTypeValueConverterFactory.cs" />
+    <Compile Include="ICellTypeValueConverterFactory.cs" />
     <Compile Include="CellTypeConverters\IntConverter.cs" />
     <Compile Include="CellTypeConverters\LongConverter.cs" />
     <Compile Include="CellTypeConverters\NullableBooleanConverter.cs" />

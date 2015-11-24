@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
+using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 
-namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
+namespace Medidata.Cloud.ExcelLoader
 {
-    public class CellTypeValueConverterFactory: ICellTypeValueConverterFactory
+    public class CellTypeValueConverterFactory : ICellTypeValueConverterFactory
     {
         private readonly IDictionary<Type, ICellTypeValueConverter> _converters;
 

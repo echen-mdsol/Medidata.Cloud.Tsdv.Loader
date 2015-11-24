@@ -5,7 +5,6 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
@@ -21,19 +20,19 @@ namespace Medidata.Cloud.ExcelLoader
             _converterFactory = converterFactory;
         }
 
-        public IList<object> AddSheet<T>(string sheetName, string[] columnNames) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
         {
             return AddSheet<T>(sheetName, columnNames != null, columnNames);
         }
 
-        public IList<object> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
         {
             return AddSheet<T>(sheetName, hasHeaderRow, null);
         }
 
-        public IList<object> GetSheet(string sheetName)
+        public virtual IList<T> GetSheet<T>(string sheetName) where T : class
         {
-            return _sheetBuilders.First(x => x.SheetName != sheetName);
+            return (IList<T>) _sheetBuilders.First(x => x.SheetName != sheetName);
         }
 
         public void Save(Stream outStream)
@@ -54,7 +53,7 @@ namespace Medidata.Cloud.ExcelLoader
             }
         }
 
-        private IList<object> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
+        private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
             where T : class
         {
             if (_sheetBuilders.Any(x => x.SheetName == sheetName))
@@ -79,7 +78,6 @@ namespace Medidata.Cloud.ExcelLoader
 
         protected virtual void AddCoverSheet(SpreadsheetDocument doc)
         {
-            
         }
     }
 }

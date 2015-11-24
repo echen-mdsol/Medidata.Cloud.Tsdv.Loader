@@ -4,7 +4,6 @@ using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
-using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader

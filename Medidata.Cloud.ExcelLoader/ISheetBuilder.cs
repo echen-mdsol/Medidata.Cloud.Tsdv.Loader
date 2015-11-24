@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using System.Collections;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    public interface ISheetBuilder : IList<object>
+    public interface ISheetBuilder : IList
     {
         string SheetName { get; }
         bool HasHeaderRow { get; }

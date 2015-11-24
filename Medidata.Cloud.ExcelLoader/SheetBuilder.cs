@@ -4,12 +4,11 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
-using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal class SheetBuilder<T> : List<object>, ISheetBuilder where T : class
+    internal class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 
@@ -122,7 +121,7 @@ namespace Medidata.Cloud.ExcelLoader
                 sheetData.Append(headerRow);
             }
 
-            var rows = this.Select(x => (x as T) ?? x.ActLike<T>()).Select(CreateRow);
+            var rows = this.Select(x => x ?? x.ActLike<T>()).Select(CreateRow);
             sheetData.Append(rows);
 
             return sheetData;
