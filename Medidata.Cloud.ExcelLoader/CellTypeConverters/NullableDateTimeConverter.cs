@@ -14,9 +14,6 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 
         protected override string GetCellValueImpl(DateTime? csharpValue)
         {
-            //return csharpValue.HasValue
-            //    ? csharpValue.Value.ToOADate().ToString(CultureInfo.InvariantCulture)
-            //    : string.Empty;
             return csharpValue.HasValue ? csharpValue.Value.ToString("MM/dd/yyyy") : string.Empty;
         }
 

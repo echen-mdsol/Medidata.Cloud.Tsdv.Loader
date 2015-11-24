@@ -32,7 +32,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
                                             /*Dec*/ @"((?!0)|[-+]|(?=0+\.))(\d*\.)?\d+(e\d+)?" +")$");
            return isNumericRegex.IsMatch(value);
         }
-        //protected abstract T GetCellValueImpl(T csharpValue);
+        
         protected virtual string GetCellValueImpl(T csharpValue)
         {
             return csharpValue.ToString();
