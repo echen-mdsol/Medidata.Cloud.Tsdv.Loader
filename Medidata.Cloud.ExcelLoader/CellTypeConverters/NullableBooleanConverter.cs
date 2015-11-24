@@ -1,3 +1,5 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
@@ -11,7 +13,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 
         protected override string GetCellValueImpl(bool? csharpValue)
         {
-            return csharpValue.HasValue && csharpValue.Value ? "1" : "0";
+            return csharpValue.HasValue ? BooleanValue.FromBoolean(csharpValue.Value) : BooleanValue.FromBoolean(false);
         }
 
         protected override bool? GetCSharpValueImpl(string cellValue)

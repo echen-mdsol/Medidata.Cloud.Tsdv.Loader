@@ -30,19 +30,25 @@ namespace Medidata.Cloud.ExcelLoader
 
         public void Save(Stream outStream)
         {
-            using (var doc = SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook))
+            using (var doc = CreateDocument(outStream))
             {
-                var workbookpart = doc.AddWorkbookPart();
-                workbookpart.Workbook = new Workbook();
-
-                AddCoverSheet(doc);
+                WorkbookPart workbookPart;
+                if (doc.WorkbookPart == null)
+                {
+                    workbookPart = doc.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+                }
+                else
+                {
+                    workbookPart = doc.WorkbookPart;
+                }
 
                 foreach (var sheet in _sheetBuilders)
                 {
                     sheet.AttachTo(doc);
                 }
 
-                workbookpart.Workbook.Save();
+                workbookPart.Workbook.Save();
             }
         }
 
@@ -69,9 +75,9 @@ namespace Medidata.Cloud.ExcelLoader
             return columnNames ?? typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
         }
 
-        protected virtual void AddCoverSheet(SpreadsheetDocument doc)
+        protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
         {
-            
+            return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
         }
     }
 }

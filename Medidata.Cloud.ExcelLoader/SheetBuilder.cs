@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
@@ -26,10 +28,10 @@ namespace Medidata.Cloud.ExcelLoader
         public void AttachTo(SpreadsheetDocument doc)
         {
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
-
+            
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = CreateWorksheet();
-
+            
             var sheetId = (uint) (1 + sheets.Count());
             var sheet = new Sheet
             {
@@ -48,8 +50,41 @@ namespace Medidata.Cloud.ExcelLoader
         private Worksheet CreateWorksheet()
         {
             var sheetData = GetSheetData();
-            var worksheet = new Worksheet(sheetData);
+            var columns = GetColumns(sheetData);
+            Worksheet worksheet;
+            if (columns != null && columns.Any())
+            {
+                worksheet = new Worksheet(columns, sheetData);
+            }
+            else
+            {
+                worksheet = new Worksheet(sheetData);
+            }
+            
             return worksheet;
+        }
+
+        private Columns GetColumns(SheetData sheetData)
+        {
+            int numberOfColumns = 0;
+            if (sheetData.Descendants<Row>().Any())
+            {
+                numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
+            }
+            Columns cs = new Columns();
+            for (int i = 0; i < numberOfColumns; i++)
+            {
+                Column c = new Column()
+                {
+                    Min = (uint)(i+1),
+                    Max = (uint)(i+1),
+                    Width = 20D,
+                    CustomWidth = true
+                };
+                cs.Append(c);
+            }
+            return cs;
+
         }
 
         private Cell CreateCell(T model, PropertyDescriptor property)
@@ -69,6 +104,17 @@ namespace Medidata.Cloud.ExcelLoader
                 else
                 {
                     cell.CellValue = new CellValue(cellValue);
+                    //var t = property.PropertyType;
+                    //if (t == typeof (DateTime))
+                    //{
+                    //    cell.StyleIndex = 164;    
+                    //}
+                    //if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof (Nullable<>) &&
+                    //    Nullable.GetUnderlyingType(t) == typeof (DateTime))
+                    //{
+                    //    cell.StyleIndex = 164;    
+                    //}
+                    
                 }
             }
             return cell;
@@ -122,10 +168,12 @@ namespace Medidata.Cloud.ExcelLoader
                 sheetData.Append(headerRow);
             }
 
+            
             var rows = this.Select(x => (x as T) ?? x.ActLike<T>()).Select(CreateRow);
             sheetData.Append(rows);
-
+            
             return sheetData;
         }
+
     }
 }
