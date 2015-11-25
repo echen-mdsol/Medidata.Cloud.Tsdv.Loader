@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
@@ -6,19 +8,30 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     internal class NullableDateTimeConverter : CellTypeValueBaseConverter<DateTime?>
     {
         public NullableDateTimeConverter()
-            : base(CellValues.Date)
+            : base(CellValues.String)
         {
         }
 
         protected override string GetCellValueImpl(DateTime? csharpValue)
         {
-            return csharpValue.HasValue ? csharpValue.ToString() : string.Empty;
+            return csharpValue.HasValue ? csharpValue.Value.ToString("MM/dd/yyyy") : string.Empty;
         }
 
         protected override DateTime? GetCSharpValueImpl(string cellValue)
         {
-            DateTime value;
-            return DateTime.TryParse(cellValue, out value) ? value : (DateTime?) null;
+            DateTime outDt;
+            if (DateTime.TryParse(cellValue, out outDt))
+            {
+                return outDt;
+            }
+            //Check and handle OLE Automation date time
+            if (IsNumeric(cellValue))
+            {
+                double outNum = 0;
+                double.TryParse(cellValue, out outNum);
+                return DateTime.FromOADate(outNum);
+            }
+            return (DateTime?)null;
         }
     }
 }
