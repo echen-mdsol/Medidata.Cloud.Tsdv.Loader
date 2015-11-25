@@ -103,22 +103,12 @@ namespace Medidata.Cloud.ExcelLoader
                 else
                 {
                     cell.CellValue = new CellValue(cellValue);
-                    //var t = property.PropertyType;
-                    //if (t == typeof (DateTime))
-                    //{
-                    //    cell.StyleIndex = 164;    
-                    //}
-                    //if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof (Nullable<>) &&
-                    //    Nullable.GetUnderlyingType(t) == typeof (DateTime))
-                    //{
-                    //    cell.StyleIndex = 164;    
-                    //}
-                    
+
                 }
             }
             return cell;
         }
-
+        //TODO: Find a way to change the catch-and-release logic, it's dirty and it might hurt the performance
         private object GetPropertyValue(PropertyDescriptor property, object target)
         {
             try
