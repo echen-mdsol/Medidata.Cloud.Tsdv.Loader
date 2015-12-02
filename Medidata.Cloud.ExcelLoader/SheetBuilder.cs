@@ -13,10 +13,11 @@ namespace Medidata.Cloud.ExcelLoader
     internal class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
-
-        public SheetBuilder(ICellTypeValueConverterFactory _converterFactory)
+        private readonly ICellStyleProvider _styleProvider;
+        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, ICellStyleProvider styleProvider)
         {
-            this._converterFactory = _converterFactory;
+            _converterFactory = converterFactory;
+            _styleProvider = styleProvider;
         }
 
         public bool HasHeaderRow { get; set; }
@@ -96,6 +97,9 @@ namespace Medidata.Cloud.ExcelLoader
                 var cellType = converter.CellType;
                 var cellValue = converter.GetCellValue(propValue);
                 cell.DataType = cellType;
+                cell.StyleIndex = _styleProvider.GetTextStyleIndex();
+                
+                
                 if (cellType == CellValues.InlineString)
                 {
                     cell.InlineString = new InlineString {Text = new Text(cellValue)};
@@ -141,7 +145,8 @@ namespace Medidata.Cloud.ExcelLoader
                 var cell = new Cell
                 {
                     DataType = CellValues.String,
-                    CellValue = new CellValue(columnName)
+                    CellValue = new CellValue(columnName),
+                    StyleIndex = _styleProvider.GetHeaderStyleIndex()
                 };
                 row.AppendChild(cell);
             }

@@ -13,11 +13,13 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
         private readonly IList<ISheetBuilder> _sheetBuilders = new List<ISheetBuilder>();
+        private readonly ICellStyleProvider _styleProvider;
 
-        public ExcelBuilder(ICellTypeValueConverterFactory converterFactory)
+        public ExcelBuilder(ICellTypeValueConverterFactory converterFactory, ICellStyleProvider styleProvider)
         {
             if (converterFactory == null) throw new ArgumentNullException("converterFactory");
             _converterFactory = converterFactory;
+            _styleProvider = styleProvider;
         }
 
         public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
@@ -49,15 +51,19 @@ namespace Medidata.Cloud.ExcelLoader
                 {
                     workbookPart = doc.WorkbookPart;
                 }
+                
+                _styleProvider.AttachTo(doc);
 
                 foreach (var sheet in _sheetBuilders)
                 {
                     sheet.AttachTo(doc);
                 }
-
+                
                 workbookPart.Workbook.Save();
             }
         }
+
+
 
         private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
             where T : class
@@ -66,7 +72,7 @@ namespace Medidata.Cloud.ExcelLoader
                 throw new ArgumentException("Duplicate sheet name '" + sheetName + "'", "sheetName");
 
             var colNames = GetPropertyNames<T>(columnNames);
-            var worksheetBuilder = new SheetBuilder<T>(_converterFactory)
+            var worksheetBuilder = new SheetBuilder<T>(_converterFactory, _styleProvider)
             {
                 SheetName = sheetName,
                 HasHeaderRow = hasHeaderRow,
@@ -76,7 +82,7 @@ namespace Medidata.Cloud.ExcelLoader
 
             return worksheetBuilder;
         }
-
+        
         protected virtual string[] GetPropertyNames<T>(string[] columnNames)
         {
             return columnNames ?? typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
