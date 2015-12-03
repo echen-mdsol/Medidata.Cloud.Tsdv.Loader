@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters

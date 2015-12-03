@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ImpromptuInterface;
@@ -10,32 +9,27 @@ using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
+    public abstract class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
-        private readonly ICellStyleProvider _styleProvider;
-        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, ICellStyleProvider styleProvider)
+
+        protected SheetBuilder(ICellTypeValueConverterFactory converterFactory)
         {
             if (converterFactory == null) throw new ArgumentNullException("converterFactory");
             _converterFactory = converterFactory;
-            if (styleProvider == null) throw new ArgumentNullException("styleProvider");
-            _styleProvider = styleProvider;
         }
 
         public bool HasHeaderRow { get; set; }
         public string SheetName { get; set; }
-        public string HeaderStyleName { get; set; }
-        public string TextStyleName { get; set; }
-
         public string[] ColumnNames { get; set; }
 
         public void AttachTo(SpreadsheetDocument doc)
         {
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
-            
+
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = CreateWorksheet();
-            
+
             var sheetId = (uint) (1 + sheets.Count());
             var sheet = new Sheet
             {
@@ -55,43 +49,32 @@ namespace Medidata.Cloud.ExcelLoader
         {
             var sheetData = GetSheetData();
             var columns = GetColumns(sheetData);
-            Worksheet worksheet;
-            if (columns != null && columns.Any())
-            {
-                worksheet = new Worksheet(columns, sheetData);
-            }
-            else
-            {
-                worksheet = new Worksheet(sheetData);
-            }
-            
-            return worksheet;
+            return columns != null && columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
         }
 
         private Columns GetColumns(SheetData sheetData)
         {
-            int numberOfColumns = 0;
+            var numberOfColumns = 0;
             if (sheetData.Descendants<Row>().Any())
             {
                 numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
             }
-            Columns cs = new Columns();
-            for (int i = 0; i < numberOfColumns; i++)
+            var cs = new Columns();
+            for (var i = 0; i < numberOfColumns; i++)
             {
-                Column c = new Column()
+                var c = new Column
                 {
-                    Min = (uint)(i+1),
-                    Max = (uint)(i+1),
+                    Min = (uint) (i + 1),
+                    Max = (uint) (i + 1),
                     Width = 20D,
                     CustomWidth = true
                 };
                 cs.Append(c);
             }
             return cs;
-
         }
 
-        private Cell CreateCell(T model, PropertyDescriptor property)
+        protected virtual Cell CreateCell(T model, PropertyDescriptor property)
         {
             var cell = new Cell();
             if (model != null)
@@ -101,9 +84,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var cellType = converter.CellType;
                 var cellValue = converter.GetCellValue(propValue);
                 cell.DataType = cellType;
-                cell.StyleIndex = _styleProvider.GetStyleIndex(TextStyleName);
-                
-                
+
                 if (cellType == CellValues.InlineString)
                 {
                     cell.InlineString = new InlineString {Text = new Text(cellValue)};
@@ -111,11 +92,11 @@ namespace Medidata.Cloud.ExcelLoader
                 else
                 {
                     cell.CellValue = new CellValue(cellValue);
-
                 }
             }
             return cell;
         }
+
         //TODO: Find a way to change the catch-and-release logic, it's dirty and it might hurt the performance
         private object GetPropertyValue(PropertyDescriptor property, object target)
         {
@@ -141,7 +122,7 @@ namespace Medidata.Cloud.ExcelLoader
             return row;
         }
 
-        private Row CreateHeaderRow()
+        protected virtual Row CreateHeaderRow()
         {
             var row = new Row();
             foreach (var columnName in ColumnNames)
@@ -149,8 +130,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var cell = new Cell
                 {
                     DataType = CellValues.String,
-                    CellValue = new CellValue(columnName),
-                    StyleIndex = _styleProvider.GetStyleIndex(HeaderStyleName)
+                    CellValue = new CellValue(columnName)
                 };
                 row.AppendChild(cell);
             }
@@ -168,9 +148,8 @@ namespace Medidata.Cloud.ExcelLoader
 
             var rows = this.Select(x => x ?? x.ActLike<T>()).Select(CreateRow);
             sheetData.Append(rows);
-            
+
             return sheetData;
         }
-
     }
 }

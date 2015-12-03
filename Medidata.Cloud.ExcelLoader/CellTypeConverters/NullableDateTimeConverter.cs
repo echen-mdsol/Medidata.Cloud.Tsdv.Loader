@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
@@ -31,7 +29,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
                 double.TryParse(cellValue, out outNum);
                 return DateTime.FromOADate(outNum);
             }
-            return (DateTime?)null;
+            return null;
         }
     }
 }
