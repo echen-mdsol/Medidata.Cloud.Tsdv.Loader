@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml.Packaging;
 
 namespace Medidata.Cloud.ExcelLoader
 {

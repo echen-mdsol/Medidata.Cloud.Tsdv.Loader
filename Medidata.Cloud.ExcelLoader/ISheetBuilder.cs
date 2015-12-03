@@ -5,11 +5,9 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public interface ISheetBuilder : IList
     {
-        string SheetName { get; }
-        bool HasHeaderRow { get; }
-        string[] ColumnNames { get; }
+        string SheetName { get; set; }
+        bool HasHeaderRow { get; set; }
+        string[] ColumnNames { get; set; }
         void AttachTo(SpreadsheetDocument doc);
-        string HeaderStyleName { get; set; }
-        string TextStyleName { get; set; }
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="CellTypeConverters\StringConverter.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="IExcelParser.cs" />
+    <Compile Include="ISheetBuilderFactory.cs" />
     <Compile Include="ISheetParser.cs" />
     <Compile Include="IExcelBuilder.cs" />
     <Compile Include="ISheetBuilder.cs" />
