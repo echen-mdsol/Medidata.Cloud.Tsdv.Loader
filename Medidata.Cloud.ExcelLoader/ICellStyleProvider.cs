@@ -6,8 +6,7 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public interface ICellStyleProvider
     {
-        uint GetHeaderStyleIndex();
-        uint GetTextStyleIndex();
+        uint GetStyleIndex(string styleName);
         void AttachTo(SpreadsheetDocument doc);
     }
 }
