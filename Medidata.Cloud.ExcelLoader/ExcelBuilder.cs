@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml;
@@ -22,14 +23,14 @@ namespace Medidata.Cloud.ExcelLoader
             _styleProvider = styleProvider;
         }
 
-        public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, string headerStyleName, string textStyleName,string[] columnNames) where T : class
         {
-            return AddSheet<T>(sheetName, columnNames != null, columnNames);
+            return AddSheet<T>(sheetName, columnNames != null, headerStyleName, textStyleName, columnNames);
         }
 
-        public virtual IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
+        public virtual IList<T> AddSheet<T>(string sheetName, string headerStyleName, string textStyleName, bool hasHeaderRow = true) where T : class
         {
-            return AddSheet<T>(sheetName, hasHeaderRow, null);
+            return AddSheet<T>(sheetName, hasHeaderRow, headerStyleName, textStyleName,null);
         }
 
         public virtual IList<T> GetSheet<T>(string sheetName) where T : class
@@ -64,8 +65,7 @@ namespace Medidata.Cloud.ExcelLoader
         }
 
 
-
-        private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
+        private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string headerStyleName, string textStyleName, string[] columnNames)
             where T : class
         {
             if (_sheetBuilders.Any(x => x.SheetName == sheetName))
@@ -76,7 +76,9 @@ namespace Medidata.Cloud.ExcelLoader
             {
                 SheetName = sheetName,
                 HasHeaderRow = hasHeaderRow,
-                ColumnNames = colNames
+                ColumnNames = colNames,
+                HeaderStyleName = hasHeaderRow ? headerStyleName : null,
+                TextStyleName = textStyleName
             };
             _sheetBuilders.Add(worksheetBuilder);
 

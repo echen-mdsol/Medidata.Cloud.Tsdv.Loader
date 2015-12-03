@@ -16,12 +16,16 @@ namespace Medidata.Cloud.ExcelLoader
         private readonly ICellStyleProvider _styleProvider;
         public SheetBuilder(ICellTypeValueConverterFactory converterFactory, ICellStyleProvider styleProvider)
         {
+            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
             _converterFactory = converterFactory;
+            if (styleProvider == null) throw new ArgumentNullException("styleProvider");
             _styleProvider = styleProvider;
         }
 
         public bool HasHeaderRow { get; set; }
         public string SheetName { get; set; }
+        public string HeaderStyleName { get; set; }
+        public string TextStyleName { get; set; }
 
         public string[] ColumnNames { get; set; }
 
@@ -97,7 +101,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var cellType = converter.CellType;
                 var cellValue = converter.GetCellValue(propValue);
                 cell.DataType = cellType;
-                cell.StyleIndex = _styleProvider.GetTextStyleIndex();
+                cell.StyleIndex = _styleProvider.GetStyleIndex(TextStyleName);
                 
                 
                 if (cellType == CellValues.InlineString)
@@ -146,7 +150,7 @@ namespace Medidata.Cloud.ExcelLoader
                 {
                     DataType = CellValues.String,
                     CellValue = new CellValue(columnName),
-                    StyleIndex = _styleProvider.GetHeaderStyleIndex()
+                    StyleIndex = _styleProvider.GetStyleIndex(HeaderStyleName)
                 };
                 row.AppendChild(cell);
             }

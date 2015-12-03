@@ -9,5 +9,7 @@ namespace Medidata.Cloud.ExcelLoader
         bool HasHeaderRow { get; }
         string[] ColumnNames { get; }
         void AttachTo(SpreadsheetDocument doc);
+        string HeaderStyleName { get; set; }
+        string TextStyleName { get; set; }
     }
 }

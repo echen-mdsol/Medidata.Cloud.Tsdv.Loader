@@ -12,54 +12,32 @@ namespace Medidata.Cloud.ExcelLoader.CellStyleProviders
     /// </summary>
     public class ExtractedCellStyleProvider: ICellStyleProvider
     {
-        private uint headerStyleIndex = 0;
-        private uint textStyleIndex = 0;
-        public uint GetHeaderStyleIndex()
+        private readonly Dictionary<string, uint> _styleDict = new Dictionary<string, uint>();
+        public uint GetStyleIndex(string styleName)
         {
-            return headerStyleIndex;
+            if (!_styleDict.ContainsKey(styleName))
+            {
+                throw new ArgumentException("styleName");
+            }
+            return _styleDict[styleName];
         }
 
-        public uint GetTextStyleIndex()
-        {
-            return textStyleIndex;
-        }
-
+        
         public void AttachTo(SpreadsheetDocument doc)
         {
-            //If anything wrong happens, then swith to default styleindex
-            try
+            var styleSheet = doc.WorkbookPart.WorkbookStylesPart.Stylesheet;
+
+            int newIndex = styleSheet.CellFormats.Count();
+            var list = styleSheet.CellStyleFormats.Descendants<CellFormat>().ToList();
+
+            foreach (var style in styleSheet.CellStyles.Descendants<CellStyle>())
             {
-                var styleSheet = doc.WorkbookPart.WorkbookStylesPart.Stylesheet;
-                uint headerStyleId =
-                    styleSheet.CellStyles.Descendants<CellStyle>()
-                        .First(o => o.Name == Enum.GetName(typeof (CellStyleIdentifier), CellStyleIdentifier.Output))
-                        .FormatId;
-
-                uint textStyleId =
-                    styleSheet.CellStyles.Descendants<CellStyle>()
-                        .First(o => o.Name == Enum.GetName(typeof (CellStyleIdentifier), CellStyleIdentifier.Normal))
-                        .FormatId;
-
-                var list = styleSheet.CellStyleFormats.Descendants<CellFormat>().ToList();
-
-                var headerItem = list[checked((int) headerStyleId)];
-                var textStyleItem = list[checked((int) textStyleId)];
-
-                //You cannot append a copied cell format by the restriction of Openxml sdk, you need to copy to make a new one. And you need to store the styleindex yourself.
-                int newIndex = styleSheet.CellFormats.Count();
-                styleSheet.CellFormats.AppendChild(CopyCellFormat(headerItem));
-                headerStyleIndex = (uint) newIndex;
-
-                styleSheet.CellFormats.AppendChild(CopyCellFormat(textStyleItem));
+                var item = list[checked((int)(uint)style.FormatId)];
+                //You cannot append an existing cell format due to the restriction of Openxml sdk, you need to copy to make a new one. And you need to store the styleindex yourself.
+                styleSheet.CellFormats.AppendChild(CopyCellFormat(item));
+                _styleDict.Add(style.Name, (uint)newIndex);
                 newIndex++;
-                textStyleIndex = (uint) newIndex;
             }
-            catch
-            {
-                headerStyleIndex = 0;
-                textStyleIndex = 0;
-            }
-            
         }
 
         private CellFormat CopyCellFormat(CellFormat cell)
