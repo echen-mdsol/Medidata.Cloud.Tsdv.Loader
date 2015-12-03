@@ -9,7 +9,7 @@ namespace Medidata.Cloud.ExcelLoader.CellStyleProviders
     /// <summary>
     ///     Extract StyleSheet from an exisiting SpreadSheet
     /// </summary>
-    public class ExtractedCellStyleProvider : ICellStyleProvider
+    public class EmbeddedCellStyleProvider : ICellStyleProvider
     {
         private readonly Dictionary<string, uint> _styleDict = new Dictionary<string, uint>();
         private bool _hasAttachedToDoc;
