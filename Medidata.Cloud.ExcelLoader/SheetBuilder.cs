@@ -13,6 +13,8 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 
+        protected SpreadsheetDocument Document;
+
         protected SheetBuilder(ICellTypeValueConverterFactory converterFactory)
         {
             if (converterFactory == null) throw new ArgumentNullException("converterFactory");
@@ -25,6 +27,8 @@ namespace Medidata.Cloud.ExcelLoader
 
         public void AttachTo(SpreadsheetDocument doc)
         {
+            if (doc == null) throw new ArgumentNullException("doc");
+            Document = doc;
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
 
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
