@@ -53,7 +53,7 @@ namespace Medidata.Cloud.ExcelLoader
         {
             var sheetData = GetSheetData();
             var columns = GetColumns(sheetData);
-            return columns != null && columns.Any() ? new Worksheet(columns, sheetData, GetFilter(sheetData)) : new Worksheet(sheetData);
+            return columns != null && columns.Any() ? new Worksheet(columns, sheetData, GetAutoFilter(sheetData)) : new Worksheet(sheetData);
         }
 
         private Columns GetColumns(SheetData sheetData)
@@ -113,7 +113,9 @@ namespace Medidata.Cloud.ExcelLoader
                 return null;
             }
         }
-        private AutoFilter GetFilter(SheetData sheetData)
+
+        //AutoFilter will be only shown on the header row, if any.
+        private AutoFilter GetAutoFilter(SheetData sheetData)
         {
             int numberOfColumns = 0;
             if (sheetData.Descendants<Row>().Any())
@@ -122,25 +124,32 @@ namespace Medidata.Cloud.ExcelLoader
             }
             AutoFilter filter = new AutoFilter
             {
-                Reference = string.Format("{0}1:{1}1", GetExcelColumnName(1), GetExcelColumnName(numberOfColumns))
+                Reference = string.Format("{0}:{1}", GetHeaderCellReference(1), GetHeaderCellReference(numberOfColumns))
             };
             return filter;
         }
 
-        private string GetExcelColumnName(int columnNumber)
+        private string GetHeaderCellReference(int columnNumber)
+        {
+            return GetExcelCellIndex(columnNumber, 1);
+        }
+
+        //Generate excel style of cell index number, e.g. A5, B6, AC123, BD5448
+        private string GetExcelCellIndex(int columnNumber, int rowNumber)
         {
             int dividend = columnNumber;
             string columnName = String.Empty;
             int modulo;
 
+            int AtoZ = 'Z' - 'A' + 1;
             while (dividend > 0)
             {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
+                modulo = (dividend - 1) % AtoZ;
+                columnName = Convert.ToChar('A' + modulo) + columnName;
+                dividend = ((dividend - modulo) / AtoZ);
             }
 
-            return columnName;
+            return columnName + rowNumber;
         }
 
         private Row CreateRow(T model)
@@ -165,7 +174,8 @@ namespace Medidata.Cloud.ExcelLoader
                 {
                     DataType = CellValues.String,
                     CellValue = new CellValue(columnName),
-                    CellReference = GetExcelColumnName(columnIndex)+ "1"
+                    //Only header rows have cell references, because they are required only when you need to apply auto-filters.
+                    CellReference = GetHeaderCellReference(columnIndex)
                 };
                 row.AppendChild(cell);
                 columnIndex++;
