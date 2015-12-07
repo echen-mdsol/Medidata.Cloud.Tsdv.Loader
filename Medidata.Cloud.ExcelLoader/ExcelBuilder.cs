@@ -13,13 +13,10 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly ISheetBuilderFactory _sheetBuilderFactory;
         private readonly IList<ISheetBuilder> _sheetBuilders = new List<ISheetBuilder>();
-        private readonly ICellStyleProvider _styleProvider;
 
-        public ExcelBuilder(ICellStyleProvider styleProvider, ISheetBuilderFactory sheetBuilderFactory)
+        public ExcelBuilder(ISheetBuilderFactory sheetBuilderFactory)
         {
-            if (styleProvider == null) throw new ArgumentNullException("styleProvider");
             if (sheetBuilderFactory == null) throw new ArgumentNullException("sheetBuilderFactory");
-            _styleProvider = styleProvider;
             _sheetBuilderFactory = sheetBuilderFactory;
         }
 
@@ -52,8 +49,6 @@ namespace Medidata.Cloud.ExcelLoader
                 {
                     workbookPart = doc.WorkbookPart;
                 }
-
-                _styleProvider.AttachTo(doc);
 
                 foreach (var sheet in _sheetBuilders)
                 {
