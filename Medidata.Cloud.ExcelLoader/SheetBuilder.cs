@@ -53,7 +53,7 @@ namespace Medidata.Cloud.ExcelLoader
         {
             var sheetData = GetSheetData();
             var columns = GetColumns(sheetData);
-            return columns != null && columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
+            return columns != null && columns.Any() ? new Worksheet(columns, sheetData, GetFilter(sheetData)) : new Worksheet(sheetData);
         }
 
         private Columns GetColumns(SheetData sheetData)
@@ -113,6 +113,35 @@ namespace Medidata.Cloud.ExcelLoader
                 return null;
             }
         }
+        private AutoFilter GetFilter(SheetData sheetData)
+        {
+            int numberOfColumns = 0;
+            if (sheetData.Descendants<Row>().Any())
+            {
+                numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
+            }
+            AutoFilter filter = new AutoFilter
+            {
+                Reference = string.Format("{0}1:{1}1", GetExcelColumnName(1), GetExcelColumnName(numberOfColumns))
+            };
+            return filter;
+        }
+
+        private string GetExcelColumnName(int columnNumber)
+        {
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
+        }
 
         private Row CreateRow(T model)
         {
@@ -128,15 +157,18 @@ namespace Medidata.Cloud.ExcelLoader
 
         protected virtual Row CreateHeaderRow()
         {
+            int columnIndex = 1;
             var row = new Row();
             foreach (var columnName in ColumnNames)
             {
                 var cell = new Cell
                 {
                     DataType = CellValues.String,
-                    CellValue = new CellValue(columnName)
+                    CellValue = new CellValue(columnName),
+                    CellReference = GetExcelColumnName(columnIndex)+ "1"
                 };
                 row.AppendChild(cell);
+                columnIndex++;
             }
             return row;
         }
