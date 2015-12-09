@@ -45,6 +45,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HeaderAutoFilterProvider.cs" />
     <Compile Include="CellStyleProviders\EmbeddedCellStyleProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +57,7 @@
     <Compile Include="CellTypeConverters\DoubleConverter.cs" />
     <Compile Include="CellTypeConverters\FloatConverter.cs" />
     <Compile Include="CellTypeConverters\ICellTypeValueConverter.cs" />
+    <Compile Include="IAutoFilterProvider.cs" />
     <Compile Include="ICellTypeValueConverterFactory.cs" />
     <Compile Include="CellTypeConverters\IntConverter.cs" />
     <Compile Include="CellTypeConverters\LongConverter.cs" />

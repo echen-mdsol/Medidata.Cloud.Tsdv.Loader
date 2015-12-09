@@ -49,7 +49,7 @@ namespace Medidata.Cloud.ExcelLoader
             sheets.Append(sheet);
         }
 
-        private Worksheet CreateWorksheet()
+        protected virtual Worksheet CreateWorksheet()
         {
             var sheetData = GetSheetData();
             var columns = GetColumns(sheetData);
@@ -114,6 +114,7 @@ namespace Medidata.Cloud.ExcelLoader
             }
         }
 
+
         private Row CreateRow(T model)
         {
             var row = new Row();
@@ -134,7 +135,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var cell = new Cell
                 {
                     DataType = CellValues.String,
-                    CellValue = new CellValue(columnName)
+                    CellValue = new CellValue(columnName),
                 };
                 row.AppendChild(cell);
             }
