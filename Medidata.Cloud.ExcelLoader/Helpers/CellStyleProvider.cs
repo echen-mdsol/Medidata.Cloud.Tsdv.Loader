@@ -3,12 +3,9 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Medidata.Cloud.ExcelLoader.CellStyleProviders
+namespace Medidata.Cloud.ExcelLoader.Helpers
 {
-    /// <summary>
-    ///     Extract StyleSheet from an exisiting SpreadSheet
-    /// </summary>
-    public class EmbeddedCellStyleProvider : ICellStyleProvider
+    internal class CellStyleProvider
     {
         public uint GetStyleIndex(SpreadsheetDocument doc, string styleName)
         {

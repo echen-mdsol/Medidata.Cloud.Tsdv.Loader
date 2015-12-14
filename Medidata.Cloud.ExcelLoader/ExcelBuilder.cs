@@ -1,41 +1,30 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
+
     public class ExcelBuilder : IExcelBuilder
     {
-        private readonly ISheetBuilderFactory _sheetBuilderFactory;
-        private readonly IList<ISheetBuilder> _sheetBuilders = new List<ISheetBuilder>();
-
-        public ExcelBuilder(ISheetBuilderFactory sheetBuilderFactory)
+        private class SheetModels : List<object>
         {
-            if (sheetBuilderFactory == null) throw new ArgumentNullException("sheetBuilderFactory");
-            _sheetBuilderFactory = sheetBuilderFactory;
+            public ISheetDefinition SheetDefinition { get; set; }
+            public ISheetBuilder SheetBuilder { get; set; }
         }
 
-        public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
+        private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
+
+        public IList<object> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
         {
-            return AddSheet<T>(sheetName, columnNames != null, columnNames);
+            var sheetName = sheetDefinition.Name;
+            _modelDic.Add(sheetName, new SheetModels { SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder});
+            return _modelDic[sheetName];
         }
 
-        public virtual IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
-        {
-            return AddSheet<T>(sheetName, hasHeaderRow, null);
-        }
-
-        public virtual IList<T> GetSheet<T>(string sheetName) where T : class
-        {
-            return (IList<T>) _sheetBuilders.First(x => x.SheetName != sheetName);
-        }
-
-        public void Save(Stream outStream)
+        public virtual void Save(Stream outStream)
         {
             using (var doc = CreateDocument(outStream))
             {
@@ -50,36 +39,15 @@ namespace Medidata.Cloud.ExcelLoader
                     workbookPart = doc.WorkbookPart;
                 }
 
-                foreach (var sheet in _sheetBuilders)
+                foreach (var key in _modelDic.Keys)
                 {
-                    sheet.AttachTo(doc);
+                    var info = _modelDic[key];
+                    info.SheetBuilder.BuildSheet(info, info.SheetDefinition, doc);
                 }
 
                 workbookPart.Workbook.Save();
             }
         }
-
-
-        private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
-            where T : class
-        {
-            if (_sheetBuilders.Any(x => x.SheetName == sheetName))
-                throw new ArgumentException("Duplicate sheet name '" + sheetName + "'", "sheetName");
-
-            var worksheetBuilder = _sheetBuilderFactory.Create<T>();
-            worksheetBuilder.SheetName = sheetName;
-            worksheetBuilder.HasHeaderRow = hasHeaderRow;
-            worksheetBuilder.ColumnNames = GetColumnNames<T>(columnNames);
-            _sheetBuilders.Add(worksheetBuilder);
-
-            return (IList<T>) worksheetBuilder;
-        }
-
-        protected virtual string[] GetColumnNames<T>(string[] columnNames)
-        {
-            return columnNames ?? typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
-        }
-
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
         {
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
