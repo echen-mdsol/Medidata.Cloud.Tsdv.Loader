@@ -1,7 +1,3 @@
-using System.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Medidata.Cloud.ExcelLoader.Helpers;
-
 namespace Medidata.Cloud.ExcelLoader.SheetDecorators
 {
     public class AutoFitWidthSheetDecorator : ISheetBuilderDecorator
@@ -12,7 +8,6 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
             // TODO: AutoFit feature is pending.
 
             return target;
-
         }
     }
 }

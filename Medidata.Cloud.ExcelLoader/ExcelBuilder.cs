@@ -6,21 +6,14 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-
     public class ExcelBuilder : IExcelBuilder
     {
-        private class SheetModels : List<object>
-        {
-            public ISheetDefinition SheetDefinition { get; set; }
-            public ISheetBuilder SheetBuilder { get; set; }
-        }
-
         private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
 
-        public IList<object> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
+        public IList<dynamic> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
         {
             var sheetName = sheetDefinition.Name;
-            _modelDic.Add(sheetName, new SheetModels { SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder});
+            _modelDic.Add(sheetName, new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder});
             return _modelDic[sheetName];
         }
 
@@ -48,9 +41,21 @@ namespace Medidata.Cloud.ExcelLoader
                 workbookPart.Workbook.Save();
             }
         }
+
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
         {
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
+        }
+
+        private class SheetModels : List<object>
+        {
+            public ISheetDefinition SheetDefinition { get; set; }
+            public ISheetBuilder SheetBuilder { get; set; }
+
+            public new void Add(object item)
+            {
+                base.Add(item);
+            }
         }
     }
 }

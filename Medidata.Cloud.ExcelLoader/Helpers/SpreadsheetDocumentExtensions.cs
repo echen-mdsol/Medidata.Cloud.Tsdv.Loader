@@ -10,7 +10,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         {
             var sheet = doc.WorkbookPart.Workbook.Descendants<Sheet>().First(x => x.Name == sheetName);
             var sheetPartId = sheet.Id;
-            var worksheetPart = (WorksheetPart)doc.WorkbookPart.GetPartById(sheetPartId);
+            var worksheetPart = (WorksheetPart) doc.WorkbookPart.GetPartById(sheetPartId);
             return worksheetPart.Worksheet;
         }
 
@@ -24,6 +24,13 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         {
             var provider = new CellStyleProvider();
             return provider.GetStyleIndex(doc, styleName);
+        }
+
+        public static bool ContainsSheet(this SpreadsheetDocument doc, string name)
+        {
+            var sheets = doc.WorkbookPart.Workbook.Sheets;
+            return sheets != null &&
+                   sheets.Descendants<Sheet>().FirstOrDefault(x => x.Name == name) != null;
         }
     }
 }

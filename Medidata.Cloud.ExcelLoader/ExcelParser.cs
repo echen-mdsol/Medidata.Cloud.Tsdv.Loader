@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+using ImpromptuInterface;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
@@ -19,13 +20,18 @@ namespace Medidata.Cloud.ExcelLoader
             _converterFactory = converterFactory;
         }
 
-        public IEnumerable<T> GetObjects<T>(string sheetName, bool hasHeaderRow = true) where T : class
+        public IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition)
         {
-            var worksheet = _doc.GetWorksheetByName(sheetName);
-            var worksheetParser = new SheetParser<T>(_converterFactory) {HasHeaderRow = hasHeaderRow};
+            var worksheet = _doc.GetWorksheetByName(sheetDefinition.Name);
+            var worksheetParser = new SheetParser(_converterFactory);
             worksheetParser.Load(worksheet);
 
-            return worksheetParser.GetObjects();
+            return worksheetParser.GetObjects(sheetDefinition);
+        }
+
+        public IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : class
+        {
+            return GetObjects(sheetDefinition).Select(x => x.ActLike<T>());
         }
 
         public void Load(Stream stream)

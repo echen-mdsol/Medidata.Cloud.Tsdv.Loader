@@ -1,5 +1,4 @@
 using System;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader
 {

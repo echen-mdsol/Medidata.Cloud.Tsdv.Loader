@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
-using ImpromptuInterface;
-using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal class SheetParser<T> : ISheetParser<T> where T : class
+    internal class SheetParser : ISheetParser
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
         private Worksheet _worksheet;
@@ -19,12 +17,10 @@ namespace Medidata.Cloud.ExcelLoader
             _converterFactory = converterFactory;
         }
 
-        public bool HasHeaderRow { get; set; }
-
-        public IEnumerable<T> GetObjects()
+        public IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition)
         {
-            var rows = _worksheet.Descendants<Row>().Skip(HasHeaderRow ? 1 : 0);
-            return rows.Select(ParseFromRow);
+            var rows = _worksheet.Descendants<Row>().Skip(1);
+            return rows.Select(x => ParseFromRow(x, sheetDefinition));
         }
 
         public void Load(Worksheet worksheet)
@@ -32,21 +28,19 @@ namespace Medidata.Cloud.ExcelLoader
             _worksheet = worksheet;
         }
 
-        private T ParseFromRow(Row row)
+        private ExpandoObject ParseFromRow(Row row, ISheetDefinition sheetDefinition)
         {
-            var properties = typeof (T).GetPropertyDescriptors();
             IDictionary<string, object> expando = new ExpandoObject();
             var cells = row.Elements<Cell>().ToList();
             var index = 0;
-            foreach (var prop in properties)
+            foreach (var colDef in sheetDefinition.ColumnDefinitions)
             {
-                var converter = _converterFactory.Produce(prop.PropertyType);
+                var converter = _converterFactory.Produce(colDef.PropertyType);
                 var propValue = converter.GetCSharpValue(cells[index].InnerText);
-                expando.Add(prop.Name, propValue);
+                expando.Add(colDef.PropertyName, propValue);
                 index ++;
             }
-            T target = expando.ActLike();
-            return target;
+            return (ExpandoObject) expando;
         }
     }
 }

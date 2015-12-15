@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public interface IExcelParser : IDisposable
     {
-        IEnumerable<T> GetObjects<T>(string sheetName, bool hasHeaderRow = true) where T : class;
+        IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition);
+        IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : class;
         void Load(Stream stream);
     }
 }

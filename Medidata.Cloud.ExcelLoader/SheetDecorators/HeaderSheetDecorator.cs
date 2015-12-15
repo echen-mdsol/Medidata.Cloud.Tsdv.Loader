@@ -30,7 +30,7 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
                 var cell = new Cell
                 {
                     DataType = CellValues.String,
-                    CellValue = new CellValue(columnName),
+                    CellValue = new CellValue(columnName)
                 };
                 row.AppendChild(cell);
             }

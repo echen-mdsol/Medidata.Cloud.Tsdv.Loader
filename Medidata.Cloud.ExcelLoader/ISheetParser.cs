@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal interface ISheetParser<out T> where T : class
+    internal interface ISheetParser
     {
-        bool HasHeaderRow { get; }
-        IEnumerable<T> GetObjects();
+        IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition);
         void Load(Worksheet worksheet);
     }
 }

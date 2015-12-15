@@ -9,7 +9,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
         protected CellTypeValueBaseConverter(CellValues cellType)
         {
             CellType = cellType;
-            CSharpType = typeof (T);
+            CSharpType = typeof(T);
         }
 
         public CellValues CellType { get; private set; }

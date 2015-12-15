@@ -24,13 +24,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
             index = AddNewCellFormat(styleSheet, cellFormat);
             return index;
         }
-        /// <summary>
-        /// Try retrive an existing cell fromat from the CellFormats.
-        /// </summary>
-        /// <param name="styleSheet"></param>
-        /// <param name="cellFormat"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
+
         private bool TryGetCellFormatIndex(Stylesheet styleSheet, CellFormat cellFormat, out uint index)
         {
             var cellFormatInfo = styleSheet.CellFormats.Descendants<CellFormat>()
@@ -40,25 +34,15 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
             index = exists ? cellFormatInfo.Index : uint.MaxValue;
             return exists;
         }
-        /// <summary>
-        /// Add a new cell format in CellFormats.
-        /// </summary>
-        /// <param name="styleSheet"></param>
-        /// <param name="cellFormat"></param>
-        /// <returns></returns>
+
         private uint AddNewCellFormat(Stylesheet styleSheet, CellFormat cellFormat)
         {
-            var newIndex = (uint)styleSheet.CellFormats.Count();
+            var newIndex = (uint) styleSheet.CellFormats.Count();
             var copiedCell = CopyCellFormat(cellFormat);
             styleSheet.CellFormats.AppendChild(copiedCell);
             return newIndex;
         }
-        /// <summary>
-        /// Find cell format from CellStyleFormats, which is the definition detail of the style name.
-        /// </summary>
-        /// <param name="styleSheet"></param>
-        /// <param name="styleName"></param>
-        /// <returns></returns>
+
         private CellFormat FindCellStyleFormat(Stylesheet styleSheet, string styleName)
         {
             var list = styleSheet.CellStyleFormats.Descendants<CellFormat>().ToList();

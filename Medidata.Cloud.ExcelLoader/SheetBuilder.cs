@@ -10,8 +10,6 @@ namespace Medidata.Cloud.ExcelLoader
     public class SheetBuilder : ISheetBuilder
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
-        public Action<IEnumerable<object>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
-        public Func<object, ISheetDefinition, Row> BuildRow { get; set; }
 
         public SheetBuilder(ICellTypeValueConverterFactory converterFactory)
         {
@@ -21,12 +19,15 @@ namespace Medidata.Cloud.ExcelLoader
             BuildRow = BuildRowFunc;
         }
 
+        public Action<IEnumerable<object>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
+        public Func<object, ISheetDefinition, Row> BuildRow { get; set; }
+
         private Row BuildRowFunc(object model, ISheetDefinition sheetDefinition)
         {
             var row = new Row();
             foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
             {
-                var propValue = GetPropertyValue(model, columnDefinition.PropertyName);
+                var propValue = model.GetPropertyValue(columnDefinition.PropertyName);
                 var converter = _converterFactory.Produce(columnDefinition.PropertyType);
                 var cellValue = converter.GetCellValue(propValue);
                 var cell = new Cell
@@ -39,20 +40,9 @@ namespace Medidata.Cloud.ExcelLoader
             return row;
         }
 
-        private object GetPropertyValue(object target, string propName)
-        {
-            try
-            {
-                var property = target.GetType().GetPropertyDescriptor(propName);
-                return property.GetValue(target);
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
-        private void BuildSheetFunc(IEnumerable<object> models, ISheetDefinition sheetDefinition, SpreadsheetDocument doc)
+        private void BuildSheetFunc(IEnumerable<object> models, ISheetDefinition sheetDefinition,
+            SpreadsheetDocument doc)
         {
             if (doc == null) throw new ArgumentNullException("doc");
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
@@ -65,7 +55,7 @@ namespace Medidata.Cloud.ExcelLoader
             var sheet = new Sheet
             {
                 Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
-                SheetId = (uint)sheetId,
+                SheetId = (uint) sheetId,
                 Name = sheetName
             };
 
