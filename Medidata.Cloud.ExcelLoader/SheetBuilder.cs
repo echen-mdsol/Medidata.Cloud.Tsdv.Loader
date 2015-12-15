@@ -31,7 +31,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var cellValue = converter.GetCellValue(propValue);
                 var cell = new Cell
                 {
-                    DataType = columnDefinition.CellType,
+                    DataType = converter.CellType,
                     CellValue = new CellValue(cellValue)
                 };
                 row.AppendChild(cell);

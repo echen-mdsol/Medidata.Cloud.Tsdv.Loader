@@ -5,8 +5,8 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public class ColumnDefinition : IColumnDefinition
     {
-        public CellValues CellType { get; set; }
         public Type PropertyType { get; set; }
         public string PropertyName { get; set; }
+        public string HeaderName { get; set; }
     }
 }

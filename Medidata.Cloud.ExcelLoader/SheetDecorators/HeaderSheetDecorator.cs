@@ -13,7 +13,7 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
             target.BuildSheet = (models, sheetDefinition, doc) =>
             {
                 originalFunc(models, sheetDefinition, doc);
-                var headers = sheetDefinition.Headers ?? sheetDefinition.ColumnDefinitions.Select(x => x.PropertyName);
+                var headers = sheetDefinition.ColumnDefinitions.Select(x => x.HeaderName ?? x.PropertyName);
                 var headerRow = CreateHeaderRow(headers);
 
                 var sheetData = doc.GetSheetDataByName(sheetDefinition.Name);
