@@ -50,13 +50,14 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         internal static T ActAs<T>(this object target) where T : class
         {
             if (target == null) return null;
-            return IsDynamicPropertyObject<T>() ? ActWithExtraProperties<T>(target) : target.ActLike<T>();
+            var expando = target as ExpandoObject;
+
+            return expando == null ? target.ActLike<T>() : ActWithExtraProperties<T>(expando);
         }
 
-        private static T ActWithExtraProperties<T>(object target) where T : class
+        private static T ActWithExtraProperties<T>(ExpandoObject target) where T : class
         {
-            if(!typeof(IExtraProperty).IsAssignableFrom(typeof(T)))
-                throw new Exception("T must be of type " + typeof(IExtraProperty));
+            IDictionary<string, object> targetDic = target;
 
             dynamic expando = new ExpandoObject();
             expando.ExtraProperties = new ExpandoObject();
@@ -67,24 +68,19 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
             var typeProps = typeof(T).GetPropertyDescriptors().ToList();
             foreach (var typeProp in typeProps)
             {
-                var propValue = target.GetPropertyValue(typeProp.Name);
+                var propValue = targetDic[typeProp.Name];
                 expandoDic.Add(typeProp.Name, propValue);
             }
-            var props = target.GetType().GetPropertyDescriptors();
-            var extraProps = props.Except(typeProps);
+            var props = targetDic.Keys;
+            var extraPropNames = props.Except(typeProps.Select(x => x.Name));
 
-            foreach (var extraProp in extraProps)
+            foreach (var extraPropName in extraPropNames)
             {
-                extraPropPropertyDic.Add(extraProp.Name, target.GetPropertyValue(extraProp.Name));
+                extraPropPropertyDic.Add(extraPropName, targetDic[extraPropName]);
             }
 
-            T actor = Impromptu.ActLike(expando);
+            T actor = Impromptu.ActLike(expando, typeof(T), typeof(IExtraProperty));
             return actor;
-        }
-
-        private static bool IsDynamicPropertyObject<T>()
-        {
-            return typeof(T).GetInterfaces().Any(x => x == typeof(IExtraProperty));
         }
     }
 }
