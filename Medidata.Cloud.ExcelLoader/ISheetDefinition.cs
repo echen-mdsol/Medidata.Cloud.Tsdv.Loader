@@ -5,6 +5,7 @@ namespace Medidata.Cloud.ExcelLoader
     public interface ISheetDefinition
     {
         string Name { get; }
-        IEnumerable<IColumnDefinition> ColumnDefinitions { get; }
+        bool AcceptExtraProperties { get; }
+        IList<IColumnDefinition> ColumnDefinitions { get; }
     }
 }

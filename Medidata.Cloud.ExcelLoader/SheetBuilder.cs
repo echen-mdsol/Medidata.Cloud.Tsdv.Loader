@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -7,6 +8,53 @@ using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
+    public class ExpandoOjbectSheetBuilder : SheetBuilder
+    {
+        private readonly ICellTypeValueConverterFactory _converterFactory;
+
+        public ExpandoOjbectSheetBuilder(ICellTypeValueConverterFactory converterFactory) : base(converterFactory)
+        {
+            _converterFactory = converterFactory;
+            BuildRow = BuildRowFromExpandoObject;
+        }
+
+        private Row BuildRowFromExpandoObject(object model, ISheetDefinition sheetDefinition)
+        {
+            var extraPropsOwner = model as IExtraProperty;
+            if (extraPropsOwner == null)
+            {
+                return base.BuildRowFunc(model, sheetDefinition);
+            }
+
+            var row = new Row();
+            foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
+            {
+                var propValue = GetPropertyValue(extraPropsOwner, columnDefinition.PropertyName);
+                var converter = _converterFactory.Produce(columnDefinition.PropertyType);
+                var cellValue = converter.GetCellValue(propValue);
+                var cell = new Cell
+                {
+                    DataType = converter.CellType,
+                    CellValue = new CellValue(cellValue)
+                };
+                row.AppendChild(cell);
+            }
+
+            return row;
+        }
+
+        private object GetPropertyValue(IExtraProperty model, string propertyName)
+        {
+            var value = model.GetPropertyValue(propertyName);
+            if (value == null)
+            {
+                IDictionary<string, object> dic = model.ExtraProperties;
+                dic.TryGetValue(propertyName, out value);
+            }
+            return value;
+        }
+    }
+
     public class SheetBuilder : ISheetBuilder
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
@@ -22,7 +70,7 @@ namespace Medidata.Cloud.ExcelLoader
         public Action<IEnumerable<object>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
         public Func<object, ISheetDefinition, Row> BuildRow { get; set; }
 
-        private Row BuildRowFunc(object model, ISheetDefinition sheetDefinition)
+        protected Row BuildRowFunc(object model, ISheetDefinition sheetDefinition)
         {
             var row = new Row();
             foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
@@ -55,7 +103,7 @@ namespace Medidata.Cloud.ExcelLoader
             var sheet = new Sheet
             {
                 Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
-                SheetId = (uint) sheetId,
+                SheetId = (uint)sheetId,
                 Name = sheetName
             };
 
@@ -91,8 +139,8 @@ namespace Medidata.Cloud.ExcelLoader
             }
             var columnRange = Enumerable.Range(0, numberOfColumns).Select(i => new Column
             {
-                Min = (uint) (i + 1),
-                Max = (uint) (i + 1),
+                Min = (uint)(i + 1),
+                Max = (uint)(i + 1),
                 Width = 20D,
                 CustomWidth = true
             });

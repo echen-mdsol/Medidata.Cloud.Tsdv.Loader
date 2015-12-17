@@ -19,7 +19,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
 
         private static ExpandoObject ConvertToExpando<T>(object target)
         {
-            if (target == null || target is ExpandoObject) return (ExpandoObject) target;
+            if (target == null || target is ExpandoObject) return (ExpandoObject)target;
             var props = typeof(T).GetPropertyDescriptors();
             var expando = new ExpandoObject();
             IDictionary<string, object> dic = expando;
@@ -34,15 +34,15 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         {
             return AddRange(target, items);
         }
-
-        public static IList<T> AddLike<T>(this IList<T> target, params object[] items) where T : class
-        {
-            return AddRange(target, items.Select(x => x.ActLike<T>()));
-        }
-
-        public static IEnumerable<T> ActAs<T>(this IEnumerable<ExpandoObject> target) where T : class
-        {
-            return target.Select(x => x.ActLike<T>());
-        }
+//
+//        public static IList<T> AddLike<T>(this IList<T> target, params object[] items) where T : class
+//        {
+//            return AddRange(target, items.Select(x => x.ActLike<T>()));
+//        }
+//
+//        public static IEnumerable<T> ActAs<T>(this IEnumerable<ExpandoObject> target) where T : class
+//        {
+//            return target.Select(x => x.ActLike<T>());
+//        }
     }
 }

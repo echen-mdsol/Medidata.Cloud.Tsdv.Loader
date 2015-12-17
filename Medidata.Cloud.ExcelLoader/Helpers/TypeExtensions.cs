@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
+using ImpromptuInterface;
 
 namespace Medidata.Cloud.ExcelLoader.Helpers
 {
@@ -21,38 +23,68 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         {
             try
             {
-                var property = target.GetType().GetPropertyDescriptor(propName);
-                return property.GetValue(target);
+                return Impromptu.InvokeGet(target, propName);
             }
             catch
             {
                 return null;
             }
         }
+    }
 
-        public static ISheetDefinition GetSheetDefinitionFromType(this Type target, string sheetName,
-            IEnumerable<string> headers = null)
+
+    public interface IExtraProperty
+    {
+        ExpandoObject ExtraProperties { get; }
+    }
+
+    public static class ObjectExtensions
+    {
+        public static IList<T> AddSimilarShape<T>(this IList<T> target, params object[] items) where T: class
         {
-            var props = target.GetPropertyDescriptors();
-            var headerList = (headers ?? Enumerable.Empty<string>()).ToList();
-            var sheetDefinition = new SheetDefinition
-            {
-                Name = sheetName,
-                ColumnDefinitions =
-                    props.Select((x, i) => PropertyToColumnDefinition(x, i < headerList.Count ? headerList[i] : null))
-            };
-            return sheetDefinition;
+            var newItems = items.Select(ActAs<T>);
+            target.AddRange(newItems);
+            return target;
+        } 
+
+        internal static T ActAs<T>(this object target) where T : class
+        {
+            if (target == null) return null;
+            return IsDynamicPropertyObject<T>() ? ActWithExtraProperties<T>(target) : target.ActLike<T>();
         }
 
-        private static IColumnDefinition PropertyToColumnDefinition(PropertyDescriptor property,
-            string headerName = null)
+        private static T ActWithExtraProperties<T>(object target) where T : class
         {
-            return new ColumnDefinition
+            if(!typeof(IExtraProperty).IsAssignableFrom(typeof(T)))
+                throw new Exception("T must be of type " + typeof(IExtraProperty));
+
+            dynamic expando = new ExpandoObject();
+            expando.ExtraProperties = new ExpandoObject();
+
+            IDictionary<string, object> expandoDic = expando;
+            IDictionary<string, object> extraPropPropertyDic = expando.ExtraProperties;
+
+            var typeProps = typeof(T).GetPropertyDescriptors().ToList();
+            foreach (var typeProp in typeProps)
             {
-                PropertyType = property.PropertyType,
-                PropertyName = property.Name,
-                HeaderName = headerName ?? property.Name
-            };
+                var propValue = target.GetPropertyValue(typeProp.Name);
+                expandoDic.Add(typeProp.Name, propValue);
+            }
+            var props = target.GetType().GetPropertyDescriptors();
+            var extraProps = props.Except(typeProps);
+
+            foreach (var extraProp in extraProps)
+            {
+                extraPropPropertyDic.Add(extraProp.Name, target.GetPropertyValue(extraProp.Name));
+            }
+
+            T actor = Impromptu.ActLike(expando);
+            return actor;
+        }
+
+        private static bool IsDynamicPropertyObject<T>()
+        {
+            return typeof(T).GetInterfaces().Any(x => x == typeof(IExtraProperty));
         }
     }
 }
