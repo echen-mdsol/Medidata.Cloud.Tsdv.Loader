@@ -6,6 +6,6 @@ namespace Medidata.Cloud.ExcelLoader
     {
         Type PropertyType { get; set; }
         string PropertyName { get; set; }
-        string HeaderName { get; set; }
+        string Header { get; set; }
     }
 }

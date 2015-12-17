@@ -11,7 +11,7 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
 
-        public IList<SheetDefinitionModelBase> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
+        public IList<SheetModel> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
         {
             var sheetName = sheetDefinition.Name;
             _modelDic.Add(sheetName, new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder});
@@ -48,12 +48,12 @@ namespace Medidata.Cloud.ExcelLoader
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
         }
 
-        private class SheetModels : List<SheetDefinitionModelBase>
+        private class SheetModels : List<SheetModel>
         {
             public ISheetDefinition SheetDefinition { get; set; }
             public ISheetBuilder SheetBuilder { get; set; }
 
-            public new void Add(SheetDefinitionModelBase item)
+            public new void Add(SheetModel item)
             {
                 base.Add(item);
             }

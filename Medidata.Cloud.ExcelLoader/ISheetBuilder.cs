@@ -8,7 +8,7 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public interface ISheetBuilder
     {
-        Action<IEnumerable<SheetDefinitionModelBase>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
-        Func<SheetDefinitionModelBase, ISheetDefinition, Row> BuildRow { get; set; }
+        Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
+        Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
     }
 }

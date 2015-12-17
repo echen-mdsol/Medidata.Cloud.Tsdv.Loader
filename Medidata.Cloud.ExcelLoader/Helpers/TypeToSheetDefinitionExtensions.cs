@@ -22,7 +22,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
                                         {
                                             PropertyName = prop.Name,
                                             PropertyType = prop.PropertyType,
-                                            HeaderName = headerAtt != null ? headerAtt.Header : prop.Name
+                                            Header = headerAtt != null ? headerAtt.Header : prop.Name
                                         };
 
             var sheetDefinition = new SheetDefinition

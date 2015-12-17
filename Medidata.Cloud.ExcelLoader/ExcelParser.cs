@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using Medidata.Cloud.ExcelLoader.Helpers;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
@@ -26,9 +27,9 @@ namespace Medidata.Cloud.ExcelLoader
             return worksheetParser.GetObjects(worksheet, sheetDefinition);
         }
 
-        public IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : class
+        public IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : SheetModel
         {
-            return GetObjects(sheetDefinition).OfType<T>();
+            return GetObjects(sheetDefinition).OfSheetModel<T>();
         }
 
         public void Load(Stream stream)

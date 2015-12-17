@@ -20,13 +20,13 @@ namespace Medidata.Cloud.ExcelLoader
             BuildRow = BuildRowFromExpandoObject;
         }
 
-        public Action<IEnumerable<SheetDefinitionModelBase>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get;
+        public Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get;
             set; }
 
-        public Func<SheetDefinitionModelBase, ISheetDefinition, Row> BuildRow { get; set; }
+        public Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
 
 
-        private Row BuildRowFromExpandoObject(SheetDefinitionModelBase model, ISheetDefinition sheetDefinition)
+        private Row BuildRowFromExpandoObject(SheetModel model, ISheetDefinition sheetDefinition)
         {
             var row = new Row();
             foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
@@ -46,7 +46,7 @@ namespace Medidata.Cloud.ExcelLoader
         }
 
 
-        private object GetPropertyValue(SheetDefinitionModelBase model, string propertyName)
+        private object GetPropertyValue(SheetModel model, string propertyName)
         {
             var value = model.GetPropertyValue(propertyName);
             if (value == null)
@@ -57,7 +57,7 @@ namespace Medidata.Cloud.ExcelLoader
         }
 
 
-        private void BuildSheetFunc(IEnumerable<SheetDefinitionModelBase> models, ISheetDefinition sheetDefinition,
+        private void BuildSheetFunc(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition,
                                     SpreadsheetDocument doc)
         {
             if (doc == null) throw new ArgumentNullException("doc");
@@ -82,14 +82,14 @@ namespace Medidata.Cloud.ExcelLoader
             sheets.Append(sheet);
         }
 
-        private Worksheet CreateWorksheet(IEnumerable<SheetDefinitionModelBase> models, ISheetDefinition sheetDefinition)
+        private Worksheet CreateWorksheet(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
             var sheetData = CreateSheetData(models, sheetDefinition);
             var columns = CreateColumns(sheetData);
             return columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
         }
 
-        private SheetData CreateSheetData(IEnumerable<SheetDefinitionModelBase> models, ISheetDefinition sheetDefinition)
+        private SheetData CreateSheetData(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
             var sheetData = new SheetData();
             var rows = models.Select(x => BuildRow(x, sheetDefinition));

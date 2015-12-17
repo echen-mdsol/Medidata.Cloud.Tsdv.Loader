@@ -3,9 +3,9 @@ using System.Dynamic;
 
 namespace Medidata.Cloud.ExcelLoader.SheetDefinitions
 {
-    public abstract class SheetDefinitionModelBase : DynamicObject
+    public abstract class SheetModel : DynamicObject
     {
-        protected SheetDefinitionModelBase()
+        protected SheetModel()
         {
             ExtraProperties = new ExpandoObject();
         }

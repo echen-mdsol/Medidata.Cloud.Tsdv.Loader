@@ -51,7 +51,7 @@
     <Compile Include="SheetDecorators\ExpandoObjectSheetDecorator.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
     <Compile Include="SheetDefinitions\ColumnIngoredAttribute.cs" />
-    <Compile Include="SheetDefinitions\SheetDefinitionModelBase.cs" />
+    <Compile Include="SheetDefinitions\SheetModel.cs" />
     <Compile Include="Helpers\CellStyleProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,6 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExcelParser.cs" />
     <Compile Include="SheetDefinition.cs" />
+    <Compile Include="SheetDefinitions\SheetModelExtensions.cs" />
     <Compile Include="SheetDefinitions\SheetNameAttribute.cs" />
     <Compile Include="SheetParser.cs" />
     <Compile Include="Validations\DefaultSequentialRuleValidator.cs" />

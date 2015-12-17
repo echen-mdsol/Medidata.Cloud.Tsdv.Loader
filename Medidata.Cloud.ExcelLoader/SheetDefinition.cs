@@ -35,7 +35,7 @@ namespace Medidata.Cloud.ExcelLoader
                    {
                        PropertyType = property.PropertyType,
                        PropertyName = property.Name,
-                       HeaderName = headerName ?? property.Name
+                       Header = headerName ?? property.Name
                    };
         }
     }
