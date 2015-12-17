@@ -28,8 +28,8 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         private bool TryGetCellFormatIndex(Stylesheet styleSheet, CellFormat cellFormat, out uint index)
         {
             var cellFormatInfo = styleSheet.CellFormats.Descendants<CellFormat>()
-                .Select((c, i) => new {CellFormat = c, Index = (uint) i})
-                .FirstOrDefault(c => CellFormatEquals(c.CellFormat, cellFormat));
+                                           .Select((c, i) => new {CellFormat = c, Index = (uint) i})
+                                           .FirstOrDefault(c => CellFormatEquals(c.CellFormat, cellFormat));
             var exists = cellFormatInfo != null;
             index = exists ? cellFormatInfo.Index : uint.MaxValue;
             return exists;
@@ -67,17 +67,17 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         private CellFormat CopyCellFormat(CellFormat cell)
         {
             return new CellFormat
-            {
-                FontId = cell.FontId,
-                Alignment = cell.Alignment,
-                FillId = cell.FillId,
-                BorderId = cell.BorderId,
-                ApplyNumberFormat = cell.ApplyNumberFormat,
-                ApplyBorder = cell.ApplyBorder,
-                ApplyAlignment = cell.ApplyAlignment,
-                ApplyFill = cell.ApplyFill,
-                ApplyFont = cell.ApplyFont
-            };
+                   {
+                       FontId = cell.FontId,
+                       Alignment = cell.Alignment,
+                       FillId = cell.FillId,
+                       BorderId = cell.BorderId,
+                       ApplyNumberFormat = cell.ApplyNumberFormat,
+                       ApplyBorder = cell.ApplyBorder,
+                       ApplyAlignment = cell.ApplyAlignment,
+                       ApplyFill = cell.ApplyFill,
+                       ApplyFont = cell.ApplyFont
+                   };
         }
     }
 }

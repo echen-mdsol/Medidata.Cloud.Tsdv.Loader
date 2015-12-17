@@ -4,7 +4,6 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using ImpromptuInterface;
 using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
@@ -29,7 +28,7 @@ namespace Medidata.Cloud.ExcelLoader
 
         public IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : class
         {
-            return GetObjects(sheetDefinition).Select(x => x.ActLike<T>());
+            return GetObjects(sheetDefinition).OfType<T>();
         }
 
         public void Load(Stream stream)

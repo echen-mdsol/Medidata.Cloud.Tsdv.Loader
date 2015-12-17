@@ -5,8 +5,6 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     internal abstract class NumberConverter<T> : CellTypeValueBaseConverter<T>
     {
         protected NumberConverter()
-            : base(CellValues.Number)
-        {
-        }
+            : base(CellValues.Number) {}
     }
 }

@@ -4,9 +4,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class StringConverter : CellTypeValueBaseConverter<string>
     {
-        public StringConverter() : base(CellValues.String)
-        {
-        }
+        public StringConverter() : base(CellValues.String) {}
 
         protected override string GetCellValueImpl(string csharpValue)
         {

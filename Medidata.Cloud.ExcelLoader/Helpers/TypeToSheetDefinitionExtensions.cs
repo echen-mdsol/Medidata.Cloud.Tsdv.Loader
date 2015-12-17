@@ -1,41 +1,53 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Dynamic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader.Helpers
 {
     public static class TypeToSheetDefinitionExtensions
     {
-//        public static ISheetDefinition GetSheetDefinitionFromType(this Type target, string sheetName, IEnumerable<string> headers = null)
-//        {
-//            var props = target.GetPropertyDescriptors();
-//            var headerList = (headers ?? Enumerable.Empty<string>()).ToList();
-//            var sheetDefinition = new SheetDefinition
-//            {
-//                Name = sheetName,
-//                ColumnDefinitions = props.Select((x, i) => PropertyToColumnDefinition(x, i < headerList.Count ? headerList[i] : null)).ToList()
-//            };
-//
-//            return sheetDefinition;
-//        }
+        public static ISheetDefinition ToSheetDefinition(this Type type)
+        {
+            var sheetNameAtt = type.GetCustomAttributes(false).OfType<SheetNameAttribute>().SingleOrDefault();
+            if (sheetNameAtt == null)
+                throw new Exception("Model type must have SheetNameAttribute");
+
+            var props = type.GetPropertyDescriptors();
+            var colDefinitions = from prop in props
+                                 let headerAtt = prop.Attributes.OfType<ColumnHeaderNameAttribute>().SingleOrDefault()
+                                 let ignoreAtt = prop.Attributes.OfType<ColumnIngoredAttribute>().SingleOrDefault()
+                                 where ignoreAtt == null
+                                 select new ColumnDefinition
+                                        {
+                                            PropertyName = prop.Name,
+                                            PropertyType = prop.PropertyType,
+                                            HeaderName = headerAtt != null ? headerAtt.Header : prop.Name
+                                        };
+
+            var sheetDefinition = new SheetDefinition
+                                  {
+                                      Name = sheetNameAtt.SheetName,
+                                      ColumnDefinitions = colDefinitions
+                                  };
+            return sheetDefinition;
+        }
 
         public static bool IsDynamicPropertyObject(Type type)
         {
             return type.GetInterfaces().Any(x => x == typeof(IDynamicProperty));
         }
 
-//        private static IColumnDefinition PropertyToColumnDefinition(PropertyDescriptor property,
-//                                                                    string headerName = null)
-//        {
-//            return new ColumnDefinition
-//                   {
-//                       PropertyType = property.PropertyType,
-//                       PropertyName = property.Name,
-//                       HeaderName = headerName ?? property.Name
-//                   };
-//        }
+        //        private static IColumnDefinition PropertyToColumnDefinition(PropertyDescriptor property,
+
+        //                                                                    string headerName = null)
+        //        {
+        //            return new ColumnDefinition
+        //                   {
+        //                       PropertyType = property.PropertyType,
+        //                       PropertyName = property.Name,
+        //                       HeaderName = headerName ?? property.Name
+        //                   };
+        //        }
     }
 }

@@ -23,9 +23,10 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
                 if (numberOfColumns == 0) return;
 
                 var filter = new AutoFilter
-                {
-                    Reference = string.Format("{0}1:{1}1", GetColumnName(1), GetColumnName(numberOfColumns))
-                };
+                             {
+                                 Reference =
+                                     string.Format("{0}1:{1}1", GetColumnName(1), GetColumnName(numberOfColumns))
+                             };
 
                 var worksheet = doc.GetWorksheetByName(sheetName);
                 worksheet.AppendChild(filter);

@@ -28,10 +28,10 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
             foreach (var columnName in headers)
             {
                 var cell = new Cell
-                {
-                    DataType = CellValues.String,
-                    CellValue = new CellValue(columnName)
-                };
+                           {
+                               DataType = CellValues.String,
+                               CellValue = new CellValue(columnName)
+                           };
                 row.AppendChild(cell);
             }
             return row;

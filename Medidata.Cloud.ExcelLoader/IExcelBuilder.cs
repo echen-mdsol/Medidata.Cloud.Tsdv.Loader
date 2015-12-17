@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public interface IExcelBuilder
     {
-        IList<object> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder);
+        IList<SheetDefinitionModelBase> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder);
         void Save(Stream outStream);
     }
 }

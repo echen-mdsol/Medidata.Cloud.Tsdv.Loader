@@ -9,25 +9,23 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly IDictionary<Type, ICellTypeValueConverter> _converters;
 
-        public CellTypeValueConverterFactory() : this(null)
-        {
-        }
+        public CellTypeValueConverterFactory() : this(null) {}
 
         public CellTypeValueConverterFactory(ICellTypeValueConverter[] customConverters)
         {
             _converters = new ICellTypeValueConverter[]
-            {
-                new BooleanConverter(),
-                new NullableBooleanConverter(),
-                new DateTimeConverter(),
-                new NullableDateTimeConverter(),
-                new DoubleConverter(),
-                new FloatConverter(),
-                new DecimalConverter(),
-                new IntConverter(),
-                new LongConverter(),
-                new StringConverter()
-            }.ToDictionary(x => x.CSharpType, x => x);
+                          {
+                              new BooleanConverter(),
+                              new NullableBooleanConverter(),
+                              new DateTimeConverter(),
+                              new NullableDateTimeConverter(),
+                              new DoubleConverter(),
+                              new FloatConverter(),
+                              new DecimalConverter(),
+                              new IntConverter(),
+                              new LongConverter(),
+                              new StringConverter()
+                          }.ToDictionary(x => x.CSharpType, x => x);
 
             if (customConverters != null)
             {
