@@ -12,12 +12,16 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 
-        public SheetBuilder(ICellTypeValueConverterFactory converterFactory)
+        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, params ISheetBuilderDecorator[] decorators)
         {
             if (converterFactory == null) throw new ArgumentNullException("converterFactory");
             _converterFactory = converterFactory;
             BuildSheet = BuildSheetFunc;
             BuildRow = BuildRowFromExpandoObject;
+            foreach (var decorator in decorators)
+            {
+                this.Decorate(decorator);
+            }
         }
 
         public Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }

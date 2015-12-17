@@ -6,7 +6,7 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public interface IExcelBuilder
     {
-        IList<SheetModel> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder);
+        void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models, ISheetBuilder sheetBuilder);
         void Save(Stream outStream);
     }
 }

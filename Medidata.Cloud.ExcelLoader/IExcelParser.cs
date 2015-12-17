@@ -8,8 +8,7 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public interface IExcelParser : IDisposable
     {
-        IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition);
-        IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : SheetModel;
+        IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition, ISheetParser sheetParser);
         void Load(Stream stream);
     }
 }

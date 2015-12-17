@@ -6,7 +6,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    internal class SheetParser : ISheetParser
+    public class SheetParser : ISheetParser
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 

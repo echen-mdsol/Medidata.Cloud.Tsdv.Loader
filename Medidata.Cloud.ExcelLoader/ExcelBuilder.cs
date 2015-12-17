@@ -11,11 +11,12 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
 
-        public IList<SheetModel> DefineSheet(ISheetDefinition sheetDefinition, ISheetBuilder sheetBuilder)
+        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models, ISheetBuilder sheetBuilder)
         {
             var sheetName = sheetDefinition.Name;
-            _modelDic.Add(sheetName, new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder});
-            return _modelDic[sheetName];
+            var sheetModels = new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};
+            sheetModels.AddRange(models);
+            _modelDic.Add(sheetName, sheetModels);
         }
 
         public virtual void Save(Stream outStream)
