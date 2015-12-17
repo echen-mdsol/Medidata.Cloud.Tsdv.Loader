@@ -53,16 +53,5 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
                 yield return model;
             }
         }
-        //        public static IList<T> AddLike<T>(this IList<T> target, params object[] items) where T : class
-
-            //
-            //        {
-            //            return AddRange(target, items.Select(x => x.ActLike<T>()));
-            //        }
-            //
-            //        public static IEnumerable<T> ActAs<T>(this IEnumerable<ExpandoObject> target) where T : class
-            //        {
-            //            return target.Select(x => x.ActLike<T>());
-            //        }
     }
 }

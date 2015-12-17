@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using ImpromptuInterface;
 
 namespace Medidata.Cloud.ExcelLoader.Helpers
 {
@@ -22,7 +21,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         {
             try
             {
-                return Impromptu.InvokeGet(target, propName);
+                return GetPropertyDescriptor(target.GetType(), propName).GetValue(target);
             }
             catch
             {

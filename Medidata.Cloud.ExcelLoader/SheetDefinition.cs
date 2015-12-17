@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Medidata.Cloud.ExcelLoader.Helpers;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
@@ -26,7 +27,29 @@ namespace Medidata.Cloud.ExcelLoader
 
         public static ISheetDefinition Define<T>()
         {
-            return typeof(T).ToSheetDefinition();
+            var type = typeof(T);
+            var sheetNameAtt = type.GetCustomAttributes(false).OfType<SheetNameAttribute>().SingleOrDefault();
+            if (sheetNameAtt == null)
+                throw new Exception("Model type must have SheetNameAttribute");
+
+            var props = type.GetPropertyDescriptors();
+            var colDefinitions = from prop in props
+                                 let headerAtt = prop.Attributes.OfType<ColumnHeaderNameAttribute>().SingleOrDefault()
+                                 let ignoreAtt = prop.Attributes.OfType<ColumnIngoredAttribute>().SingleOrDefault()
+                                 where ignoreAtt == null
+                                 select new ColumnDefinition
+                                 {
+                                     PropertyName = prop.Name,
+                                     PropertyType = prop.PropertyType,
+                                     Header = headerAtt != null ? headerAtt.Header : prop.Name
+                                 };
+
+            var sheetDefinition = new SheetDefinition
+            {
+                Name = sheetNameAtt.SheetName,
+                ColumnDefinitions = colDefinitions
+            };
+            return sheetDefinition;
         }
 
         private IColumnDefinition PropToConDef(PropertyDescriptor property, string headerName = null)

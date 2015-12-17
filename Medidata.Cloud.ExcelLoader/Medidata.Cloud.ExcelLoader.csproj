@@ -45,9 +45,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnBuilder.cs" />
     <Compile Include="Helpers\IExtraProperty.cs" />
-    <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="SheetDecorators\ExpandoObjectSheetDecorator.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
     <Compile Include="SheetDefinitions\ColumnIngoredAttribute.cs" />
@@ -63,7 +61,6 @@
     <Compile Include="CellTypeConverters\DoubleConverter.cs" />
     <Compile Include="CellTypeConverters\FloatConverter.cs" />
     <Compile Include="CellTypeConverters\ICellTypeValueConverter.cs" />
-    <Compile Include="Helpers\TypeToSheetDefinitionExtensions.cs" />
     <Compile Include="ISheetBuilderDecorator.cs" />
     <Compile Include="Helpers\ListExtensions.cs" />
     <Compile Include="Helpers\SheetBuilderExtensions.cs" />
