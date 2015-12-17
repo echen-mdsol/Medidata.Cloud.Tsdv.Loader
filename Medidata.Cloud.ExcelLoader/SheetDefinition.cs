@@ -38,17 +38,17 @@ namespace Medidata.Cloud.ExcelLoader
                                  let ignoreAtt = prop.Attributes.OfType<ColumnIngoredAttribute>().SingleOrDefault()
                                  where ignoreAtt == null
                                  select new ColumnDefinition
-                                 {
-                                     PropertyName = prop.Name,
-                                     PropertyType = prop.PropertyType,
-                                     Header = headerAtt != null ? headerAtt.Header : prop.Name
-                                 };
+                                        {
+                                            PropertyName = prop.Name,
+                                            PropertyType = prop.PropertyType,
+                                            Header = headerAtt != null ? headerAtt.Header : prop.Name
+                                        };
 
             var sheetDefinition = new SheetDefinition
-            {
-                Name = sheetNameAtt.SheetName,
-                ColumnDefinitions = colDefinitions
-            };
+                                  {
+                                      Name = sheetNameAtt.SheetName,
+                                      ColumnDefinitions = colDefinitions
+                                  };
             return sheetDefinition;
         }
 

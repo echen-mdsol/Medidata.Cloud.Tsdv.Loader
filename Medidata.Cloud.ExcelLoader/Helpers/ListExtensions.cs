@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader.Helpers
@@ -27,12 +26,13 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         public static IEnumerable<T> OfSheetModel<T>(this IEnumerable<ExpandoObject> sourceList) where T : SheetModel
         {
             var type = typeof(T);
-            var ownProps = type.GetPropertyDescriptors().Where(p => !p.Attributes.OfType<ColumnIngoredAttribute>().Any()).ToList();
+            var ownProps =
+                type.GetPropertyDescriptors().Where(p => !p.Attributes.OfType<ColumnIngoredAttribute>().Any()).ToList();
             foreach (var item in sourceList)
             {
                 var model = Activator.CreateInstance<T>();
                 var extraPropsOwner = (SheetModel) model;
-                
+
                 foreach (var sourceKvp in item)
                 {
                     var sourcePropName = sourceKvp.Key;

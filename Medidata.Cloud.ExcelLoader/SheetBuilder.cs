@@ -20,8 +20,7 @@ namespace Medidata.Cloud.ExcelLoader
             BuildRow = BuildRowFromExpandoObject;
         }
 
-        public Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get;
-            set; }
+        public Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
 
         public Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
 
