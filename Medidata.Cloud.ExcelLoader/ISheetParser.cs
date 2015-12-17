@@ -6,7 +6,6 @@ namespace Medidata.Cloud.ExcelLoader
 {
     internal interface ISheetParser
     {
-        IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition);
-        void Load(Worksheet worksheet);
+        IEnumerable<ExpandoObject> GetObjects(Worksheet worksheet, ISheetDefinition sheetDefinition);
     }
 }

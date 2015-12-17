@@ -9,7 +9,6 @@ namespace Medidata.Cloud.ExcelLoader
     internal class SheetParser : ISheetParser
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
-        private Worksheet _worksheet;
 
         public SheetParser(ICellTypeValueConverterFactory converterFactory)
         {
@@ -17,15 +16,10 @@ namespace Medidata.Cloud.ExcelLoader
             _converterFactory = converterFactory;
         }
 
-        public IEnumerable<ExpandoObject> GetObjects(ISheetDefinition sheetDefinition)
+        public IEnumerable<ExpandoObject> GetObjects(Worksheet worksheet, ISheetDefinition sheetDefinition)
         {
-            var rows = _worksheet.Descendants<Row>().Skip(1);
+            var rows = worksheet.Descendants<Row>().Skip(1);
             return rows.Select(x => ParseFromRow(x, sheetDefinition));
-        }
-
-        public void Load(Worksheet worksheet)
-        {
-            _worksheet = worksheet;
         }
 
         private ExpandoObject ParseFromRow(Row row, ISheetDefinition sheetDefinition)

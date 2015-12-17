@@ -24,9 +24,7 @@ namespace Medidata.Cloud.ExcelLoader
         {
             var worksheet = _doc.GetWorksheetByName(sheetDefinition.Name);
             var worksheetParser = new SheetParser(_converterFactory);
-            worksheetParser.Load(worksheet);
-
-            return worksheetParser.GetObjects(sheetDefinition);
+            return worksheetParser.GetObjects(worksheet, sheetDefinition);
         }
 
         public IEnumerable<T> GetObjects<T>(ISheetDefinition sheetDefinition) where T : class
