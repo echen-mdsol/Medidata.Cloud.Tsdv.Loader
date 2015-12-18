@@ -54,11 +54,6 @@ namespace Medidata.Cloud.ExcelLoader
         {
             public ISheetDefinition SheetDefinition { get; set; }
             public ISheetBuilder SheetBuilder { get; set; }
-
-            public new void Add(SheetModel item)
-            {
-                base.Add(item);
-            }
         }
     }
 }
