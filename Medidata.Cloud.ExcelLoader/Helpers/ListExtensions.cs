@@ -23,12 +23,13 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
             return AddRange(target, items);
         }
 
-        public static IEnumerable<T> OfSheetModel<T>(this IEnumerable<ExpandoObject> sourceList) where T : SheetModel
+        internal static IEnumerable<T> CastToSheetModel<T>(this IEnumerable<ExpandoObject> target) where T : SheetModel
         {
             var type = typeof(T);
-            var ownProps =
-                type.GetPropertyDescriptors().Where(p => !p.Attributes.OfType<ColumnIngoredAttribute>().Any()).ToList();
-            foreach (var item in sourceList)
+            var ownProps = type.GetPropertyDescriptors()
+                               .Where(p => !p.Attributes.OfType<ColumnIngoredAttribute>().Any())
+                               .ToList();
+            foreach (var item in target)
             {
                 var model = Activator.CreateInstance<T>();
                 var extraPropsOwner = (SheetModel) model;

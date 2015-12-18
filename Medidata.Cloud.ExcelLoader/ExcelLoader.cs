@@ -73,7 +73,7 @@ namespace Medidata.Cloud.ExcelLoader
             var info = _sheetInfoDic[type];
             if (info.LoadedData != null)
             {
-                info.DataForSave = info.LoadedData.OfSheetModel<T>().ToList();
+                info.DataForSave = info.LoadedData.CastToSheetModel<T>().ToList();
             }
             else if (info.DataForSave == null)
             {

@@ -108,13 +108,14 @@ namespace Medidata.Cloud.ExcelLoader
             {
                 numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
             }
-            var columnRange = Enumerable.Range(0, numberOfColumns).Select(i => new Column
-                                                                               {
-                                                                                   Min = (uint) (i + 1),
-                                                                                   Max = (uint) (i + 1),
-                                                                                   Width = 20D,
-                                                                                   CustomWidth = true
-                                                                               });
+            var columnRange = Enumerable.Range(0, numberOfColumns)
+                                        .Select(i => new Column
+                                                     {
+                                                         Min = (uint) (i + 1),
+                                                         Max = (uint) (i + 1),
+                                                         Width = 20D,
+                                                         CustomWidth = true
+                                                     });
             var cs = new Columns();
             cs.Append(columnRange);
             return cs;
