@@ -10,12 +10,11 @@
     <projectUrl>https://github.com/junshao/Medidata.Cloud.Tsdv.Loader</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Medidata Excel builder and parser for unloading and downloading</description>
-    <releaseNotes>First version.</releaseNotes>
+    <releaseNotes>Added dynamic column feature and new loader APIs.</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>Excel builder parser loader</tags>
     <dependencies>
       <dependency id="DocumentFormat.OpenXml" version="2.5" />
-      <dependency id="ImpromptuInterface" version="6.2.2" />
     </dependencies>
   </metadata>
 </package>
