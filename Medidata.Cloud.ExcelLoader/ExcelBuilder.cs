@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using DocumentFormat.OpenXml;
@@ -14,6 +15,9 @@ namespace Medidata.Cloud.ExcelLoader
         public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models,
                              ISheetBuilder sheetBuilder)
         {
+            if (sheetDefinition == null) throw new ArgumentNullException("sheetDefinition");
+            if (models == null) throw new ArgumentNullException("models");
+            if (sheetBuilder == null) throw new ArgumentNullException("sheetBuilder");
             var sheetName = sheetDefinition.Name;
             var sheetModels = new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};
             sheetModels.AddRange(models);
@@ -22,6 +26,7 @@ namespace Medidata.Cloud.ExcelLoader
 
         public virtual void Save(Stream outStream)
         {
+            if (outStream == null) throw new ArgumentNullException("outStream");
             using (var doc = CreateDocument(outStream))
             {
                 WorkbookPart workbookPart;
@@ -47,6 +52,7 @@ namespace Medidata.Cloud.ExcelLoader
 
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
         {
+            if (outStream == null) throw new ArgumentNullException("outStream");
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
         }
 

@@ -18,6 +18,8 @@ namespace Medidata.Cloud.ExcelLoader
 
         public IEnumerable<ExpandoObject> GetObjects(Worksheet worksheet, ISheetDefinition sheetDefinition)
         {
+            if (worksheet == null) throw new ArgumentNullException("worksheet");
+            if (sheetDefinition == null) throw new ArgumentNullException("sheetDefinition");
             var rows = worksheet.Descendants<Row>().Skip(1);
             return rows.Select(x => ParseFromRow(x, sheetDefinition));
         }

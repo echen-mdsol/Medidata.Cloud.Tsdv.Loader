@@ -17,6 +17,7 @@ namespace Medidata.Cloud.ExcelLoader
 
         public ISheetDefinition AddColumn(IColumnDefinition columnDefinition)
         {
+            if (columnDefinition == null) throw new ArgumentNullException("columnDefinition");
             if (ColumnDefinitions.Any(x => x.PropertyName == columnDefinition.PropertyName))
             {
                 throw new Exception("Duplicate column binding to propety " + columnDefinition.PropertyName);
@@ -48,16 +49,6 @@ namespace Medidata.Cloud.ExcelLoader
                                       ColumnDefinitions = colDefinitions
                                   };
             return sheetDefinition;
-        }
-
-        private IColumnDefinition PropToConDef(PropertyDescriptor property, string headerName = null)
-        {
-            return new ColumnDefinition
-                   {
-                       PropertyType = property.PropertyType,
-                       PropertyName = property.Name,
-                       Header = headerName ?? property.Name
-                   };
         }
     }
 }

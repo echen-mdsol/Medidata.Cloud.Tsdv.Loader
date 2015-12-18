@@ -20,15 +20,19 @@ namespace Medidata.Cloud.ExcelLoader
         public ExcelLoader(IExcelBuilder builder, IExcelParser parser, ISheetBuilder sheetBuilder,
                            ISheetParser sheetParser)
         {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (parser == null) throw new ArgumentNullException("parser");
+            if (sheetBuilder == null) throw new ArgumentNullException("sheetBuilder");
+            if (sheetParser == null) throw new ArgumentNullException("sheetParser");
             _sheetBuilder = sheetBuilder;
             _sheetParser = sheetParser;
-
             _builder = builder;
             _parser = parser;
         }
 
         public virtual void Save(Stream outStream)
         {
+            if (outStream == null) throw new ArgumentNullException("outStream");
             foreach (var type in _sheetInfoDic.Keys)
             {
                 var info = _sheetInfoDic[type];
@@ -42,6 +46,7 @@ namespace Medidata.Cloud.ExcelLoader
 
         public virtual void Load(Stream source)
         {
+            if (source == null) throw new ArgumentNullException("source");
             _parser.Load(source);
 
             foreach (var type in _sheetInfoDic.Keys)

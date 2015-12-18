@@ -48,7 +48,6 @@ namespace Medidata.Cloud.ExcelLoader
             return row;
         }
 
-
         private object GetPropertyValue(SheetModel model, string propertyName)
         {
             var value = model.GetPropertyValue(propertyName);
@@ -58,7 +57,6 @@ namespace Medidata.Cloud.ExcelLoader
             }
             return value;
         }
-
 
         private void BuildSheetFunc(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition,
                                     SpreadsheetDocument doc)
