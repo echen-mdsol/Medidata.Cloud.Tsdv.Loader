@@ -11,7 +11,8 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
 
-        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models, ISheetBuilder sheetBuilder)
+        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models,
+                             ISheetBuilder sheetBuilder)
         {
             var sheetName = sheetDefinition.Name;
             var sheetModels = new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};

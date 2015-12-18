@@ -1,62 +1,92 @@
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
-using OfficeOpenXml;
+using Medidata.Cloud.ExcelLoader.Helpers;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public class ExcelLoader : IExcelLoader
     {
-        private ExcelPackage _package;
-        private readonly IDictionary<string, ISheetDecorator[]> _decoratorDic = new Dictionary<string, ISheetDecorator[]>(); 
+        private readonly IExcelBuilder _builder;
+        private readonly IExcelParser _parser;
+        private readonly ISheetBuilder _sheetBuilder;
+        private readonly IDictionary<Type, SheetInfo> _sheetInfoDic = new Dictionary<Type, SheetInfo>();
+        private readonly ISheetParser _sheetParser;
 
-        public ExcelLoader()
+        public ExcelLoader(IExcelBuilder builder, IExcelParser parser, ISheetBuilder sheetBuilder,
+                           ISheetParser sheetParser)
         {
-            _package = new ExcelPackage();
+            _sheetBuilder = sheetBuilder;
+            _sheetParser = sheetParser;
+
+            _builder = builder;
+            _parser = parser;
         }
 
-        public ISheetBroker Sheet(ISheetDefinition sheetDefinition, params ISheetDecorator[] decorators)
+        public virtual void Save(Stream outStream)
         {
-            var sheetName = sheetDefinition.Name;
-            var sheet = _package.Workbook.Worksheets.FirstOrDefault(x => x.Name == sheetName) ??
-                        _package.Workbook.Worksheets.Add(sheetName);
-
-            var sheetBroker = new SheetBroker();
-            sheetBroker.Worksheet = sheet;
-            sheetBroker.SheetDefinition = sheetDefinition;
-
-            _decoratorDic.Add(sheetName, decorators);
-
-            return sheetBroker;
-        }
-
-        public void Save(Stream outStream)
-        {
-            foreach (var kvp in _decoratorDic)
+            foreach (var type in _sheetInfoDic.Keys)
             {
-                var sheet = _package.Workbook.Worksheets[kvp.Key];
-                foreach (var decorator in kvp.Value)
-                {
-                    decorator.Decorate(sheet);
-                }
+                var info = _sheetInfoDic[type];
+                var sheetDef = info.SheetDefinition;
+                var sheetData = info.DataForSave ?? new List<SheetModel>();
+                _builder.AddSheet(sheetDef, sheetData.Cast<SheetModel>(), _sheetBuilder);
             }
-            _package.SaveAs(outStream);
+
+            _builder.Save(outStream);
         }
 
-        public void Load(Stream stream)
+        public virtual void Load(Stream source)
         {
-            Dispose();
-            _package = new ExcelPackage();
-            _package.Load(stream);
-        }
+            _parser.Load(source);
 
-        public void Dispose()
-        {
-            if (_package != null)
+            foreach (var type in _sheetInfoDic.Keys)
             {
-                _package.Dispose();
-                _package = null;
+                var info = _sheetInfoDic[type];
+                var sheetDef = info.SheetDefinition;
+                info.LoadedData = _parser.GetObjects(sheetDef, _sheetParser).ToList();
             }
+        }
+
+        public virtual ISheetDefinition SheetDefinition<T>() where T : SheetModel
+        {
+            SheetInfo info;
+            if (_sheetInfoDic.TryGetValue(typeof(T), out info))
+            {
+                return info.SheetDefinition;
+            }
+            var sheetDef = Cloud.ExcelLoader.SheetDefinition.Define<T>();
+            _sheetInfoDic.Add(typeof(T), new SheetInfo {SheetDefinition = sheetDef});
+            return sheetDef;
+        }
+
+        public virtual IList<T> SheetData<T>() where T : SheetModel
+        {
+            var type = typeof(T);
+
+            SheetDefinition<T>();
+
+            var info = _sheetInfoDic[type];
+            if (info.LoadedData != null)
+            {
+                info.DataForSave = info.LoadedData.OfSheetModel<T>().ToList();
+            }
+            else if (info.DataForSave == null)
+            {
+                info.DataForSave = new List<T>();
+            }
+            return (IList<T>) info.DataForSave;
+        }
+
+        private class SheetInfo
+        {
+            public ISheetDefinition SheetDefinition { get; set; }
+            public IList DataForSave { get; set; }
+            public IList<ExpandoObject> LoadedData { get; set; }
         }
     }
 }

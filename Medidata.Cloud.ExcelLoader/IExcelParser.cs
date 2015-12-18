@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {

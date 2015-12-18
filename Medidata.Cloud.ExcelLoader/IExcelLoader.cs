@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    public interface IExcelLoader : IDisposable
+    public interface IExcelLoader
     {
-        ISheetBroker Sheet(ISheetDefinition sheetDefinition, params ISheetDecorator[] decorators);
         void Save(Stream outStream);
-        void Load(Stream stream);
+        void Load(Stream source);
+        ISheetDefinition SheetDefinition<T>() where T : SheetModel;
+        IList<T> SheetData<T>() where T : SheetModel;
     }
 }
