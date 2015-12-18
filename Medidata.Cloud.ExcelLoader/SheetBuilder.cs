@@ -20,7 +20,7 @@ namespace Medidata.Cloud.ExcelLoader
             BuildRow = BuildRowFromExpandoObject;
             foreach (var decorator in decorators)
             {
-                this.Decorate(decorator);
+                decorator.Decorate(this);
             }
         }
 

@@ -40,7 +40,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\IExtraProperty.cs" />
+    <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
     <Compile Include="ICellTypeValueConverterFactory.cs" />
     <Compile Include="IExcelLoader.cs" />
     <Compile Include="SheetDecorators\ExpandoObjectSheetDecorator.cs" />
@@ -60,7 +60,6 @@
     <Compile Include="CellTypeConverters\ICellTypeValueConverter.cs" />
     <Compile Include="ISheetBuilderDecorator.cs" />
     <Compile Include="Helpers\ListExtensions.cs" />
-    <Compile Include="Helpers\SheetBuilderExtensions.cs" />
     <Compile Include="Helpers\SpreadsheetDocumentExtensions.cs" />
     <Compile Include="Helpers\StringValidationMessageExtensions.cs" />
     <Compile Include="CellTypeConverters\IntConverter.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="IExcelParser.cs" />
     <Compile Include="ISheetParser.cs" />
-    <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
     <Compile Include="SheetDecorators\AutoFilterSheetDecorator.cs" />
     <Compile Include="ColumnDefinition.cs" />
     <Compile Include="ExcelBuilder.cs" />
