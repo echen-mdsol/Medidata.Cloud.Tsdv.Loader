@@ -19,14 +19,8 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
 
         public static object GetPropertyValue(this object target, string propName)
         {
-            try
-            {
-                return GetPropertyDescriptor(target.GetType(), propName).GetValue(target);
-            }
-            catch
-            {
-                return null;
-            }
+            var prop = GetPropertyDescriptor(target.GetType(), propName);
+            return prop == null ? null : prop.GetValue(target);
         }
     }
 }
