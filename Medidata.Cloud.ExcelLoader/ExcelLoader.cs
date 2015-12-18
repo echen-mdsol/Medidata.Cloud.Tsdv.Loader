@@ -52,34 +52,16 @@ namespace Medidata.Cloud.ExcelLoader
             }
         }
 
-        public virtual ISheetDefinition SheetDefinition<T>() where T : SheetModel
+        public ISheetInfo<T> Sheet<T>() where T : SheetModel
         {
             SheetInfo info;
-            if (_sheetInfoDic.TryGetValue(typeof(T), out info))
+            if (!_sheetInfoDic.TryGetValue(typeof(T), out info))
             {
-                return info.SheetDefinition;
+                var sheetDef = Cloud.ExcelLoader.SheetDefinition.Define<T>();
+                info = new SheetInfo {SheetDefinition = sheetDef};
+                _sheetInfoDic.Add(typeof(T), info);
             }
-            var sheetDef = Cloud.ExcelLoader.SheetDefinition.Define<T>();
-            _sheetInfoDic.Add(typeof(T), new SheetInfo {SheetDefinition = sheetDef});
-            return sheetDef;
-        }
-
-        public virtual IList<T> SheetData<T>() where T : SheetModel
-        {
-            var type = typeof(T);
-
-            SheetDefinition<T>();
-
-            var info = _sheetInfoDic[type];
-            if (info.LoadedData != null)
-            {
-                info.DataForSave = info.LoadedData.CastToSheetModel<T>().ToList();
-            }
-            else if (info.DataForSave == null)
-            {
-                info.DataForSave = new List<T>();
-            }
-            return (IList<T>) info.DataForSave;
+            return new SheetInfo<T>(info);
         }
 
         private class SheetInfo
@@ -87,6 +69,37 @@ namespace Medidata.Cloud.ExcelLoader
             public ISheetDefinition SheetDefinition { get; set; }
             public IList DataForSave { get; set; }
             public IList<ExpandoObject> LoadedData { get; set; }
+        }
+
+        private class SheetInfo<T> : ISheetInfo<T> where T : SheetModel
+        {
+            private readonly SheetInfo _info;
+
+            public SheetInfo(SheetInfo info)
+            {
+                _info = info;
+            }
+
+            public IList<T> Data
+            {
+                get
+                {
+                    if (_info.LoadedData != null)
+                    {
+                        _info.DataForSave = _info.LoadedData.CastToSheetModel<T>().ToList();
+                    }
+                    else if (_info.DataForSave == null)
+                    {
+                        _info.DataForSave = new List<T>();
+                    }
+                    return (IList<T>)_info.DataForSave;
+                }
+            }
+
+            public ISheetDefinition Definition {
+                get { return _info.SheetDefinition; }
+            }
+
         }
     }
 }
