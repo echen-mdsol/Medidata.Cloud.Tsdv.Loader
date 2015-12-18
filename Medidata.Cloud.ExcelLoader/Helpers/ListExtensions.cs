@@ -26,9 +26,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
         internal static IEnumerable<T> CastToSheetModel<T>(this IEnumerable<ExpandoObject> target) where T : SheetModel
         {
             var type = typeof(T);
-            var ownProps = type.GetPropertyDescriptors()
-                               .Where(p => !p.Attributes.OfType<ColumnIngoredAttribute>().Any())
-                               .ToList();
+            var ownProps = type.GetPropertyDescriptors().ToList();
             foreach (var item in target)
             {
                 var model = Activator.CreateInstance<T>();
@@ -47,7 +45,7 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
                     else
                     {
                         // Extra property
-                        extraPropsOwner.ExtraProperties.Add(sourcePropName, sourcePropValue);
+                        extraPropsOwner.GetExtraProperties().Add(sourcePropName, sourcePropValue);
                     }
                 }
 

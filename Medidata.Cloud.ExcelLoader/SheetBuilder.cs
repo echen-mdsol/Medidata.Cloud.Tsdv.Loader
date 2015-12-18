@@ -54,7 +54,7 @@ namespace Medidata.Cloud.ExcelLoader
             var value = model.GetPropertyValue(propertyName);
             if (value == null)
             {
-                model.ExtraProperties.TryGetValue(propertyName, out value);
+                model.GetExtraProperties().TryGetValue(propertyName, out value);
             }
             return value;
         }

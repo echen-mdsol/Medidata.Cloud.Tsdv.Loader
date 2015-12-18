@@ -5,29 +5,28 @@ namespace Medidata.Cloud.ExcelLoader.SheetDefinitions
 {
     public abstract class SheetModel : DynamicObject
     {
-        protected SheetModel()
-        {
-            ExtraProperties = new ExpandoObject();
-        }
+        private readonly IDictionary<string, object> _extraProperties = new ExpandoObject();
 
-        [ColumnIngored]
-        public IDictionary<string, object> ExtraProperties { get; private set; }
+        public IDictionary<string, object> GetExtraProperties()
+        {
+            return _extraProperties;
+        }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            return ExtraProperties.TryGetValue(binder.Name, out result);
+            return _extraProperties.TryGetValue(binder.Name, out result);
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             var propName = binder.Name;
-            if (ExtraProperties.ContainsKey(propName))
+            if (_extraProperties.ContainsKey(propName))
             {
-                ExtraProperties[propName] = value;
+                _extraProperties[propName] = value;
             }
             else
             {
-                ExtraProperties.Add(propName, value);
+                _extraProperties.Add(propName, value);
             }
             return true;
         }
