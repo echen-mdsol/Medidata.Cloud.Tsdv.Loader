@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Medidata.Cloud.ExcelLoader.Helpers
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static IEnumerable<PropertyDescriptor> GetPropertyDescriptors(this Type type)
         {
