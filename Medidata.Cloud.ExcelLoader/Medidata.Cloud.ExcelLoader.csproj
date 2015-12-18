@@ -43,6 +43,7 @@
     <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
     <Compile Include="ICellTypeValueConverterFactory.cs" />
     <Compile Include="IExcelLoader.cs" />
+    <Compile Include="ISheetInfo.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
     <Compile Include="SheetDefinitions\SheetModel.cs" />
     <Compile Include="Helpers\CellStyleProvider.cs">

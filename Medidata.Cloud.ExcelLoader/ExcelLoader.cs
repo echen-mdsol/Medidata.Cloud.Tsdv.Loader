@@ -57,7 +57,7 @@ namespace Medidata.Cloud.ExcelLoader
             SheetInfo info;
             if (!_sheetInfoDic.TryGetValue(typeof(T), out info))
             {
-                var sheetDef = Cloud.ExcelLoader.SheetDefinition.Define<T>();
+                var sheetDef = SheetDefinition.Define<T>();
                 info = new SheetInfo {SheetDefinition = sheetDef};
                 _sheetInfoDic.Add(typeof(T), info);
             }
@@ -92,14 +92,14 @@ namespace Medidata.Cloud.ExcelLoader
                     {
                         _info.DataForSave = new List<T>();
                     }
-                    return (IList<T>)_info.DataForSave;
+                    return (IList<T>) _info.DataForSave;
                 }
             }
 
-            public ISheetDefinition Definition {
+            public ISheetDefinition Definition
+            {
                 get { return _info.SheetDefinition; }
             }
-
         }
     }
 }
