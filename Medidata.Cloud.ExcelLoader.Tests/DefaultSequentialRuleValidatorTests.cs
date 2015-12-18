@@ -25,11 +25,11 @@ namespace Medidata.Cloud.ExcelLoader.Tests
             var blockPlan = _fixture.Create<IExcelParser>();
             var messages = _fixture.CreateMany<IValidationError>().ToArray();
             var validationRules = new[]
-            {
-                CreateValidationRule(true, messages[0]),
-                CreateValidationRule(true, messages[1]),
-                CreateValidationRule(true, messages[2])
-            };
+                                  {
+                                      CreateValidationRule(true, messages[0]),
+                                      CreateValidationRule(true, messages[1]),
+                                      CreateValidationRule(true, messages[2])
+                                  };
 
             // Act
             var sut = new DefaultSequentialRuleValidator(validationRules);
@@ -49,11 +49,11 @@ namespace Medidata.Cloud.ExcelLoader.Tests
             var blockPlan = _fixture.Create<IExcelParser>();
             var messages = _fixture.CreateMany<IValidationMessage>().ToArray();
             var validationRules = new[]
-            {
-                CreateValidationRule(true, messages[0]),
-                CreateValidationRule(false, messages[1]),
-                CreateValidationRule(true, messages[2])
-            };
+                                  {
+                                      CreateValidationRule(true, messages[0]),
+                                      CreateValidationRule(false, messages[1]),
+                                      CreateValidationRule(true, messages[2])
+                                  };
 
             // Act
             var sut = new DefaultSequentialRuleValidator(validationRules);

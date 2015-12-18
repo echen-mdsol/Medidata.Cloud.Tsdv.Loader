@@ -9,41 +9,28 @@ namespace Medidata.Cloud.ExcelLoader
     {
         private readonly IDictionary<Type, ICellTypeValueConverter> _converters;
 
-        public CellTypeValueConverterFactory() : this(null)
-        {
-        }
+        public CellTypeValueConverterFactory() : this(null) {}
 
-        public CellTypeValueConverterFactory(ICellTypeValueConverter[] customConverters)
+        public CellTypeValueConverterFactory(params ICellTypeValueConverter[] converters)
         {
-            _converters = new ICellTypeValueConverter[]
+            IEnumerable<ICellTypeValueConverter> defaultConverters = new ICellTypeValueConverter[]
+                                                                     {
+                                                                         new BooleanConverter(),
+                                                                         new NullableBooleanConverter(),
+                                                                         new DateTimeConverter(),
+                                                                         new NullableDateTimeConverter(),
+                                                                         new DoubleConverter(),
+                                                                         new FloatConverter(),
+                                                                         new DecimalConverter(),
+                                                                         new IntConverter(),
+                                                                         new LongConverter(),
+                                                                         new StringConverter()
+                                                                     };
+            if (converters != null)
             {
-                new BooleanConverter(),
-                new NullableBooleanConverter(),
-                new DateTimeConverter(),
-                new NullableDateTimeConverter(),
-                new DoubleConverter(),
-                new FloatConverter(),
-                new DecimalConverter(),
-                new IntConverter(),
-                new LongConverter(),
-                new StringConverter()
-            }.ToDictionary(x => x.CSharpType, x => x);
-
-            if (customConverters != null)
-            {
-                foreach (var customConverter in customConverters)
-                {
-                    var type = customConverter.CSharpType;
-                    if (_converters.ContainsKey(type))
-                    {
-                        _converters[type] = customConverter;
-                    }
-                    else
-                    {
-                        _converters.Add(type, customConverter);
-                    }
-                }
+                defaultConverters = defaultConverters.Concat(converters);
             }
+            _converters = defaultConverters.ToDictionary(x => x.CSharpType, x => x);
         }
 
         public ICellTypeValueConverter Produce(Type type)

@@ -1,42 +1,32 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Medidata.Cloud.ExcelLoader.Helpers;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public class ExcelBuilder : IExcelBuilder
     {
-        private readonly ISheetBuilderFactory _sheetBuilderFactory;
-        private readonly IList<ISheetBuilder> _sheetBuilders = new List<ISheetBuilder>();
+        private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
 
-        public ExcelBuilder(ISheetBuilderFactory sheetBuilderFactory)
+        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models,
+                             ISheetBuilder sheetBuilder)
         {
-            if (sheetBuilderFactory == null) throw new ArgumentNullException("sheetBuilderFactory");
-            _sheetBuilderFactory = sheetBuilderFactory;
+            if (sheetDefinition == null) throw new ArgumentNullException("sheetDefinition");
+            if (models == null) throw new ArgumentNullException("models");
+            if (sheetBuilder == null) throw new ArgumentNullException("sheetBuilder");
+            var sheetName = sheetDefinition.Name;
+            var sheetModels = new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};
+            sheetModels.AddRange(models);
+            _modelDic.Add(sheetName, sheetModels);
         }
 
-        public virtual IList<T> AddSheet<T>(string sheetName, string[] columnNames) where T : class
+        public virtual void Save(Stream outStream)
         {
-            return AddSheet<T>(sheetName, columnNames != null, columnNames);
-        }
-
-        public virtual IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow = true) where T : class
-        {
-            return AddSheet<T>(sheetName, hasHeaderRow, null);
-        }
-
-        public virtual IList<T> GetSheet<T>(string sheetName) where T : class
-        {
-            return (IList<T>) _sheetBuilders.First(x => x.SheetName != sheetName);
-        }
-
-        public void Save(Stream outStream)
-        {
+            if (outStream == null) throw new ArgumentNullException("outStream");
             using (var doc = CreateDocument(outStream))
             {
                 WorkbookPart workbookPart;
@@ -50,39 +40,26 @@ namespace Medidata.Cloud.ExcelLoader
                     workbookPart = doc.WorkbookPart;
                 }
 
-                foreach (var sheet in _sheetBuilders)
+                foreach (var key in _modelDic.Keys)
                 {
-                    sheet.AttachTo(doc);
+                    var info = _modelDic[key];
+                    info.SheetBuilder.BuildSheet(info, info.SheetDefinition, doc);
                 }
 
                 workbookPart.Workbook.Save();
             }
         }
 
-
-        private IList<T> AddSheet<T>(string sheetName, bool hasHeaderRow, string[] columnNames)
-            where T : class
-        {
-            if (_sheetBuilders.Any(x => x.SheetName == sheetName))
-                throw new ArgumentException("Duplicate sheet name '" + sheetName + "'", "sheetName");
-
-            var worksheetBuilder = _sheetBuilderFactory.Create<T>();
-            worksheetBuilder.SheetName = sheetName;
-            worksheetBuilder.HasHeaderRow = hasHeaderRow;
-            worksheetBuilder.ColumnNames = GetColumnNames<T>(columnNames);
-            _sheetBuilders.Add(worksheetBuilder);
-
-            return (IList<T>) worksheetBuilder;
-        }
-
-        protected virtual string[] GetColumnNames<T>(string[] columnNames)
-        {
-            return columnNames ?? typeof (T).GetPropertyDescriptors().Select(p => p.Name).ToArray();
-        }
-
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
         {
+            if (outStream == null) throw new ArgumentNullException("outStream");
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
+        }
+
+        private class SheetModels : List<SheetModel>
+        {
+            public ISheetDefinition SheetDefinition { get; set; }
+            public ISheetBuilder SheetBuilder { get; set; }
         }
     }
 }

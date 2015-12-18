@@ -1,160 +1,122 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using ImpromptuInterface;
 using Medidata.Cloud.ExcelLoader.Helpers;
+using Medidata.Cloud.ExcelLoader.SheetDefinitions;
 
 namespace Medidata.Cloud.ExcelLoader
 {
-    public abstract class SheetBuilder<T> : List<T>, ISheetBuilder where T : class
+    public class SheetBuilder : ISheetBuilder
     {
         private readonly ICellTypeValueConverterFactory _converterFactory;
 
-        protected SpreadsheetDocument Document;
-
-        protected SheetBuilder(ICellTypeValueConverterFactory converterFactory)
+        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, params ISheetBuilderDecorator[] decorators)
         {
             if (converterFactory == null) throw new ArgumentNullException("converterFactory");
             _converterFactory = converterFactory;
+            BuildSheet = BuildSheetFunc;
+            BuildRow = BuildRowFromExpandoObject;
+            foreach (var decorator in decorators)
+            {
+                decorator.Decorate(this);
+            }
         }
 
-        public bool HasHeaderRow { get; set; }
-        public string SheetName { get; set; }
-        public string[] ColumnNames { get; set; }
+        public Action<IEnumerable<SheetModel>, ISheetDefinition, SpreadsheetDocument> BuildSheet { get; set; }
 
-        public void AttachTo(SpreadsheetDocument doc)
+        public Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
+
+
+        private Row BuildRowFromExpandoObject(SheetModel model, ISheetDefinition sheetDefinition)
+        {
+            var row = new Row();
+            foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
+            {
+                var propValue = GetPropertyValue(model, columnDefinition.PropertyName);
+                var converter = _converterFactory.Produce(columnDefinition.PropertyType);
+                var cellValue = converter.GetCellValue(propValue);
+                var cell = new Cell
+                           {
+                               DataType = converter.CellType,
+                               CellValue = new CellValue(cellValue)
+                           };
+                row.AppendChild(cell);
+            }
+
+            return row;
+        }
+
+        private object GetPropertyValue(SheetModel model, string propertyName)
+        {
+            var value = model.GetPropertyValue(propertyName);
+            if (value == null)
+            {
+                model.GetExtraProperties().TryGetValue(propertyName, out value);
+            }
+            return value;
+        }
+
+        private void BuildSheetFunc(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition,
+                                    SpreadsheetDocument doc)
         {
             if (doc == null) throw new ArgumentNullException("doc");
-            Document = doc;
             var sheets = doc.WorkbookPart.Workbook.Sheets ?? doc.WorkbookPart.Workbook.AppendChild(new Sheets());
 
             var worksheetPart = doc.WorkbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = CreateWorksheet();
+            worksheetPart.Worksheet = CreateWorksheet(models, sheetDefinition);
 
-            var sheetId = (uint) (1 + sheets.Count());
+            var sheetId = 1 + sheets.Count();
+            var sheetName = sheetDefinition.Name;
             var sheet = new Sheet
-            {
-                Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
-                SheetId = sheetId,
-                Name = SheetName
-            };
+                        {
+                            Id = doc.WorkbookPart.GetIdOfPart(worksheetPart),
+                            SheetId = (uint) sheetId,
+                            Name = sheetName
+                        };
 
             // Use this attribute to retrieve the worksheet.
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(SheetName);
+            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
             sheet.SetAttribute(attribute);
 
             sheets.Append(sheet);
         }
 
-        protected virtual Worksheet CreateWorksheet()
+        private Worksheet CreateWorksheet(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
-            var sheetData = GetSheetData();
-            var columns = GetColumns(sheetData);
-            return columns != null && columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
+            var sheetData = CreateSheetData(models, sheetDefinition);
+            var columns = CreateColumns(sheetData);
+            return columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
         }
 
-        private Columns GetColumns(SheetData sheetData)
+        private SheetData CreateSheetData(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
+        {
+            var sheetData = new SheetData();
+            var rows = models.Select(x => BuildRow(x, sheetDefinition));
+            sheetData.Append(rows);
+
+            return sheetData;
+        }
+
+        private Columns CreateColumns(SheetData sheetData)
         {
             var numberOfColumns = 0;
             if (sheetData.Descendants<Row>().Any())
             {
                 numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
             }
+            var columnRange = Enumerable.Range(0, numberOfColumns)
+                                        .Select(i => new Column
+                                                     {
+                                                         Min = (uint) (i + 1),
+                                                         Max = (uint) (i + 1),
+                                                         Width = 20D,
+                                                         CustomWidth = true
+                                                     });
             var cs = new Columns();
-            for (var i = 0; i < numberOfColumns; i++)
-            {
-                var c = new Column
-                {
-                    Min = (uint) (i + 1),
-                    Max = (uint) (i + 1),
-                    Width = 20D,
-                    CustomWidth = true
-                };
-                cs.Append(c);
-            }
+            cs.Append(columnRange);
             return cs;
-        }
-
-        protected virtual Cell CreateCell(T model, PropertyDescriptor property)
-        {
-            var cell = new Cell();
-            if (model != null)
-            {
-                var propValue = GetPropertyValue(property, model);
-                var converter = _converterFactory.Produce(property.PropertyType);
-                var cellType = converter.CellType;
-                var cellValue = converter.GetCellValue(propValue);
-                cell.DataType = cellType;
-
-                if (cellType == CellValues.InlineString)
-                {
-                    cell.InlineString = new InlineString {Text = new Text(cellValue)};
-                }
-                else
-                {
-                    cell.CellValue = new CellValue(cellValue);
-                }
-            }
-            return cell;
-        }
-
-        //TODO: Find a way to change the catch-and-release logic, it's dirty and it might hurt the performance
-        private object GetPropertyValue(PropertyDescriptor property, object target)
-        {
-            try
-            {
-                return property.GetValue(target);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-
-        private Row CreateRow(T model)
-        {
-            var row = new Row();
-            var properties = model.GetType().GetPropertyDescriptors();
-            foreach (var prop in properties)
-            {
-                var cell = CreateCell(model, prop);
-                row.AppendChild(cell);
-            }
-            return row;
-        }
-
-        protected virtual Row CreateHeaderRow()
-        {
-            var row = new Row();
-            foreach (var columnName in ColumnNames)
-            {
-                var cell = new Cell
-                {
-                    DataType = CellValues.String,
-                    CellValue = new CellValue(columnName),
-                };
-                row.AppendChild(cell);
-            }
-            return row;
-        }
-
-        private SheetData GetSheetData()
-        {
-            var sheetData = new SheetData();
-            if (HasHeaderRow)
-            {
-                var headerRow = CreateHeaderRow();
-                sheetData.Append(headerRow);
-            }
-
-            var rows = this.Select(x => x ?? x.ActLike<T>()).Select(CreateRow);
-            sheetData.Append(rows);
-
-            return sheetData;
         }
     }
 }

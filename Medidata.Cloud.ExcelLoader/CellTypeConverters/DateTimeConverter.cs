@@ -6,9 +6,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     internal class DateTimeConverter : CellTypeValueBaseConverter<DateTime>
     {
         public DateTimeConverter()
-            : base(CellValues.Number)
-        {
-        }
+            : base(CellValues.Number) {}
 
         protected override string GetCellValueImpl(DateTime csharpValue)
         {

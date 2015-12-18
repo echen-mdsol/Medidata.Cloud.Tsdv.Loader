@@ -6,9 +6,7 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     internal class BooleanConverter : CellTypeValueBaseConverter<bool>
     {
         public BooleanConverter()
-            : base(CellValues.Boolean)
-        {
-        }
+            : base(CellValues.Boolean) {}
 
         protected override string GetCellValueImpl(bool csharpValue)
         {

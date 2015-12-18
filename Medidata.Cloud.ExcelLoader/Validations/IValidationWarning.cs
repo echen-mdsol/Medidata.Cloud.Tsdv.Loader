@@ -1,6 +1,4 @@
 namespace Medidata.Cloud.ExcelLoader.Validations
 {
-    public interface IValidationWarning : IValidationMessage
-    {
-    }
+    public interface IValidationWarning : IValidationMessage {}
 }
