@@ -33,9 +33,8 @@ namespace Medidata.Cloud.ExcelLoader
         public virtual void Save(Stream outStream)
         {
             if (outStream == null) throw new ArgumentNullException("outStream");
-            foreach (var type in _sheetInfoDic.Keys)
+            foreach (var info in _sheetInfoDic.Values)
             {
-                var info = _sheetInfoDic[type];
                 var sheetDef = info.SheetDefinition;
                 var sheetData = info.DataForSave ?? new List<SheetModel>();
                 _builder.AddSheet(sheetDef, sheetData.Cast<SheetModel>(), _sheetBuilder);
@@ -49,15 +48,14 @@ namespace Medidata.Cloud.ExcelLoader
             if (source == null) throw new ArgumentNullException("source");
             _parser.Load(source);
 
-            foreach (var type in _sheetInfoDic.Keys)
+            foreach (var info in _sheetInfoDic.Values)
             {
-                var info = _sheetInfoDic[type];
                 var sheetDef = info.SheetDefinition;
                 info.LoadedData = _parser.GetObjects(sheetDef, _sheetParser).ToList();
             }
         }
 
-        public ISheetInfo<T> Sheet<T>() where T : SheetModel
+        public virtual ISheetInfo<T> Sheet<T>() where T : SheetModel
         {
             SheetInfo info;
             if (!_sheetInfoDic.TryGetValue(typeof(T), out info))
