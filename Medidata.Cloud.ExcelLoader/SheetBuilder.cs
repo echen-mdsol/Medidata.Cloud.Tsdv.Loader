@@ -35,13 +35,17 @@ namespace Medidata.Cloud.ExcelLoader
             foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
             {
                 var propValue = GetPropertyValue(model, columnDefinition.PropertyName);
-                var converter = _converterFactory.Produce(columnDefinition.PropertyType);
-                var cellValue = converter.GetCellValue(propValue);
+                CellValues cellType;
+                string cellValue;
+                _converterFactory.GetCellTypeAndValue(propValue, out cellType, out cellValue);
                 var cell = new Cell
                            {
-                               DataType = converter.CellType,
+                               DataType = cellType,
                                CellValue = new CellValue(cellValue)
                            };
+                cell.AddMdsolAttribute("type",
+                    propValue == null ? typeof(object).FullName : propValue.GetType().FullName);
+                cell.AddMdsolAttribute("propertyName", columnDefinition.PropertyName);
                 row.AppendChild(cell);
             }
 
@@ -77,8 +81,7 @@ namespace Medidata.Cloud.ExcelLoader
                         };
 
             // Use this attribute to retrieve the worksheet.
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
-            sheet.SetAttribute(attribute);
+            sheet.AddMdsolAttribute("name", sheetName);
 
             sheets.Append(sheet);
         }

@@ -1,24 +1,45 @@
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class NullableBooleanConverter : CellTypeValueBaseConverter<bool?>
     {
-        public NullableBooleanConverter()
-            : base(CellValues.Boolean) {}
+        private readonly BooleanConverter _booleanConverter;
 
-        protected override string GetCellValueImpl(bool? csharpValue)
+        public NullableBooleanConverter()
+            : base(CellValues.Boolean)
         {
-            return csharpValue.HasValue ? BooleanValue.FromBoolean(csharpValue.Value) : BooleanValue.FromBoolean(false);
+            _booleanConverter = new BooleanConverter();
         }
 
-        protected override bool? GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCellValueImpl(bool? csharpValue, out string cellValue)
         {
-            if (cellValue == "1") return true;
-            if (cellValue == "0") return false;
-            bool value;
-            return bool.TryParse(cellValue, out value) ? value : (bool?) null;
+            cellValue = null;
+            if (csharpValue.HasValue)
+            {
+                return _booleanConverter.TryConvertToCellValue(csharpValue, out cellValue);
+            }
+
+            return true;
+        }
+
+        protected override bool TryGetCSharpValueImpl(string cellValue, out bool? csharpValue)
+        {
+            csharpValue = null;
+            if (string.IsNullOrEmpty(cellValue))
+            {
+                return true;
+            }
+
+            object value;
+            var result = _booleanConverter.TryConvertToCSharpValue(cellValue, out value);
+            if (result)
+            {
+                csharpValue = (bool) value;
+                return true;
+            }
+
+            return false;
         }
     }
 }

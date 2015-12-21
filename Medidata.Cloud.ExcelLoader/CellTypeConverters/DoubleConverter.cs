@@ -2,11 +2,9 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class DoubleConverter : NumberConverter<double>
     {
-        protected override double GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out double csharpValue)
         {
-            double value;
-            double.TryParse(cellValue, out value);
-            return value;
+            return double.TryParse(cellValue, out csharpValue);
         }
     }
 }

@@ -2,11 +2,15 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class IntConverter : NumberConverter<int>
     {
-        protected override int GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out int csharpValue)
         {
-            int value;
-            int.TryParse(cellValue, out value);
-            return value;
+            if (string.IsNullOrWhiteSpace(cellValue) || cellValue.Contains("."))
+            {
+                csharpValue = 0;
+                return false;
+            }
+
+            return int.TryParse(cellValue, out csharpValue);
         }
     }
 }

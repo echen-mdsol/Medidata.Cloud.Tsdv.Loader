@@ -6,5 +6,11 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     {
         protected NumberConverter()
             : base(CellValues.Number) {}
+
+        protected override bool TryGetCellValueImpl(T csharpValue, out string cellValue)
+        {
+            cellValue = csharpValue.ToString();
+            return true;
+        }
     }
 }

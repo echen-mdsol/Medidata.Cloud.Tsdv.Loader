@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
@@ -20,12 +21,11 @@ namespace Medidata.Cloud.ExcelLoader
         {
             if (worksheet == null) throw new ArgumentNullException("worksheet");
             if (sheetDefinition == null) throw new ArgumentNullException("sheetDefinition");
-            var headerRow = worksheet.Descendants<Row>().First();
             var rows = worksheet.Descendants<Row>().Skip(1);
-            return rows.Select(x => ParseFromRow(x, sheetDefinition, headerRow));
+            return rows.Select(x => ParseFromRow(x, sheetDefinition));
         }
 
-        private ExpandoObject ParseFromRow(Row row, ISheetDefinition sheetDefinition, Row headerRow)
+        private ExpandoObject ParseFromRow(Row row, ISheetDefinition sheetDefinition)
         {
             IDictionary<string, object> expando = new ExpandoObject();
             var cells = row.Elements<Cell>().ToList();
@@ -37,18 +37,15 @@ namespace Medidata.Cloud.ExcelLoader
                 var cell = index < cells.Count ? cells[index] : null;
                 string propName;
                 object propValue;
-                if (cell != null && colDef != null)
+                if (cell != null)
                 {
-                    ParsePropNameAndValue(cell, colDef, out propName, out propValue);
+                    propName = cell.GetMdsolAttribute("propertyName");
+                    propValue = _converterFactory.GetCSharpValue(cell);
                 }
                 else if (colDef != null)
                 {
-                    ParsePropNameAndValue(colDef, out propName, out propValue);
-                }
-                else if (cell != null)
-                {
-                    var headerCell = headerRow.Elements<Cell>().ElementAt(index);
-                    ParsePropNameAndValue(cell, headerCell, out propName, out propValue);
+                    propName = colDef.PropertyName;
+                    propValue = null;
                 }
                 else
                 {
@@ -57,27 +54,7 @@ namespace Medidata.Cloud.ExcelLoader
 
                 expando.Add(propName, propValue);
             }
-            return (ExpandoObject)expando;
-        }
-
-        private void ParsePropNameAndValue(Cell cell, IColumnDefinition colDef, out string propName, out object propValue)
-        {
-            var converter = _converterFactory.Produce(colDef.PropertyType);
-            propName = colDef.PropertyName;
-            propValue = converter.GetCSharpValue(cell.InnerText);
-        }
-
-        private void ParsePropNameAndValue(IColumnDefinition colDef, out string propName, out object propValue)
-        {
-            propName = colDef.PropertyName;
-            propValue = null;
-        }
-
-        private void ParsePropNameAndValue(Cell cell, Cell headerCell, out string propName, out object propValue)
-        {
-            var converter = _converterFactory.Produce(cell.DataType);
-            propName = headerCell.InnerText;
-            propValue = converter.GetCSharpValue(cell.InnerText);
+            return (ExpandoObject) expando;
         }
     }
 }

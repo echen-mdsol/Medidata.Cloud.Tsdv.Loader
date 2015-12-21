@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -9,20 +8,44 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
         protected CellTypeValueBaseConverter(CellValues cellType)
         {
             CellType = cellType;
-            CSharpType = typeof(T);
         }
 
         public CellValues CellType { get; private set; }
-        public Type CSharpType { get; private set; }
 
-        public string GetCellValue(object csharpValue)
+        public bool TryConvertToCellValue(object csharpValue, out string cellValue)
         {
-            return csharpValue == null ? null : GetCellValueImpl((T) csharpValue);
+            if (csharpValue == null)
+            {
+                cellValue = null;
+                return true;
+            }
+
+            T value;
+            try
+            {
+                value = (T) csharpValue;
+            }
+            catch
+            {
+                cellValue = null;
+                return false;
+            }
+
+            return TryGetCellValueImpl(value, out cellValue);
         }
 
-        public object GetCSharpValue(string cellValue)
+        public bool TryConvertToCSharpValue(string cellValue, out object csharpValue)
         {
-            return GetCSharpValueImpl(cellValue);
+            T value;
+            var result = TryGetCSharpValueImpl(cellValue, out value);
+            if (result)
+            {
+                csharpValue = value;
+                return true;
+            }
+
+            csharpValue = null;
+            return false;
         }
 
         protected bool IsNumeric(string value)
@@ -35,11 +58,8 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
             return isNumericRegex.IsMatch(value);
         }
 
-        protected virtual string GetCellValueImpl(T csharpValue)
-        {
-            return csharpValue.ToString();
-        }
+        protected abstract bool TryGetCellValueImpl(T csharpValue, out string cellValue);
 
-        protected abstract T GetCSharpValueImpl(string cellValue);
+        protected abstract bool TryGetCSharpValueImpl(string cellValue, out T csharpValue);
     }
 }

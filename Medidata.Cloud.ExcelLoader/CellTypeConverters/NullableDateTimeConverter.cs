@@ -5,29 +5,41 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class NullableDateTimeConverter : CellTypeValueBaseConverter<DateTime?>
     {
-        public NullableDateTimeConverter()
-            : base(CellValues.String) {}
+        private readonly DateTimeConverter _dateTimeConverter;
 
-        protected override string GetCellValueImpl(DateTime? csharpValue)
+        public NullableDateTimeConverter()
+            : base(CellValues.String)
         {
-            return csharpValue.HasValue ? csharpValue.Value.ToString("MM/dd/yyyy") : string.Empty;
+            _dateTimeConverter = new DateTimeConverter();
         }
 
-        protected override DateTime? GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCellValueImpl(DateTime? csharpValue, out string cellValue)
         {
-            DateTime outDt;
-            if (DateTime.TryParse(cellValue, out outDt))
+            cellValue = null;
+            if (csharpValue.HasValue)
             {
-                return outDt;
+                return _dateTimeConverter.TryConvertToCellValue(csharpValue, out cellValue);
             }
-            //Check and handle OLE Automation date time
-            if (IsNumeric(cellValue))
+            return true;
+        }
+
+        protected override bool TryGetCSharpValueImpl(string cellValue, out DateTime? csharpValue)
+        {
+            csharpValue = null;
+            if (string.IsNullOrEmpty(cellValue))
             {
-                double outNum = 0;
-                double.TryParse(cellValue, out outNum);
-                return DateTime.FromOADate(outNum);
+                return true;
             }
-            return null;
+
+            object value;
+            var result = _dateTimeConverter.TryConvertToCSharpValue(cellValue, out value);
+            if (result)
+            {
+                csharpValue = (DateTime) value;
+                return true;
+            }
+
+            return false;
         }
     }
 }

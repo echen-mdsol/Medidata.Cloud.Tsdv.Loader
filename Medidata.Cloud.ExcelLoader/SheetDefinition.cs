@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Medidata.Cloud.ExcelLoader.Helpers;
 using Medidata.Cloud.ExcelLoader.SheetDefinitions;
@@ -39,7 +38,6 @@ namespace Medidata.Cloud.ExcelLoader
                                  select new ColumnDefinition
                                         {
                                             PropertyName = prop.Name,
-                                            PropertyType = prop.PropertyType,
                                             Header = headerAtt != null ? headerAtt.Header : prop.Name
                                         };
 
