@@ -45,8 +45,14 @@ namespace Medidata.Cloud.ExcelLoader
                     info.SheetBuilder.BuildSheet(info, info.SheetDefinition, doc);
                 }
 
+                BeforeSaveFunc();
+
                 workbookPart.Workbook.Save();
             }
+        }
+
+        protected virtual void BeforeSaveFunc()
+        {
         }
 
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
