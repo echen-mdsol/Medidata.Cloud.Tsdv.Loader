@@ -9,12 +9,12 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public class SheetParser : ISheetParser
     {
-        private readonly ICellTypeValueConverterFactory _converterFactory;
+        private readonly ICellTypeValueConverterManager _converterManager;
 
-        public SheetParser(ICellTypeValueConverterFactory converterFactory)
+        public SheetParser(ICellTypeValueConverterManager converterManager)
         {
-            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
-            _converterFactory = converterFactory;
+            if (converterManager == null) throw new ArgumentNullException("converterManager");
+            _converterManager = converterManager;
         }
 
         public IEnumerable<ExpandoObject> GetObjects(Worksheet worksheet, ISheetDefinition sheetDefinition)
@@ -40,7 +40,7 @@ namespace Medidata.Cloud.ExcelLoader
                 if (cell != null)
                 {
                     propName = cell.GetMdsolAttribute("propertyName");
-                    propValue = _converterFactory.GetCSharpValue(cell);
+                    propValue = _converterManager.GetCSharpValue(cell);
                 }
                 else if (colDef != null)
                 {

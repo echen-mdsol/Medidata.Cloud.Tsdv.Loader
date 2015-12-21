@@ -10,12 +10,12 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public class SheetBuilder : ISheetBuilder
     {
-        private readonly ICellTypeValueConverterFactory _converterFactory;
+        private readonly ICellTypeValueConverterManager _converterManager;
 
-        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, params ISheetBuilderDecorator[] decorators)
+        public SheetBuilder(ICellTypeValueConverterManager converterManager, params ISheetBuilderDecorator[] decorators)
         {
-            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
-            _converterFactory = converterFactory;
+            if (converterManager == null) throw new ArgumentNullException("converterManager");
+            _converterManager = converterManager;
             BuildSheet = BuildSheetFunc;
             BuildRow = BuildRowFromExpandoObject;
             foreach (var decorator in decorators)
@@ -28,7 +28,6 @@ namespace Medidata.Cloud.ExcelLoader
 
         public Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
 
-
         private Row BuildRowFromExpandoObject(SheetModel model, ISheetDefinition sheetDefinition)
         {
             var row = new Row();
@@ -37,7 +36,7 @@ namespace Medidata.Cloud.ExcelLoader
                 var propValue = GetPropertyValue(model, columnDefinition.PropertyName);
                 CellValues cellType;
                 string cellValue;
-                _converterFactory.GetCellTypeAndValue(propValue, out cellType, out cellValue);
+                _converterManager.GetCellTypeAndValue(propValue, out cellType, out cellValue);
                 var cell = new Cell
                            {
                                DataType = cellType,

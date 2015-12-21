@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Helpers\OpenXmlElementExtensions.cs" />
     <Compile Include="Helpers\SheetDefinitionExtensions.cs" />
-    <Compile Include="ICellTypeValueConverterFactory.cs" />
+    <Compile Include="ICellTypeValueConverterManager.cs" />
     <Compile Include="IExcelLoader.cs" />
     <Compile Include="ISheetInfo.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
@@ -51,7 +51,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
-    <Compile Include="CellTypeValueConverterFactory.cs" />
+    <Compile Include="CellTypeValueConverterManager.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />
     <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\DecimalConverter.cs" />
