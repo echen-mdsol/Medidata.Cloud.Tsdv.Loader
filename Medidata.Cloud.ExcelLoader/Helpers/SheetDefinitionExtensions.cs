@@ -4,7 +4,7 @@
     {
         public static ISheetDefinition AddColumn(this ISheetDefinition target, string propertyName)
         {
-            return AddColumn(target, propertyName, propertyName);
+            return AddColumn(target, propertyName, null);
         }
 
         public static ISheetDefinition AddColumn(this ISheetDefinition target, string propertyName, string header)
