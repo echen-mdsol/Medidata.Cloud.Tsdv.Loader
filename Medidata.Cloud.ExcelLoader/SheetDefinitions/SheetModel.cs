@@ -5,7 +5,7 @@ namespace Medidata.Cloud.ExcelLoader.SheetDefinitions
 {
     public abstract class SheetModel : DynamicObject
     {
-        private readonly IDictionary<string, object> _extraProperties = new ExpandoObject();
+        private readonly IDictionary<string, object> _extraProperties = new Dictionary<string, object>();
 
         public IDictionary<string, object> GetExtraProperties()
         {

@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public class CellTypeValueConverterFactory : ICellTypeValueConverterFactory
     {
-        private readonly IDictionary<Type, ICellTypeValueConverter> _converters;
+        private readonly IEnumerable<ICellTypeValueConverter> _converters;
 
         public CellTypeValueConverterFactory() : this(null) {}
 
         public CellTypeValueConverterFactory(params ICellTypeValueConverter[] converters)
         {
-            IEnumerable<ICellTypeValueConverter> defaultConverters = new ICellTypeValueConverter[]
+            _converters = new ICellTypeValueConverter[]
                                                                      {
                                                                          new BooleanConverter(),
                                                                          new NullableBooleanConverter(),
@@ -28,14 +29,18 @@ namespace Medidata.Cloud.ExcelLoader
                                                                      };
             if (converters != null)
             {
-                defaultConverters = defaultConverters.Concat(converters);
+                _converters = _converters.Concat(converters);
             }
-            _converters = defaultConverters.ToDictionary(x => x.CSharpType, x => x);
         }
 
         public ICellTypeValueConverter Produce(Type type)
         {
-            return _converters[type];
+            return _converters.First(x => x.CSharpType == type);
+        }
+
+        public ICellTypeValueConverter Produce(CellValues cellType)
+        {
+            return _converters.First(x => x.CellType == cellType);
         }
     }
 }
