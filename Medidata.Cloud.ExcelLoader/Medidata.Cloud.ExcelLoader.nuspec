@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/junshao/Medidata.Cloud.Tsdv.Loader</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Medidata Excel builder and parser for unloading and downloading</description>
-    <releaseNotes>Better experience for APIs.</releaseNotes>
+    <releaseNotes>New APIs and sheet decrorator chain.</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>Excel builder parser loader</tags>
     <dependencies>
