@@ -12,14 +12,9 @@ namespace Medidata.Cloud.ExcelLoader.Helpers
             return TypeDescriptor.GetProperties(type).OfType<PropertyDescriptor>();
         }
 
-        public static PropertyDescriptor GetPropertyDescriptor(this Type type, string propertyName)
+        public static object GetPropertyValue(this object target, string propertyName)
         {
-            return GetPropertyDescriptors(type).FirstOrDefault(x => x.Name == propertyName);
-        }
-
-        public static object GetPropertyValue(this object target, string propName)
-        {
-            var prop = GetPropertyDescriptor(target.GetType(), propName);
+            var prop = GetPropertyDescriptors(target.GetType()).FirstOrDefault(x => x.Name == propertyName);
             return prop == null ? null : prop.GetValue(target);
         }
     }

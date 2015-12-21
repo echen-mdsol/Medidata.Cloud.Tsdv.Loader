@@ -47,9 +47,6 @@
     <Compile Include="ISheetInfo.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
     <Compile Include="SheetDefinitions\SheetModel.cs" />
-    <Compile Include="Helpers\CellStyleProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
     <Compile Include="CellTypeValueConverterManager.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />

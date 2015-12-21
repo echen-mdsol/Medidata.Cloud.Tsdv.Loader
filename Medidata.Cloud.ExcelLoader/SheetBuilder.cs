@@ -79,9 +79,6 @@ namespace Medidata.Cloud.ExcelLoader
                             Name = sheetName
                         };
 
-            // Use this attribute to retrieve the worksheet.
-            sheet.AddMdsolAttribute("name", sheetName);
-
             sheets.Append(sheet);
         }
 
