@@ -85,8 +85,7 @@ namespace Medidata.Cloud.ExcelLoader
         private Worksheet CreateWorksheet(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
             var sheetData = CreateSheetData(models, sheetDefinition);
-            var columns = CreateColumns(sheetData);
-            return columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
+            return new Worksheet(sheetData);
         }
 
         private SheetData CreateSheetData(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
@@ -96,26 +95,6 @@ namespace Medidata.Cloud.ExcelLoader
             sheetData.Append(rows);
 
             return sheetData;
-        }
-
-        private Columns CreateColumns(SheetData sheetData)
-        {
-            var numberOfColumns = 0;
-            if (sheetData.Descendants<Row>().Any())
-            {
-                numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
-            }
-            var columnRange = Enumerable.Range(0, numberOfColumns)
-                                        .Select(i => new Column
-                                                     {
-                                                         Min = (uint) (i + 1),
-                                                         Max = (uint) (i + 1),
-                                                         Width = 20D,
-                                                         CustomWidth = true
-                                                     });
-            var cs = new Columns();
-            cs.Append(columnRange);
-            return cs;
         }
     }
 }
