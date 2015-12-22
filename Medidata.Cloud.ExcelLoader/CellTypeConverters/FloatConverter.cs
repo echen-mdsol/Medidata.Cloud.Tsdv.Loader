@@ -2,11 +2,9 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class FloatConverter : NumberConverter<float>
     {
-        protected override float GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out float csharpValue)
         {
-            float value;
-            float.TryParse(cellValue, out value);
-            return value;
+            return float.TryParse(cellValue, out csharpValue);
         }
     }
 }

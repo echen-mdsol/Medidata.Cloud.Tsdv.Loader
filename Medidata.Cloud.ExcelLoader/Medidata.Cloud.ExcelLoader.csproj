@@ -37,20 +37,20 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\SpreadsheetAttributeHelper.cs" />
-    <Compile Include="ICellTypeValueConverterFactory.cs" />
+    <Compile Include="Helpers\OpenXmlElementExtensions.cs" />
+    <Compile Include="Helpers\SheetDefinitionExtensions.cs" />
+    <Compile Include="ICellTypeValueConverterManager.cs" />
     <Compile Include="IExcelLoader.cs" />
     <Compile Include="ISheetInfo.cs" />
     <Compile Include="SheetDefinitions\ColumnHeaderNameAttribute.cs" />
     <Compile Include="SheetDefinitions\SheetModel.cs" />
-    <Compile Include="Helpers\CellStyleProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CellTypeConverters\BooleanConverter.cs" />
-    <Compile Include="CellTypeValueConverterFactory.cs" />
+    <Compile Include="CellTypeValueConverterManager.cs" />
     <Compile Include="CellTypeConverters\CellTypeValueBaseConverter.cs" />
     <Compile Include="CellTypeConverters\DateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\DecimalConverter.cs" />
@@ -62,7 +62,6 @@
     <Compile Include="Helpers\SpreadsheetDocumentExtensions.cs" />
     <Compile Include="Helpers\StringValidationMessageExtensions.cs" />
     <Compile Include="CellTypeConverters\IntConverter.cs" />
-    <Compile Include="CellTypeConverters\LongConverter.cs" />
     <Compile Include="CellTypeConverters\NullableBooleanConverter.cs" />
     <Compile Include="CellTypeConverters\NullableDateTimeConverter.cs" />
     <Compile Include="CellTypeConverters\NumberConverter.cs" />
@@ -73,7 +72,7 @@
     <Compile Include="SheetDecorators\AutoFilterSheetDecorator.cs" />
     <Compile Include="ColumnDefinition.cs" />
     <Compile Include="ExcelBuilder.cs" />
-    <Compile Include="SheetDecorators\AutoFitWidthSheetDecorator.cs" />
+    <Compile Include="SheetDecorators\AutoFitColumnSheetDecorator.cs" />
     <Compile Include="SheetDecorators\HeaderSheetDecorator.cs" />
     <Compile Include="IColumnDefinition.cs" />
     <Compile Include="IExcelBuilder.cs" />

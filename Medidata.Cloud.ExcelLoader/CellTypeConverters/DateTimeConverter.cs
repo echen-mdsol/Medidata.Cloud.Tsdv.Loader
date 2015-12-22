@@ -6,29 +6,40 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
     internal class DateTimeConverter : CellTypeValueBaseConverter<DateTime>
     {
         public DateTimeConverter()
-            : base(CellValues.Number) {}
+            : base(CellValues.String) {}
 
-        protected override string GetCellValueImpl(DateTime csharpValue)
+        protected override bool TryGetCellValueImpl(DateTime csharpValue, out string cellValue)
         {
-            //TODO: Discuss if we should use : return csharpValue.ToOADate().ToString(CultureInfo.InvariantCulture);
-            return csharpValue.ToString("MM/dd/yyyy");
+            cellValue = csharpValue.ToString("yyyy/MM/dd");
+            return true;
         }
 
-        protected override DateTime GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out DateTime csharpValue)
         {
             DateTime outDt;
             if (DateTime.TryParse(cellValue, out outDt))
             {
-                return outDt;
+                csharpValue = outDt;
+                return true;
             }
             //Check OLE Automation date time
             if (IsNumeric(cellValue))
             {
-                double outNum = 0;
+                double outNum;
                 double.TryParse(cellValue, out outNum);
-                return DateTime.FromOADate(outNum);
+                try
+                {
+                    csharpValue = DateTime.FromOADate(outNum);
+                    return true;
+                }
+                catch
+                {
+                    // Intentially swallows the exception.
+                }
             }
-            return DateTime.Now;
+
+            csharpValue = default(DateTime);
+            return false;
         }
     }
 }

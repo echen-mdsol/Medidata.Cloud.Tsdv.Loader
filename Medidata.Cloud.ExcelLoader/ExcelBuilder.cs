@@ -40,14 +40,19 @@ namespace Medidata.Cloud.ExcelLoader
                     workbookPart = doc.WorkbookPart;
                 }
 
-                foreach (var key in _modelDic.Keys)
+                foreach (var info in _modelDic.Values)
                 {
-                    var info = _modelDic[key];
                     info.SheetBuilder.BuildSheet(info, info.SheetDefinition, doc);
                 }
 
+                BeforeSaveFunc();
+
                 workbookPart.Workbook.Save();
             }
+        }
+
+        protected virtual void BeforeSaveFunc()
+        {
         }
 
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)

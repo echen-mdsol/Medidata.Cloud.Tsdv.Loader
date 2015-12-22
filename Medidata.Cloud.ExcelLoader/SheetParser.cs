@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Medidata.Cloud.ExcelLoader.Helpers;
 
 namespace Medidata.Cloud.ExcelLoader
 {
     public class SheetParser : ISheetParser
     {
-        private readonly ICellTypeValueConverterFactory _converterFactory;
+        private readonly ICellTypeValueConverterManager _converterManager;
 
-        public SheetParser(ICellTypeValueConverterFactory converterFactory)
+        public SheetParser(ICellTypeValueConverterManager converterManager)
         {
-            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
-            _converterFactory = converterFactory;
+            if (converterManager == null) throw new ArgumentNullException("converterManager");
+            _converterManager = converterManager;
         }
 
         public IEnumerable<ExpandoObject> GetObjects(Worksheet worksheet, ISheetDefinition sheetDefinition)
@@ -28,13 +29,30 @@ namespace Medidata.Cloud.ExcelLoader
         {
             IDictionary<string, object> expando = new ExpandoObject();
             var cells = row.Elements<Cell>().ToList();
-            var index = 0;
-            foreach (var colDef in sheetDefinition.ColumnDefinitions)
+            var colDefs = sheetDefinition.ColumnDefinitions.ToList();
+            var count = Math.Max(cells.Count, colDefs.Count);
+            for (var index = 0; index < count; index++)
             {
-                var converter = _converterFactory.Produce(colDef.PropertyType);
-                var propValue = converter.GetCSharpValue(cells[index].InnerText);
-                expando.Add(colDef.PropertyName, propValue);
-                index ++;
+                var colDef = index < colDefs.Count ? colDefs[index] : null;
+                var cell = index < cells.Count ? cells[index] : null;
+                string propName;
+                object propValue;
+                if (cell != null)
+                {
+                    propName = cell.GetMdsolAttribute("propertyName");
+                    propValue = _converterManager.GetCSharpValue(cell);
+                }
+                else if (colDef != null)
+                {
+                    propName = colDef.PropertyName;
+                    propValue = null;
+                }
+                else
+                {
+                    throw new NotSupportedException("Cell and CellDefinition are both null");
+                }
+
+                expando.Add(propName, propValue);
             }
             return (ExpandoObject) expando;
         }

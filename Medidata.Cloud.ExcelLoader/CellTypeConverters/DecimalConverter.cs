@@ -2,11 +2,9 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
 {
     internal class DecimalConverter : NumberConverter<decimal>
     {
-        protected override decimal GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out decimal csharpValue)
         {
-            decimal value;
-            decimal.TryParse(cellValue, out value);
-            return value;
+            return decimal.TryParse(cellValue, out csharpValue);
         }
     }
 }

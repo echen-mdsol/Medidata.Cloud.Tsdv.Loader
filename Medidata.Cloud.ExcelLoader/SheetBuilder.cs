@@ -10,12 +10,12 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public class SheetBuilder : ISheetBuilder
     {
-        private readonly ICellTypeValueConverterFactory _converterFactory;
+        private readonly ICellTypeValueConverterManager _converterManager;
 
-        public SheetBuilder(ICellTypeValueConverterFactory converterFactory, params ISheetBuilderDecorator[] decorators)
+        public SheetBuilder(ICellTypeValueConverterManager converterManager, params ISheetBuilderDecorator[] decorators)
         {
-            if (converterFactory == null) throw new ArgumentNullException("converterFactory");
-            _converterFactory = converterFactory;
+            if (converterManager == null) throw new ArgumentNullException("converterManager");
+            _converterManager = converterManager;
             BuildSheet = BuildSheetFunc;
             BuildRow = BuildRowFromExpandoObject;
             foreach (var decorator in decorators)
@@ -28,20 +28,23 @@ namespace Medidata.Cloud.ExcelLoader
 
         public Func<SheetModel, ISheetDefinition, Row> BuildRow { get; set; }
 
-
         private Row BuildRowFromExpandoObject(SheetModel model, ISheetDefinition sheetDefinition)
         {
             var row = new Row();
             foreach (var columnDefinition in sheetDefinition.ColumnDefinitions)
             {
                 var propValue = GetPropertyValue(model, columnDefinition.PropertyName);
-                var converter = _converterFactory.Produce(columnDefinition.PropertyType);
-                var cellValue = converter.GetCellValue(propValue);
+                CellValues cellType;
+                string cellValue;
+                _converterManager.GetCellTypeAndValue(propValue, out cellType, out cellValue);
                 var cell = new Cell
                            {
-                               DataType = converter.CellType,
+                               DataType = cellType,
                                CellValue = new CellValue(cellValue)
                            };
+                cell.AddMdsolAttribute("type",
+                    propValue == null ? typeof(object).FullName : propValue.GetType().FullName);
+                cell.AddMdsolAttribute("propertyName", columnDefinition.PropertyName);
                 row.AppendChild(cell);
             }
 
@@ -76,18 +79,13 @@ namespace Medidata.Cloud.ExcelLoader
                             Name = sheetName
                         };
 
-            // Use this attribute to retrieve the worksheet.
-            var attribute = SpreadsheetAttributeHelper.CreateSheetNameAttribute(sheetName);
-            sheet.SetAttribute(attribute);
-
             sheets.Append(sheet);
         }
 
         private Worksheet CreateWorksheet(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
             var sheetData = CreateSheetData(models, sheetDefinition);
-            var columns = CreateColumns(sheetData);
-            return columns.Any() ? new Worksheet(columns, sheetData) : new Worksheet(sheetData);
+            return new Worksheet(sheetData);
         }
 
         private SheetData CreateSheetData(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
@@ -97,26 +95,6 @@ namespace Medidata.Cloud.ExcelLoader
             sheetData.Append(rows);
 
             return sheetData;
-        }
-
-        private Columns CreateColumns(SheetData sheetData)
-        {
-            var numberOfColumns = 0;
-            if (sheetData.Descendants<Row>().Any())
-            {
-                numberOfColumns = sheetData.Descendants<Row>().First().Descendants<Cell>().Count();
-            }
-            var columnRange = Enumerable.Range(0, numberOfColumns)
-                                        .Select(i => new Column
-                                                     {
-                                                         Min = (uint) (i + 1),
-                                                         Max = (uint) (i + 1),
-                                                         Width = 20D,
-                                                         CustomWidth = true
-                                                     });
-            var cs = new Columns();
-            cs.Append(columnRange);
-            return cs;
         }
     }
 }

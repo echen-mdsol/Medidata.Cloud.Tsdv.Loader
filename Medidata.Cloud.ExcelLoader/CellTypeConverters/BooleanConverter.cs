@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
@@ -8,18 +7,25 @@ namespace Medidata.Cloud.ExcelLoader.CellTypeConverters
         public BooleanConverter()
             : base(CellValues.Boolean) {}
 
-        protected override string GetCellValueImpl(bool csharpValue)
+        protected override bool TryGetCellValueImpl(bool csharpValue, out string cellValue)
         {
-            return BooleanValue.FromBoolean(csharpValue);
+            cellValue = csharpValue ? "1" : "0";
+            return true;
         }
 
-        protected override bool GetCSharpValueImpl(string cellValue)
+        protected override bool TryGetCSharpValueImpl(string cellValue, out bool csharpValue)
         {
-            if (cellValue == "1") return true;
-            if (cellValue == "0") return false;
-            bool value;
-            bool.TryParse(cellValue, out value);
-            return value;
+            if (cellValue == "1")
+            {
+                csharpValue = true;
+                return true;
+            }
+            if (cellValue == "0")
+            {
+                csharpValue = false;
+                return true;
+            }
+            return bool.TryParse(cellValue, out csharpValue);
         }
     }
 }
