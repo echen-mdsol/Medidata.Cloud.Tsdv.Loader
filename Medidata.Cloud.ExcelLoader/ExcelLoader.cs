@@ -14,7 +14,7 @@ namespace Medidata.Cloud.ExcelLoader
         private readonly IExcelBuilder _builder;
         private readonly IExcelParser _parser;
         private readonly ISheetBuilder _sheetBuilder;
-        private readonly IDictionary<Type, SheetInfo> _sheetInfoDic = new Dictionary<Type, SheetInfo>();
+        private readonly IList<SheetInfo> _sheetInfos = new List<SheetInfo>();
         private readonly ISheetParser _sheetParser;
 
         public ExcelLoader(IExcelBuilder builder, IExcelParser parser, ISheetBuilder sheetBuilder,
@@ -33,7 +33,7 @@ namespace Medidata.Cloud.ExcelLoader
         public virtual void Save(Stream outStream)
         {
             if (outStream == null) throw new ArgumentNullException("outStream");
-            foreach (var info in _sheetInfoDic.Values)
+            foreach (var info in _sheetInfos)
             {
                 var sheetDef = info.SheetDefinition;
                 var sheetData = info.DataForSave ?? new List<SheetModel>();
@@ -48,7 +48,7 @@ namespace Medidata.Cloud.ExcelLoader
             if (source == null) throw new ArgumentNullException("source");
             _parser.Load(source);
 
-            foreach (var info in _sheetInfoDic.Values)
+            foreach (var info in _sheetInfos)
             {
                 var sheetDef = info.SheetDefinition;
                 info.LoadedData = _parser.GetObjects(sheetDef, _sheetParser).ToList();
@@ -57,18 +57,18 @@ namespace Medidata.Cloud.ExcelLoader
 
         public virtual ISheetInfo<T> Sheet<T>() where T : SheetModel
         {
-            SheetInfo info;
-            if (!_sheetInfoDic.TryGetValue(typeof(T), out info))
-            {
-                var sheetDef = SheetDefinition.Define<T>();
-                info = new SheetInfo {SheetDefinition = sheetDef};
-                _sheetInfoDic.Add(typeof(T), info);
-            }
+            var type = typeof(T);
+            var info = _sheetInfos.FirstOrDefault(x => x.Type == type);
+            if (info != null) return new SheetInfo<T>(info);
+            var sheetDef = SheetDefinition.Define<T>();
+            info = new SheetInfo {SheetDefinition = sheetDef, Type = type};
+            _sheetInfos.Add(info);
             return new SheetInfo<T>(info);
         }
 
         private class SheetInfo
         {
+            public Type Type { get; set; }
             public ISheetDefinition SheetDefinition { get; set; }
             public IList DataForSave { get; set; }
             public IList<ExpandoObject> LoadedData { get; set; }
