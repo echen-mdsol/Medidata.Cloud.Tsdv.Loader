@@ -85,7 +85,9 @@ namespace Medidata.Cloud.ExcelLoader
         private Worksheet CreateWorksheet(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
         {
             var sheetData = CreateSheetData(models, sheetDefinition);
-            return new Worksheet(sheetData);
+            var worksheet = new Worksheet(sheetData);
+            worksheet.AddMdsolNamespaceDeclaration();
+            return worksheet;
         }
 
         private SheetData CreateSheetData(IEnumerable<SheetModel> models, ISheetDefinition sheetDefinition)
