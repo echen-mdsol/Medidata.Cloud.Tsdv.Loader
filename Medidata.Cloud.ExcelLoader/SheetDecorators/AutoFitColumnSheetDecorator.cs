@@ -49,66 +49,57 @@ namespace Medidata.Cloud.ExcelLoader.SheetDecorators
 
         private double CalculateColumnWidth(SpreadsheetDocument doc, SheetData sheetData, int colIndex)
         {
-            var maxWidth = (from cell in GetColumnCells(sheetData, colIndex)
-                            let cellStyle = GetCellStyle(doc, cell)
-                            let cellFormat = GetCellFormat(doc, cellStyle)
-                            let font = GetFont(doc, cellFormat)
-                            let fontName = font.FontName.Val
-                            let fontSize = int.Parse(font.FontSize.Val)
-                            let width = CalculateTextWidth(fontName, fontSize, cell.InnerText)
-                            select width).Max();
-            return maxWidth;
+            // See http://refactorsaurusrex.com/how-to-get-the-custom-format-string-for-an-excelopenxml-cell/
+            var allCellWidth = from cell in GetColumnCells(sheetData, colIndex)
+                               let cellFormat = GetCellFormat(doc, cell)
+                               let font = GetFont(doc, cellFormat)
+                               let fontName = font.FontName.Val
+                               let fontSize = int.Parse(font.FontSize.Val)
+                               let width = CalculateTextWidth(fontName, fontSize, cell.InnerText)
+                               select width;
+            return allCellWidth.Max();
         }
 
         private static double CalculateTextWidth(string font, int fontSize, string text)
         {
-            // The algorithm is referred from below link
+            // The algorithm is from below link
             // https://social.msdn.microsoft.com/Forums/office/en-US/28aae308-55cb-479f-9b58-d1797ed46a73/solution-how-to-autofit-excel-content?forum=oxmlsdk
             var stringFont = new System.Drawing.Font(font, fontSize);
             var textSize = TextRenderer.MeasureText(text, stringFont);
-            var width = (textSize.Width / (double)7 * 256 - 18) / 256;
-            width = (double)decimal.Round((decimal)width + 0.2M, 2);
-
+            var width = (textSize.Width / (double) 7 * 256 - 18) / 256;
+            width = (double) decimal.Round((decimal) width + 0.2M, 2);
             return width;
         }
 
         private IEnumerable<Cell> GetColumnCells(SheetData sheetData, int colIndex)
         {
-            return sheetData.Descendants<Row>()
-                            .Select(x => x.Descendants<Cell>().ElementAt(colIndex));
+            var cells = sheetData.Descendants<Row>()
+                                 .Select(x => x.Descendants<Cell>().ElementAt(colIndex));
+            return cells;
         }
 
-        private CellStyle GetCellStyle(SpreadsheetDocument doc, Cell cell)
+        private CellFormat GetCellFormat(SpreadsheetDocument doc, Cell cell)
         {
-            var styleIndex = (int) (uint) cell.StyleIndex;
-            return doc.WorkbookPart
-                      .WorkbookStylesPart
-                      .Stylesheet
-                      .CellStyles
-                      .Elements<CellStyle>()
-                      .ElementAt(styleIndex);
-        }
-
-        private CellFormat GetCellFormat(SpreadsheetDocument doc, CellStyle cellStyle)
-        {
-            var index = (int) (uint) cellStyle.FormatId;
-            return doc.WorkbookPart
-                      .WorkbookStylesPart
-                      .Stylesheet
-                      .CellFormats
-                      .Elements<CellFormat>()
-                      .ElementAt(index);
+            var index = (int) cell.StyleIndex.Value;
+            var cellFormat = doc.WorkbookPart
+                                .WorkbookStylesPart
+                                .Stylesheet
+                                .CellFormats
+                                .Elements<CellFormat>()
+                                .ElementAt(index);
+            return cellFormat;
         }
 
         private Font GetFont(SpreadsheetDocument doc, CellFormat cellFormat)
         {
-            var index = (int) (uint) cellFormat.FormatId;
-            return doc.WorkbookPart
-                      .WorkbookStylesPart
-                      .Stylesheet
-                      .Fonts
-                      .Elements<Font>()
-                      .ElementAt(index);
+            var index = (int) cellFormat.FontId.Value;
+            var font = doc.WorkbookPart
+                          .WorkbookStylesPart
+                          .Stylesheet
+                          .Fonts
+                          .Elements<Font>()
+                          .ElementAt(index);
+            return font;
         }
     }
 }
