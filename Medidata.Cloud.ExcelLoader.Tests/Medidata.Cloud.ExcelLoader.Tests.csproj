@@ -65,6 +65,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CellTypeConverters\BooleanConverterTests.cs" />
+    <Compile Include="CellTypeConverters\DateTimeConverterTests.cs" />
+    <Compile Include="CellTypeConverters\DecimalConverterTests.cs" />
     <Compile Include="DefaultSequentialRuleValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
