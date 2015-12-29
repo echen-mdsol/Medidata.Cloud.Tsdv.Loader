@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+using Medidata.Cloud.ExcelLoader.CellTypeConverters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoRhinoMock;
-using Medidata.Cloud.ExcelLoader.CellTypeConverters;
+
 namespace Medidata.Cloud.ExcelLoader.Tests.CellTypeConverters
 {
     [TestClass]
-    public class DecimalConverterTests
+    public class FloatConverterTests
     {
         private IFixture _fixture;
         [TestInitialize]
@@ -26,18 +22,18 @@ namespace Medidata.Cloud.ExcelLoader.Tests.CellTypeConverters
             object value0;
             object value1;
             object value2;
-            var converter = new DecimalConverter();
+            var converter = new FloatConverter();
             //Act
             bool success0 = converter.TryConvertToCSharpValue("0.123", out value0);
-            bool success1 = converter.TryConvertToCSharpValue("10000000000", out value1);
+            bool success1 = converter.TryConvertToCSharpValue("9E10", out value1);
             bool success2 = converter.TryConvertToCSharpValue("-12.84848715", out value2);
             //Assert
             Assert.IsTrue(success0);
             Assert.IsTrue(success1);
             Assert.IsTrue(success2);
-            Assert.AreEqual(0.123m, value0);
-            Assert.AreEqual(10000000000m, value1);
-            Assert.AreEqual(-12.84848715m, value2);
+            Assert.AreEqual(0.123f, value0);
+            Assert.AreEqual(9E10f, value1);
+            Assert.AreEqual(-12.84848715f, value2);
 
 
         }
@@ -51,11 +47,11 @@ namespace Medidata.Cloud.ExcelLoader.Tests.CellTypeConverters
             object value0;
             object value1;
             object value2;
-            var converter = new DecimalConverter();
+            var converter = new FloatConverter();
             //Act
-            bool success0 = converter.TryConvertToCSharpValue("9E10", out value0);
-            bool success1 = converter.TryConvertToCSharpValue("1000000000000000000000000000000000000000000000000000000000", out value1);
-            bool success2 = converter.TryConvertToCSharpValue("0/0", out value2);
+            bool success0 = converter.TryConvertToCSharpValue("9E10D", out value0);
+            bool success1 = converter.TryConvertToCSharpValue("N/A", out value1);
+            bool success2 = converter.TryConvertToCSharpValue("10000E", out value2);
             //Assert
             Assert.IsFalse(success0);
             Assert.IsFalse(success1);
@@ -69,18 +65,18 @@ namespace Medidata.Cloud.ExcelLoader.Tests.CellTypeConverters
             string value0;
             string value1;
             string value2;
-            var converter = new DecimalConverter();
+            var converter = new FloatConverter();
             //Act
-            bool success0 = converter.TryConvertToCellValue(0.123m, out value0);
-            bool success1 = converter.TryConvertToCellValue(1000000000m, out value1);
-            bool success2 = converter.TryConvertToCellValue(-12.84848715m, out value2);
+            bool success0 = converter.TryConvertToCellValue(0.123f, out value0);
+            bool success1 = converter.TryConvertToCellValue(1000000000f, out value1);
+            bool success2 = converter.TryConvertToCellValue(-12.85f, out value2);
             //Assert
             Assert.IsTrue(success0);
             Assert.IsTrue(success1);
             Assert.IsTrue(success2);
             Assert.AreEqual("0.123", value0);
-            Assert.AreEqual("10000000000", value1);
-            Assert.AreEqual("-12.84848715", value2);
+            Assert.AreEqual("1E+09", value1);
+            Assert.AreEqual("-12.85", value2);
 
         }
 
@@ -91,10 +87,10 @@ namespace Medidata.Cloud.ExcelLoader.Tests.CellTypeConverters
             string value0;
             string value1;
             string value2;
-            var converter = new DecimalConverter();
+            var converter = new FloatConverter();
             //Act
-            bool success0 = converter.TryConvertToCellValue(0.18f, out value0);
-            bool success1 = converter.TryConvertToCellValue(Int64.MaxValue, out value1);
+            bool success0 = converter.TryConvertToCellValue(0.18D, out value0);
+            bool success1 = converter.TryConvertToCellValue("-1", out value1);
             bool success2 = converter.TryConvertToCellValue("NaN", out value2);
             //Assert
             Assert.IsFalse(success0);
