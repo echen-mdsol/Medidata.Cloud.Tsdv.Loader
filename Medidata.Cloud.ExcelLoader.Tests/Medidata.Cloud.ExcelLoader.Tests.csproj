@@ -65,6 +65,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CellTypeConverters\BooleanConverterTests.cs" />
+    <Compile Include="CellTypeConverters\DateTimeConverterTests.cs" />
+    <Compile Include="CellTypeConverters\DecimalConverterTests.cs" />
+    <Compile Include="CellTypeConverters\DoubleConverterTests.cs" />
+    <Compile Include="CellTypeConverters\FloatConverterTests.cs" />
+    <Compile Include="CellTypeConverters\IntConverterTests.cs" />
+    <Compile Include="CellTypeConverters\NullableBooleanConverterTests.cs" />
+    <Compile Include="CellTypeConverters\NullableDateTimeConverterTests.cs" />
     <Compile Include="DefaultSequentialRuleValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
