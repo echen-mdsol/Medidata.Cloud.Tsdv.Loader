@@ -10,18 +10,15 @@ namespace Medidata.Cloud.ExcelLoader
 {
     public class ExcelBuilder : IExcelBuilder
     {
-        private readonly IDictionary<string, SheetModels> _modelDic = new Dictionary<string, SheetModels>();
+        private readonly IList<SheetInfo> _allSheetInfos = new List<SheetInfo>();
 
-        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models,
-                             ISheetBuilder sheetBuilder)
+        public void AddSheet(ISheetDefinition sheetDefinition, IEnumerable<SheetModel> models, ISheetBuilder sheetBuilder)
         {
             if (sheetDefinition == null) throw new ArgumentNullException("sheetDefinition");
             if (models == null) throw new ArgumentNullException("models");
             if (sheetBuilder == null) throw new ArgumentNullException("sheetBuilder");
-            var sheetName = sheetDefinition.Name;
-            var sheetModels = new SheetModels {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};
-            sheetModels.AddRange(models);
-            _modelDic.Add(sheetName, sheetModels);
+            var sheetInfo = new SheetInfo(models) {SheetDefinition = sheetDefinition, SheetBuilder = sheetBuilder};
+            _allSheetInfos.Add(sheetInfo);
         }
 
         public virtual void Save(Stream outStream)
@@ -40,19 +37,13 @@ namespace Medidata.Cloud.ExcelLoader
                     workbookPart = doc.WorkbookPart;
                 }
 
-                foreach (var info in _modelDic.Values)
+                foreach (var sheetInfo in _allSheetInfos)
                 {
-                    info.SheetBuilder.BuildSheet(info, info.SheetDefinition, doc);
+                    sheetInfo.SheetBuilder.BuildSheet(sheetInfo, sheetInfo.SheetDefinition, doc);
                 }
-
-                BeforeSaveFunc();
 
                 workbookPart.Workbook.Save();
             }
-        }
-
-        protected virtual void BeforeSaveFunc()
-        {
         }
 
         protected virtual SpreadsheetDocument CreateDocument(Stream outStream)
@@ -61,8 +52,9 @@ namespace Medidata.Cloud.ExcelLoader
             return SpreadsheetDocument.Create(outStream, SpreadsheetDocumentType.Workbook);
         }
 
-        private class SheetModels : List<SheetModel>
+        private class SheetInfo : List<SheetModel>
         {
+            public SheetInfo(IEnumerable<SheetModel> models) : base(models) {}
             public ISheetDefinition SheetDefinition { get; set; }
             public ISheetBuilder SheetBuilder { get; set; }
         }
