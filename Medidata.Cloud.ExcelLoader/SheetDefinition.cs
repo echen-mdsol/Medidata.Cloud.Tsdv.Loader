@@ -17,11 +17,10 @@ namespace Medidata.Cloud.ExcelLoader
         public ISheetDefinition AddColumn(IColumnDefinition columnDefinition)
         {
             if (columnDefinition == null) throw new ArgumentNullException("columnDefinition");
-            if (ColumnDefinitions.Any(x => x.PropertyName == columnDefinition.PropertyName))
+            if (ColumnDefinitions.All(x => x.PropertyName != columnDefinition.PropertyName))
             {
-                throw new Exception("Duplicate column binding to propety " + columnDefinition.PropertyName);
+                ColumnDefinitions = ColumnDefinitions.Concat(new[] {columnDefinition});
             }
-            ColumnDefinitions = ColumnDefinitions.Concat(new[] {columnDefinition});
             return this;
         }
 
